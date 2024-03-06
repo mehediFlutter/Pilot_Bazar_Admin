@@ -37,12 +37,12 @@ flutter:
 
 
   fonts:
-   - family: AbhayaLibre
-     fonts:
-       - asset: fonts/AbhayaLibre-Regular.ttf 
-   - family: Roboto 
-     fonts:
-       - assets: fonts/Roboto-Regular.ttf
-   - family: Axiforma
-     fonts:
-       - asset: fonts/Axiforma-Regular.ttf 
+    - family: AbhayaLibre
+      fonts:
+        - asset: fonts/AbhayaLibre-Regular.ttf  
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf    
+    - family: Axiforma
+      fonts:
+        - asset: fonts/Axiforma-Regular.ttf  
