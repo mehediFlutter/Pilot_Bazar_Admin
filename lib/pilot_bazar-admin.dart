@@ -11,10 +11,8 @@ class PilotBazarAdmin extends StatefulWidget {
 class _PilotBazarAdminState extends State<PilotBazarAdmin> {
   @override
   Widget build(BuildContext context) {
-    return  ReUsableMotherWidget(
-      childred: [
-        Text("hello"),
-      ],
+    return MaterialApp(
+     
     );
   }
 }
