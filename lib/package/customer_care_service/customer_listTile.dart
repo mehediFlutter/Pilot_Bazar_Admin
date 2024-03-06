@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/profile/profile.dart';
 
 class CustomerListTile extends StatefulWidget {
   const CustomerListTile({super.key});
@@ -13,6 +14,7 @@ class CustomerListTile extends StatefulWidget {
 class _CustomerListTileState extends State<CustomerListTile> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
     return SafeArea(
         child: Scaffold(
       backgroundColor: whiteColor,
@@ -20,8 +22,11 @@ class _CustomerListTileState extends State<CustomerListTile> {
         padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
         child: Column(
           children: [
-          const CustomerProfileBar(
+           CustomerProfileBar(
             profileImagePath: 'assets/images/small_profile.png',
+            onTapFunction: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
+            }
           ),
             height5,
             height5,
