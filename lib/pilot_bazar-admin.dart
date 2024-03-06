@@ -12,6 +12,17 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Inter',
+        textTheme: TextTheme(
+          bodySmall: TextStyle(
+            fontSize: 10,
+            fontFamily: 'Inter',
+            color: Colors.black
+          )
+        )
+      ),
+      
      home: CustomerListTile(),
     );
   }

@@ -17,10 +17,25 @@ class _CustomerListTileState extends State<CustomerListTile> {
       body: Column(
         children: [
           ListTile(
+            
             leading: Container(
-              height: 30,
-              width: 35,
-              child: Image.asset('assets/images/small_profile.png')),
+                height: 30,
+                width: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Image.asset('assets/images/small_profile.png')),
+            title: Text(
+              "Adrio Rassel",
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF444444),
+                height: 0
+              ),
+            
+            ),
+            subtitle: Text('adriorassel@gmail.com',style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 0),),
           ),
         ],
       ),
