@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
+import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 
 class CustomerListTile extends StatefulWidget {
   const CustomerListTile({super.key});
@@ -14,30 +16,43 @@ class _CustomerListTileState extends State<CustomerListTile> {
     return SafeArea(
         child: Scaffold(
       backgroundColor: whiteColor,
-      body: Column(
-        children: [
-          ListTile(
-            
-            leading: Container(
-                height: 30,
-                width: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Image.asset('assets/images/small_profile.png')),
-            title: Text(
-              "Adrio Rassel",
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF444444),
-                height: 0
-              ),
-            
-            ),
-            subtitle: Text('adriorassel@gmail.com',style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 0),),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+        child: Column(
+          children: [
+          const CustomerProfileBar(
+            profileImagePath: 'assets/images/small_profile.png',
           ),
-        ],
+            height5,
+            height5,
+        Padding(
+          padding: const EdgeInsets.only(left: 20,right: 25),
+          child: Container(
+           
+            height: 30,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Color(0xFFEDEDED),
+              borderRadius: BorderRadious20,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: TextField(
+                style: Theme.of(context).textTheme.bodySmall,
+              
+                cursorHeight: 15,
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  hintStyle: Theme.of(context).textTheme.bodySmall,
+                 border: InputBorder.none,
+                 prefixIcon: Icon(Icons.search,color: Colors.black,size: 15,)
+                ),
+              ),
+            ),
+          ),
+        ),
+          ],
+        ),
       ),
     ));
   }
