@@ -4,8 +4,9 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 class CustomerProfileBar extends StatefulWidget {
   final String? profileImagePath;
   final Function()? onTapFunction;
+  final Function()? notificationTap;
   const CustomerProfileBar(
-      {super.key, this.profileImagePath, this.onTapFunction});
+      {super.key, this.profileImagePath, this.onTapFunction, this.notificationTap});
 
   @override
   State<CustomerProfileBar> createState() => _CustomerProfileBarState();
@@ -39,14 +40,18 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
               style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
-      trailing: Container(
-        height: 30,
-        width: 35,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadious8,
-          border: Border.all(color: BorderRadious8Color),
+      trailing: GestureDetector(
+  onTap: widget.notificationTap,
+        child: Container(
+          
+          height: 30,
+          width: 35,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadious8,
+            border: Border.all(color: BorderRadious8Color),
+          ),
+          child: Image.asset('assets/icons/notification.png'),
         ),
-        child: Image.asset('assets/icons/notification.png'),
       ),
     );
   }

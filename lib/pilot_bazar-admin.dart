@@ -20,7 +20,12 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
             fontSize: 10,
             fontFamily: 'Inter',
             color: Colors.black
-          )
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 12,
+            fontFamily: 'Inter',
+            color: Colors.black
+          ),
         )
       ),
       
