@@ -7,7 +7,7 @@ const Color BorderRadious8Color = Color(0xFFEEEEEE);
 const SizedBox height5 = SizedBox(height: 5);
 const SizedBox width5 = SizedBox(width: 5);
  Container horizontalLine = Container(
-  height: 69,
+  height: 55,
   width: 2,
   decoration: BoxDecoration(color:Color(0xFFD9D9D9) ),
  );

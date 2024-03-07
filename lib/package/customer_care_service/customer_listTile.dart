@@ -3,7 +3,9 @@ import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
+import 'package:pilot_bazar_admin/re_usable_widget/item_class.dart';
 
 class CustomerListTile extends StatefulWidget {
   const CustomerListTile({super.key});
@@ -14,6 +16,7 @@ class CustomerListTile extends StatefulWidget {
 
 class _CustomerListTileState extends State<CustomerListTile> {
   @override
+  TextEditingController _controller = TextEditingController();
   List customerList = [
     'customer1',
     'customer2',
@@ -23,6 +26,34 @@ class _CustomerListTileState extends State<CustomerListTile> {
     'customer6',
     'customer7'
   ];
+  List<Map<String, dynamic>> items = [
+    {'name': 'Banana', 'price': '80000 tk'},
+    {'name': 'Orange', 'price': '850000 tk'},
+    {'name': 'Mango', 'price': '80430 tk'},
+    {'name': 'Pineapple', 'price': '804540 tk'},
+    {'name': 'Apple', 'price': '8004243 tk'},
+    {'name': 'Banana', 'price': '853400 tk'},
+    {'name': 'Orange', 'price': '80000 tk'},
+    {'name': 'Mango', 'price': '80040 tk'},
+    {'name': 'Pineapple', 'price': '785455 tk'},
+    {'name': 'Apple', 'price': '54000 tk'},
+  ];
+  List<Map<String, dynamic>> _filteredItems = [];
+  @override
+  void initState() {
+    _filteredItems = List<Map<String, dynamic>>.from(items); // Copy the list
+    super.initState();
+  }
+
+  void _filterList(String searchText) {
+    setState(() {
+      _filteredItems = items
+          .where((item) =>
+              item['name'].toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    });
+  }
+
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return SafeArea(
@@ -60,6 +91,14 @@ class _CustomerListTileState extends State<CustomerListTile> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: TextField(
+                    // onTap: () {
+                    //   Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => SearchPage()));
+                    // },
+                    controller: _controller,
+                    onChanged: _filterList,
                     style: Theme.of(context).textTheme.bodySmall,
                     cursorHeight: 15,
                     decoration: InputDecoration(
@@ -79,107 +118,14 @@ class _CustomerListTileState extends State<CustomerListTile> {
               ),
             ),
             SizedBox(height: size.height / 15),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 25),
-              child: Container(
-                height: 70,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFEEEEEE),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Container(
-                        height: 45,
-                        width: 45,
-                        child: Center(
-                            child: Image.asset('assets/images/customer_1.png')),
-                      ),
-                    ),
-                    width5,
-                    width5,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Mohon Lal",
-                            overflow: TextOverflow.visible,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(fontWeight: FontWeight.w500),
-                          ),
-                          Text("+8801969944400",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                          Text("Brand : Toyota",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                          Text("Budget : 850000 tk",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                        ],
-                      ),
-                    ),
-                    width5,
-                    width5,
-                    horizontalLine,
-                    width5,
-                    width5,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Seriousness : 60%",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                          Text("Level : VVIP",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                          Text("Profession : Business Man",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                          Text("Budget : 850000 tk",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredItems.length,
+                itemBuilder: (context, index) {
+                  return ItemClass(item: _filteredItems[index]);
+                },
               ),
             ),
-              Expanded(
-              child: ListView.builder(
-               primary: false,
-               // shrinkWrap: false,
-                 scrollDirection: Axis.vertical,
-                  itemCount: customerList.length,
-                  itemBuilder: (context, index) {
-                    return Text(customerList[index]);
-                  }),
-            ),
-          
           ],
         ),
       ),
