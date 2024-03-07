@@ -5,7 +5,7 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
-import 'package:pilot_bazar_admin/re_usable_widget/item_class.dart';
+import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 
 class SearchPage extends StatefulWidget {
   @override
