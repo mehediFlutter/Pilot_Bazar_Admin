@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
@@ -65,6 +66,7 @@ class _CustomerListTileState extends State<CustomerListTile> {
           children: [
             CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
+              NotificationIconPath: 'assets/icons/message_notification.png',
               onTapFunction: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
@@ -74,7 +76,7 @@ class _CustomerListTileState extends State<CustomerListTile> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NotificaitonScreen()));
+                        builder: (context) => ChatFontScreen()));
               },
             ),
             height5,
