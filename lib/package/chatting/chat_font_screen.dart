@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
 import 'package:pilot_bazar_admin/package/chatting/chatting_font_person.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
@@ -78,6 +79,9 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
               itemCount: 20,
               itemBuilder: (context, index) {
               return ListTile(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ChattingDetailsScreen()));
+                },
                 leading: Chatting_profile_with_green_tolu(),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,19 +106,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
                 ),
                   ],
                 ),
-                // subtitle: Row(
-                //   children: [
-                //     Text("You: "),
-                //     Container(
-                //         padding: EdgeInsets.zero,
-                //         width: 65,
-                //         child: Text(
-                //           "Hello There is Any Car",
-                //           style: small10Style.copyWith(height: 0),
-                //           overflow: TextOverflow.ellipsis,
-                //         )),
-                //   ],
-                // ),
+             
               );
             }))
           ],
