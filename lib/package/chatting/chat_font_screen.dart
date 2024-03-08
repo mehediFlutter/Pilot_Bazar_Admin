@@ -44,7 +44,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
               child: Container(
                 height: 30,
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFEDEDED),
                   borderRadius: BorderRadious20,
                 ),
@@ -62,8 +62,8 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
                         hintText: "Search",
                         hintStyle: Theme.of(context).textTheme.bodySmall,
                         border: InputBorder.none,
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.only(top: 4),
                           child: Icon(
                             Icons.search,
                             color: Colors.black,

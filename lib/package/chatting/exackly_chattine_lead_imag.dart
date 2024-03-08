@@ -26,6 +26,6 @@ class _ExacklyChatLeadingState extends State<ExacklyChatLeading> {
             
              child: Image.asset(widget.detailsChatLeadingPath??'')),
       ),
-    );;
+    );
   }
 }
