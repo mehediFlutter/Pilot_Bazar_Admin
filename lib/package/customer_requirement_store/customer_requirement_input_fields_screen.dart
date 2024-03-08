@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_required_textFild.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 
 class CustomerRequirementInputFilds extends StatefulWidget {
@@ -14,6 +15,8 @@ class CustomerRequirementInputFilds extends StatefulWidget {
 
 class _CustomerRequirementInputFildsState
     extends State<CustomerRequirementInputFilds> {
+      TextEditingController customerNameController = TextEditingController();
+      TextEditingController customerNameController2 = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,10 +57,33 @@ class _CustomerRequirementInputFildsState
             Padding(
               padding: const EdgeInsets.only(left: 25,top: 5),
               child: Text("Customer Personal info ->",style: small12Style,),
-            )
+            ),
+            CustmerRequiredTextFild(
+              customerNameController: customerNameController,
+              hintTextForCustomerNameController: 'Enter Customer Name',
+            ),
+            CustmerRequiredTextFild(
+              function: (dynamic value) {
+                print(value);
+              },
+              
+              customerNameController: customerNameController2,
+              hintTextForCustomerNameController: 'Enter Customer Name 2',
+            ),
+            TextFormField(
+              controller: customerNameController,
+              onChanged: filter
+            ),
+
+
+            IconButton(onPressed: (){
+              print(customerNameController.text);
+              print(customerNameController2.text);
+            }, icon: Icon(Icons.add))
           ],
         ),
       ),
     ));
   }
+  filter(String name){}
 }
