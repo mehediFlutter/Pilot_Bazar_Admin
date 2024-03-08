@@ -5,6 +5,7 @@ import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_file.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 
@@ -139,8 +140,13 @@ class _CustomerListTileState extends State<CustomerListTile> {
                 ),
               ),
             ),
+            height10,
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerRequirementInputFilds()));
+            }, icon: Icon(Icons.add)),
             SizedBox(height: size.height / 20),
             Expanded(
+
               child: ListView.builder(
                 itemCount: _filteredItems.length,
                 itemBuilder: (context, index) {
