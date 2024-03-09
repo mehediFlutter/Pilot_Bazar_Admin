@@ -12,8 +12,10 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        useMaterial3: false,
         fontFamily: 'Inter',
         textTheme: TextTheme(
           bodySmall: TextStyle(

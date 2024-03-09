@@ -15,8 +15,9 @@ class CustomerRequirementInputFilds extends StatefulWidget {
 
 class _CustomerRequirementInputFildsState
     extends State<CustomerRequirementInputFilds> {
-      TextEditingController customerNameController = TextEditingController();
-      TextEditingController customerNameController2 = TextEditingController();
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController customerNameController2 = TextEditingController();
+  String? _selectedItem;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,50 +41,103 @@ class _CustomerRequirementInputFildsState
               },
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 25,top: 5),
-              child: Container(
-                alignment: Alignment.center,
-                height: 26,
-                width: 144,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    10,
+              padding: const EdgeInsets.only(right: 25, top: 5),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 38,
+                  width: 144,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      10,
+                    ),
+                    border: Border.all(color: Color(0xFFFDF2F2)),
                   ),
-                  border: Border.all(color: Color(0xFFFDF2F2)),
+                  child: Text(
+                    'Customer Requirement',
+                    style: small10Stylew500,
+                  ),
                 ),
-                child: Text('Customer Requirement',style: small10Stylew500,),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 25,top: 5),
-              child: Text("Customer Personal info ->",style: small12Style,),
+              padding: const EdgeInsets.only(left: 25, top: 5),
+              child: Text(
+                "Customer Personal info ->",
+                style: small12Style,
+              ),
             ),
             CustmerRequiredTextFild(
               customerNameController: customerNameController,
               hintTextForCustomerNameController: 'Enter Customer Name',
             ),
-            CustmerRequiredTextFild(
-              function: (dynamic value) {
-                print(value);
-              },
+
+            Row(
+              children: [
+                Expanded(
+                  child: CustmerRequiredTextFild(
+                    function: (dynamic value) {
+                      print(value);
+                    },
+                    customerNameController: customerNameController2,
+                    hintTextForCustomerNameController: 'Enter Customer Mobile',
+                  ),
+                ),
+                Expanded(
+                  child: CustmerRequiredTextFild(
+                    function: (dynamic value) {
+                      print(value);
+                    },
+                    customerNameController: customerNameController2,
+                    hintTextForCustomerNameController: 'Enter Customer email',
+                  ),
+                ),
+              ],
+            ),
+
+            // TextFormField(
+            //   controller: customerNameController,
+            //   onChanged: filter
+            // ),
+
+    DropdownButtonFormField<String>(
+          value: _selectedItem,
+          decoration: InputDecoration(
+            labelText: "label Text",
+       
+          hintText: 'hint text',
+            
+            border: OutlineInputBorder()
+          ),
+        
+          
+          onChanged: (String? value) {
+            setState(() {
+              _selectedItem = value;
+            });
+          },
+          items: <String>['Item 1', 'Item 2', 'Item 3', 'Item 4']
+              .map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
               
-              customerNameController: customerNameController2,
-              hintTextForCustomerNameController: 'Enter Customer Name 2',
-            ),
-            TextFormField(
-              controller: customerNameController,
-              onChanged: filter
-            ),
+              child: Text(value),
+            );
+          }).toList(),
+        ),
 
-
-            IconButton(onPressed: (){
-              print(customerNameController.text);
-              print(customerNameController2.text);
-            }, icon: Icon(Icons.add))
+            IconButton(
+                onPressed: () {
+                  print(customerNameController.text);
+                  print(customerNameController2.text);
+                },
+                icon: Icon(Icons.add))
           ],
         ),
       ),
     ));
   }
-  filter(String name){}
+
+  filter(String name) {}
 }

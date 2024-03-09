@@ -5,7 +5,7 @@ import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_file.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_fields_screen.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 

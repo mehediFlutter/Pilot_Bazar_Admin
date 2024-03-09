@@ -24,15 +24,13 @@ class _CustmerRequiredTextFildState extends State<CustmerRequiredTextFild> {
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: TextFormField(
         onChanged: (value) {
-          if(widget.function !=null){
+          if (widget.function != null) {
             widget.function!(value);
           }
-          
         },
-          
-        
+      
         style: small10Style,
-
+      
         controller: widget.customerNameController,
         decoration: InputDecoration(
             prefix: SizedBox(

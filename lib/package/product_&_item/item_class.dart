@@ -13,6 +13,12 @@ class ItemClass extends StatefulWidget {
 }
 
 class _ItemClassState extends State<ItemClass> {
+  var RelativeRectclickPosition1;
+  double? left;
+  share() {
+    print('I am share methode');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,11 +31,11 @@ class _ItemClassState extends State<ItemClass> {
                   builder: (context) => ItemDetails(item: widget.item)));
         },
         child: Material(
-         // elevation: 1,
-          
- borderRadius: BorderRadius.circular(10),          
+          // elevation: 1,
+
+          borderRadius: BorderRadius.circular(10),
           child: Container(
-            height: 138,
+            // height: 138,
             width: double.infinity,
             decoration: BoxDecoration(
               color: Color(0xFFEEEEEE),
@@ -58,28 +64,36 @@ class _ItemClassState extends State<ItemClass> {
                         children: [
                           Text(
                             widget.item['name'],
-                            
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(fontWeight: FontWeight.w500),
-                                overflow: TextOverflow.ellipsis,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          Text("+8801969944400",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0),  overflow: TextOverflow.ellipsis,),
-                          Text("Brand : Toyota",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0),  overflow: TextOverflow.ellipsis,),
-                          Text("Budget : 850000 tk",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 0),  overflow: TextOverflow.ellipsis,),
+                          Text(
+                            "+8801969944400",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(height: 0),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "Brand : Toyota",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(height: 0),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "Budget : 850000 tk",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(height: 0),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -96,14 +110,26 @@ class _ItemClassState extends State<ItemClass> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Seriousness : 60%",
-                              style: Theme.of(context).textTheme.bodySmall,  overflow: TextOverflow.ellipsis,),
-                          Text("Level : VVIP",
-                              style: Theme.of(context).textTheme.bodySmall,  overflow: TextOverflow.ellipsis,),
-                          Text("Profession : Business Man",
-                              style: Theme.of(context).textTheme.bodySmall,  overflow: TextOverflow.ellipsis,),
-                          Text("Budget : 850000 tk",
-                              style: Theme.of(context).textTheme.bodySmall,  overflow: TextOverflow.ellipsis,),
+                          Text(
+                            "Seriousness : 60%",
+                            style: Theme.of(context).textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "Level : VVIP",
+                            style: Theme.of(context).textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "Profession : Business Man",
+                            style: Theme.of(context).textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "Budget : 850000 tk",
+                            style: Theme.of(context).textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -124,8 +150,7 @@ class _ItemClassState extends State<ItemClass> {
                       children: [
                         Text('Model: X-Tral', style: small10Style),
                         Text('Model Year: 2017', style: small10Style),
-                        Text('Edition: Mode Premier',
-                            style: small10Style),
+                        Text('Edition: Mode Premier', style: small10Style),
                       ],
                     ),
                     Column(
@@ -138,6 +163,117 @@ class _ItemClassState extends State<ItemClass> {
                           style: small10Style,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        height10,
+                        GestureDetector(
+                          onTapDown: (details) {
+                            final RenderBox box =
+                                context.findRenderObject() as RenderBox;
+                            final topLeft = box.localToGlobal(Offset.zero);
+                            final bottomRight = box.localToGlobal(
+                                box.size.bottomRight(Offset.zero));
+                            final position = details.localPosition;
+                            final fromLTRB =
+                                "${topLeft.dx.toStringAsFixed(2)}, "
+                                "${topLeft.dy.toStringAsFixed(2)}, "
+                                "${bottomRight.dx.toStringAsFixed(2)}, "
+                                "${bottomRight.dy.toStringAsFixed(2)}";
+                            // Show the position or use it as needed
+                            print("Clicked Position (fromLTRB): $fromLTRB");
+                          },
+                          child: Text('position'),
+                        ),
+                        PopupMenuButton(itemBuilder: (context) {
+                          
+                          return [
+                            PopupMenuItem(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Send as Visitor',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12),
+                                ),
+                                Divider(color: Colors.black,),
+                                InkWell(
+                                   onTap: () {
+                                      share();
+                                      Navigator.pop(context);
+                                    },
+                                 child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Color.fromARGB(255, 226, 223, 223)),
+                                    borderRadius: BorderRadius.circular(5)
+                                  ),
+                                   child: Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: Text("Taka, Link, Details, Image",style: TextStyle(fontSize: 12),),
+                                   ),
+                                 ),
+                                
+                                ),
+                                    height10,
+                                InkWell(
+                                    onTap: () {
+                                      share();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Taka, Link, Details")),
+                                    height10,
+                                    height10,
+                                Text(
+                                  'Send as Media (মিডিয়া)',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12),
+                                ),
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    
+                                  },
+                                  child: Text("All Images (শুধু ছবি)")),
+                                  height10,
+                                InkWell(
+                                  onTap: () {
+                                    
+                                  },
+                                  child: Text("Details (শুধু তথ্য)")),
+                              ],
+                            ))
+                          ];
+                        }),
+                        // IconButton(
+                        //   onPressed: ()async {
+                        //     showMenu(
+                        //       context: context,
+                        //       position: RelativeRect.fill,
+                        //       items: [
+                        //         PopupMenuItem(
+                        //           child: Column(
+                        //             mainAxisSize: MainAxisSize.min,
+                        //             crossAxisAlignment:
+                        //                 CrossAxisAlignment.start,
+                        //             children: <Widget>[
+                        //               Text("Send as Media"),
+                        //               TextButton(
+                        //                 onPressed: () {
+                        //                   // Handle send button tap
+                        //                   Navigator.pop(context);
+                        //                 },
+                        //                 child: Text("Send"),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     );
+                        //   },
+                        //   icon: Icon(Icons.more_vert),
+                        // ),
                       ],
                     ),
                   ],
