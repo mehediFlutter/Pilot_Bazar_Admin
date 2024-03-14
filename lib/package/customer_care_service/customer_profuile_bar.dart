@@ -3,11 +3,12 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 
 class CustomerProfileBar extends StatefulWidget {
   final String? profileImagePath;
-  final String? NotificationIconPath;
+  final String? message_icon_path;
+  final String? beside_message_icon_path;
   final Function()? onTapFunction;
   final Function()? notificationTap;
   const CustomerProfileBar(
-      {super.key, this.profileImagePath, this.onTapFunction, this.notificationTap, this.NotificationIconPath});
+      {super.key, this.profileImagePath, this.onTapFunction, this.notificationTap, this.message_icon_path, this.beside_message_icon_path});
 
   @override
   State<CustomerProfileBar> createState() => _CustomerProfileBarState();
@@ -41,18 +42,38 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
               style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
-      trailing: GestureDetector(
-  onTap: widget.notificationTap,
-        child: Container(
-          
-          height: 30,
-          width: 35,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadious8,
-            border: Border.all(color: BorderRadious8Color),
+      trailing: Row(
+      //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: widget.notificationTap,
+            child: Container(
+              
+              height: 30,
+              width: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadious8,
+                border: Border.all(color: BorderRadious8Color),
+              ),
+              child: Image.asset(widget.message_icon_path??'assets/icons/notification.png'),
+            ),
           ),
-          child: Image.asset(widget.NotificationIconPath??'assets/icons/notification.png'),
-        ),
+          SizedBox(width: 10),
+          GestureDetector(
+            onTap: widget.notificationTap,
+            child: Container(
+              
+              height: 30,
+              width: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadious8,
+                border: Border.all(color: BorderRadious8Color),
+              ),
+              child: Image.asset(widget.beside_message_icon_path??'assets/icons/notification.png'),
+            ),
+          ),
+        ],
       ),
     );
   }

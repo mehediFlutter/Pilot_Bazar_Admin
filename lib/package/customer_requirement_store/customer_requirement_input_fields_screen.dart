@@ -29,7 +29,7 @@ class _CustomerRequirementInputFildsState
           children: [
             CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-              NotificationIconPath: 'assets/icons/message_notification.png',
+              message_icon_path: 'assets/icons/message_notification.png',
               onTapFunction: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));

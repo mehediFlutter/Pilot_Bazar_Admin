@@ -164,88 +164,94 @@ class _ItemClassState extends State<ItemClass> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         height10,
-                        GestureDetector(
-                          onTapDown: (details) {
-                            final RenderBox box =
-                                context.findRenderObject() as RenderBox;
-                            final topLeft = box.localToGlobal(Offset.zero);
-                            final bottomRight = box.localToGlobal(
-                                box.size.bottomRight(Offset.zero));
-                            final position = details.localPosition;
-                            final fromLTRB =
-                                "${topLeft.dx.toStringAsFixed(2)}, "
-                                "${topLeft.dy.toStringAsFixed(2)}, "
-                                "${bottomRight.dx.toStringAsFixed(2)}, "
-                                "${bottomRight.dy.toStringAsFixed(2)}";
-                            // Show the position or use it as needed
-                            print("Clicked Position (fromLTRB): $fromLTRB");
-                          },
-                          child: Text('position'),
-                        ),
-                        PopupMenuButton(itemBuilder: (context) {
-                          
-                          return [
-                            PopupMenuItem(
-                                child: Column(
+                        // GestureDetector(
+                        //   onTapDown: (details) {
+                        //     final RenderBox box =
+                        //         context.findRenderObject() as RenderBox;
+                        //     final topLeft = box.localToGlobal(Offset.zero);
+                        //     final bottomRight = box.localToGlobal(
+                        //         box.size.bottomRight(Offset.zero));
+                        //     final position = details.localPosition;
+                        //     final fromLTRB =
+                        //         "${topLeft.dx.toStringAsFixed(2)}, "
+                        //         "${topLeft.dy.toStringAsFixed(2)}, "
+                        //         "${bottomRight.dx.toStringAsFixed(2)}, "
+                        //         "${bottomRight.dy.toStringAsFixed(2)}";
+                        //     // Show the position or use it as needed
+                        //     print("Clicked Position (fromLTRB): $fromLTRB");
+                        //   },
+                        //   child: Text('position'),
+                        // ),
+                        PopupMenuButton(
+                            child: Icon(Icons.share),
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(
+                                    child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Send as Visitor',
-                                  style: TextStyle(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Send as Visitor',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    Divider(
                                       color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12),
-                                ),
-                                Divider(color: Colors.black,),
-                                InkWell(
-                                   onTap: () {
-                                      share();
-                                      Navigator.pop(context);
-                                    },
-                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Color.fromARGB(255, 226, 223, 223)),
-                                    borderRadius: BorderRadius.circular(5)
-                                  ),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: Text("Taka, Link, Details, Image",style: TextStyle(fontSize: 12),),
-                                   ),
-                                 ),
-                                
-                                ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        print("hello im umuk");
+                                      },
+                                      child: shareButtom(context,
+                                          "Taka, Link, Details, Image  "),
+                                    ),
+                                        SizedBox(width: 10),
                                     height10,
-                                InkWell(
-                                    onTap: () {
-                                      share();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Taka, Link, Details")),
+                                    InkWell(
+                                      child: shareButtom(context,  "Taka, Link, Details"),
+                                      onTap: () {
+                                        print("I am  Taka, Link, Details");
+                                        Navigator.pop(context);
+                                      },
+                                    ),
                                     height10,
                                     height10,
-                                Text(
-                                  'Send as Media (মিডিয়া)',
-                                  style: TextStyle(
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Send as Media (মিডিয়া)',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    Divider(
                                       color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12),
-                                ),
-                                Divider(),
-                                InkWell(
-                                  onTap: () {
-                                    
-                                  },
-                                  child: Text("All Images (শুধু ছবি)")),
-                                  height10,
-                                InkWell(
-                                  onTap: () {
-                                    
-                                  },
-                                  child: Text("Details (শুধু তথ্য)")),
-                              ],
-                            ))
-                          ];
-                        }),
+                                    ),
+                                    InkWell(
+                                      child: shareButtom(context,  "All Images (শুধু ছবি)"),
+                                      onTap: () {
+                                        print("I am  Taka, Link, Details");
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    height10,
+                                    InkWell(
+                                        onTap: ()  {
+                                          print("Onli image");
+                                        Navigator.pop(context);
+                                        },
+                                        child:shareButtom(context, "Details (শুধু তথ্য)")),
+                                  ],
+                                ))
+                              ];
+                            }),
                         // IconButton(
                         //   onPressed: ()async {
                         //     showMenu(
@@ -284,5 +290,27 @@ class _ItemClassState extends State<ItemClass> {
         ),
       ),
     );
+  }
+
+  Container shareButtom(BuildContext context, String name) {
+    return Container(
+      height: 25,
+      padding: EdgeInsets.only(top: 5),
+      child: Row(
+        children: [
+          Text(
+            name,
+            style: TextStyle(fontSize: 12, color: Colors.black87),
+          ),
+          SizedBox(width: 10),
+          green10R
+        ],
+      ),
+    );
+  }
+  Icon green10R =   Icon(Icons.circle,color: Colors.green,size: 10,);
+
+  name() {
+    print("object");
   }
 }

@@ -8,6 +8,7 @@ import 'package:pilot_bazar_admin/package/customer_care_service/search/search.da
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_fields_screen.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
+import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
   const CustomerListTile({super.key});
@@ -58,105 +59,75 @@ class _CustomerListTileState extends State<CustomerListTile> {
 
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: whiteColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: Column(
-          children: [
-            CustomerProfileBar(
-              profileImagePath: 'assets/images/small_profile.png',
-              NotificationIconPath: 'assets/icons/message_notification.png',
-              onTapFunction: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
-              },
-              notificationTap: () {
-                print("notificaiton tap");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChatFontScreen()));
-              },
-            ),
-            height5,
-            height5,
-
-//             Container(
-//   width: 200, // Example width
-//   height: 50, // Example height
-//   color: Colors.blue, // Example background color
-//   child: Center(
-//     child: Text(
-//       'This is a long text that will overflow and display ellipsis when it exceeds the container width.',
-//       style: TextStyle(
-//         fontSize: 20, // Set the font size
-//         color: Colors.white, // Example text color
-//       ),
-//       overflow: TextOverflow.ellipsis, // Set overflow behavior
-//     ),
-//   ),
-// ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 25),
-              child: Container(
-                height: 30,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFEDEDED),
-                  borderRadius: BorderRadious20,
+    return ReUsableMotherWidget(childred: [
+      CustomerProfileBar(
+        profileImagePath: 'assets/images/small_profile.png',
+        message_icon_path: 'assets/icons/message_notification.png',
+        beside_message_icon_path: 'assets/icons/beside_message.png',
+        onTapFunction: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ProfilePage()));
+        },
+        notificationTap: () {
+          print("notificaiton tap");
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ChatFontScreen()));
+        },
+      ),
+      height5,
+      height5,
+      Padding(
+        padding: const EdgeInsets.only(left: 20, right: 25),
+        child: Container(
+          height: 40,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadious20,
+          ),
+          child: TextField(
+            cursorColor: Colors.black,
+            cursorWidth: 1.2,
+            controller: _controller,
+            onChanged: _filterList,
+            style: Theme.of(context).textTheme.bodySmall,
+            cursorHeight: 15,
+            decoration: InputDecoration(
+                enabledBorder: searchBarBorder,
+                focusedBorder: searchBarBorder,
+                contentPadding: const EdgeInsets.only(
+                  top: 8,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: TextField(
-                    cursorColor: Colors.black,
-                    cursorWidth: 1.2,
-                    // onTap: () {
-                    //   Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //           builder: (context) => SearchPage()));
-                    // },
-                    controller: _controller,
-                    onChanged: _filterList,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    cursorHeight: 15,
-                    decoration: InputDecoration(
-                      
-                        hintText: "Search",
-                        hintStyle: Theme.of(context).textTheme.bodySmall,
-                        border: InputBorder.none,
-                        
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(
-                            Icons.search,
-                            color: Colors.black,
-                            size: 15,
-                          ),
-                        )),
+                hintText: "Search",
+                hintStyle: Theme.of(context).textTheme.bodySmall,
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                    size: 15,
                   ),
-                ),
-              ),
-            ),
-            height10,
-            IconButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerRequirementInputFilds()));
-            }, icon: Icon(Icons.add)),
-            SizedBox(height: size.height / 20),
-            Expanded(
-
-              child: ListView.builder(
-                itemCount: _filteredItems.length,
-                itemBuilder: (context, index) {
-                  return ItemClass(item: _filteredItems[index]);
-                },
-              ),
-            ),
-          ],
+                )),
+          ),
         ),
       ),
-    ));
+      height10,
+      IconButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerRequirementInputFilds()));
+          },
+          icon: Icon(Icons.add)),
+      SizedBox(height: size.height / 20),
+      Expanded(
+        child: ListView.builder(
+          itemCount: _filteredItems.length,
+          itemBuilder: (context, index) {
+            return ItemClass(item: _filteredItems[index]);
+          },
+        ),
+      ),
+    ]);
   }
 }
