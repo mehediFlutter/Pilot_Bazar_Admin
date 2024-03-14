@@ -38,9 +38,9 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header('terte'),
-                    detailsOfHeader('toysdfota'),
-                    detailsOfHeader('sdfsd'),
+                   header('Model'),
+                    detailsOfHeader('C-HE'),
+                    detailsOfHeader('Premio'),
                   ],
                 ),
               ),
@@ -51,14 +51,16 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header('ere'),
+                    header('Modeo Year'),
                     detailsOfHeader('3434234'),
                   ],
                 ),
               ),
             ),
+          
           ],
         ),
+        height10,
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -69,9 +71,9 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header('Brand'),
-                    detailsOfHeader('err'),
-                    detailsOfHeader('bmw'),
+                    header('Mileage'),
+                    detailsOfHeader('34000n KM'),
+                 //   detailsOfHeader('BMW'),
                   ],
                 ),
               ),
@@ -82,9 +84,9 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header('terte'),
-                    detailsOfHeader('sada'),
-                    detailsOfHeader('bmsdfsdfsw'),
+                    header('Engine'),
+                    detailsOfHeader('2400 cc'),
+                   //detailsOfHeader('Premio'),
                   ],
                 ),
               ),
@@ -95,8 +97,8 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header('Braadfand'),
-                    detailsOfHeader('3434234'),
+                    header('Available'),
+                    detailsOfHeader('PBL'),
                   ],
                 ),
               ),
@@ -111,7 +113,7 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
     return Row(
       children: [
         width5,
-        greenTolu,
+       Icon(Icons.arrow_forward,size: 12,color: Colors.grey,),
         width5,
         Text(
           name,
@@ -120,6 +122,11 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
       ],
     );
   }
+  
+  Image arrowImage(){
+    return Image.asset('assets/icons/small_arror.png');
+  }
+  
 
   header(String header) {
     return Text(header, style: small12Style);
