@@ -7,8 +7,14 @@ class CustomerProfileBar extends StatefulWidget {
   final String? beside_message_icon_path;
   final Function()? onTapFunction;
   final Function()? notificationTap;
+  final Function()? besideMessageTap;
   const CustomerProfileBar(
-      {super.key, this.profileImagePath, this.onTapFunction, this.notificationTap, this.message_icon_path, this.beside_message_icon_path});
+      {super.key,
+      this.profileImagePath,
+      this.onTapFunction,
+      this.notificationTap,
+      this.message_icon_path,
+      this.beside_message_icon_path, this.besideMessageTap});
 
   @override
   State<CustomerProfileBar> createState() => _CustomerProfileBarState();
@@ -18,6 +24,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       onTap: widget.onTapFunction,
       leading: Container(
         height: 30,
@@ -25,7 +32,8 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
         decoration: BoxDecoration(
           borderRadius: BorderRadious10,
         ),
-        child: Image.asset(widget.profileImagePath??'assets/images/small_profile.png'),
+        child: Image.asset(
+            widget.profileImagePath ?? 'assets/images/small_profile.png'),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,34 +51,34 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
         ],
       ),
       trailing: Row(
-      //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
             onTap: widget.notificationTap,
             child: Container(
-              
               height: 30,
               width: 35,
               decoration: BoxDecoration(
                 borderRadius: BorderRadious8,
                 border: Border.all(color: BorderRadious8Color),
               ),
-              child: Image.asset(widget.message_icon_path??'assets/icons/notification.png'),
+              child: Image.asset(
+                  widget.message_icon_path ?? 'assets/icons/notification.png'),
             ),
           ),
           SizedBox(width: 10),
           GestureDetector(
-            onTap: widget.notificationTap,
+            onTap: widget.besideMessageTap,
             child: Container(
-              
               height: 30,
               width: 35,
               decoration: BoxDecoration(
                 borderRadius: BorderRadious8,
                 border: Border.all(color: BorderRadious8Color),
               ),
-              child: Image.asset(widget.beside_message_icon_path??'assets/icons/notification.png'),
+              child: Image.asset(widget.beside_message_icon_path ??
+                  'assets/icons/notification.png'),
             ),
           ),
         ],

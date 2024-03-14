@@ -73,44 +73,160 @@ class _CustomerListTileState extends State<CustomerListTile> {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => ChatFontScreen()));
         },
+        besideMessageTap: () {
+          print("notificaiton tap");
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ChatFontScreen()));
+        },
       ),
       height5,
       height5,
-      Padding(
-        padding: const EdgeInsets.only(left: 20, right: 25),
-        child: Container(
-          height: 40,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadious20,
-          ),
-          child: TextField(
-            cursorColor: Colors.black,
-            cursorWidth: 1.2,
-            controller: _controller,
-            onChanged: _filterList,
-            style: Theme.of(context).textTheme.bodySmall,
-            cursorHeight: 15,
-            decoration: InputDecoration(
-                enabledBorder: searchBarBorder,
-                focusedBorder: searchBarBorder,
-                contentPadding: const EdgeInsets.only(
-                  top: 8,
+      Container(
+        height: 40,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadious20,
+        ),
+        child: TextField(
+          cursorColor: Colors.black,
+          cursorWidth: 1.2,
+          controller: _controller,
+          onChanged: _filterList,
+          style: Theme.of(context).textTheme.bodySmall,
+          cursorHeight: 15,
+          decoration: InputDecoration(
+              enabledBorder: searchBarBorder,
+              focusedBorder: searchBarBorder,
+              contentPadding: const EdgeInsets.only(
+                top: 8,
+              ),
+              hintText: "Search",
+              hintStyle: Theme.of(context).textTheme.bodySmall,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                  size: 15,
                 ),
-                hintText: "Search",
-                hintStyle: Theme.of(context).textTheme.bodySmall,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(top: 4),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.black,
-                    size: 15,
-                  ),
-                )),
-          ),
+              )),
         ),
       ),
       height10,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 144,
+            height: 38,
+            decoration: BoxDecoration(
+                border: Border.all(color: allCustomerBorderAndTextColor),
+                borderRadius: borderRadious10),
+            child: Center(
+                child: Text(
+              'All Customer',
+              style: small10Stylew500.copyWith(
+                  color: allCustomerBorderAndTextColor),
+            )),
+          ),
+          Container(
+            height: 30,
+            width: 35,
+            padding: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+                border: Border.all(color: searchBarBorderColor),
+                borderRadius: borderRadious8),
+            child: Container(
+              height: 10,
+              width: 10,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 10,
+              ),
+            ),
+          ),
+        ],
+      ),
+      height10,
+      Container(
+        height: 160,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            borderRadius: borderRadious10,
+            border: Border.all(color: searchBarBorderColor)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                        borderRadius: borderRadious10,
+                        border: Border.all(color: searchBarBorderColor)),
+                    child: Image.asset('assets/images/jon_profile.png'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Siam Ahmed Jon",
+                        style: small14Style,
+                      ),
+                      Text(
+                        "+8801969944400",
+                        style: small10Style,
+                      ),
+                    ],
+                  ),
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Icon(
+                    Icons.more_horiz,
+                    color: Color(0xFF959090),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+              child: Divider(
+                color: searchBarBorderColor,
+                thickness: 1,
+              ),
+            ),
+            Row(
+              children: [         
+                Container(
+                  height: 30,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: searchBarBorderColor),
+                      borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        children: [
+                          Image.asset(''),
+                          Text("Schedule",style: small12Style.copyWith(color: allCustomerBorderAndTextColor),)
+                        ],
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       IconButton(
           onPressed: () {
             Navigator.push(
