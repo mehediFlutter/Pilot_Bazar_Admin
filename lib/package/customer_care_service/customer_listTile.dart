@@ -153,22 +153,23 @@ class _CustomerListTileState extends State<CustomerListTile> {
               ),
             ],
           ),
-          height10,
+       //   height10,
         
 
 
 
 
 
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CustomerRequirementInputFilds()));
-              },
-              icon: Icon(Icons.add)),
-          SizedBox(height: size.height / 20),
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //               builder: (context) => CustomerRequirementInputFilds()));
+          //     },
+          //     icon: Icon(Icons.add)),
+       //   SizedBox(height: size.height / 20),
+       height10,
           Expanded(
             child: ListView.builder(
               itemCount: _filteredItems.length,

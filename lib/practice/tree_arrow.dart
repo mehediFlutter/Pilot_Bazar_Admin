@@ -20,10 +20,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
-  List<String> infoList = [
-    'Information from Text 1',
-    'Information from Text 2'
-  ];
 
   void onTabTapped(int index) {
     setState(() {
@@ -44,38 +40,20 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
+                TextTab(
+                  text: 'Text 1',
+                  isSelected: selectedIndex == 0,
                   onTap: () {
                     onTabTapped(0);
                   },
-                  child: Text(
-                    'Text 1',
-                    style: TextStyle(
-                      fontSize: 20,
-                      decoration: selectedIndex == 0
-                          ? TextDecoration.underline
-                          : TextDecoration.none,
-                      decorationColor: Colors.blue,
-                      decorationThickness: 2,
-                    ),
-                  ),
                 ),
-                SizedBox(height: 20),
-                GestureDetector(
+                SizedBox(width: 20),
+                TextTab(
+                  text: 'Text 2',
+                  isSelected: selectedIndex == 1,
                   onTap: () {
                     onTabTapped(1);
                   },
-                  child: Text(
-                    'Text 2',
-                    style: TextStyle(
-                      fontSize: 20,
-                      decoration: selectedIndex == 1
-                          ? TextDecoration.underline
-                          : TextDecoration.none,
-                      decorationColor: Colors.blue,
-                      decorationThickness: 2,
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -86,15 +64,75 @@ class _MyHomePageState extends State<MyHomePage> {
                 border: Border.all(color: Colors.blue),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Text(
-                infoList[selectedIndex],
-                style: TextStyle(fontSize: 18),
-              ),
+              child: Container(
+  padding: EdgeInsets.all(20),
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.blue),
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: selectedIndex == 0 ? MyWid1() : MyWid2(),
+)
             ),
           ],
         ),
       ),
+    );
+  }
+}
 
+class TextTab extends StatelessWidget {
+  final String text;
+  final bool isSelected;
+  final Function onTap;
+
+  const TextTab({
+    required this.text,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 20,
+          decoration: isSelected ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: Colors.blue,
+          decorationThickness: 2,
+        ),
+      ),
+    );
+  }
+}
+
+class MyWid1 extends StatelessWidget {
+  const MyWid1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("this is class one"),
+        Text("this is class one"),
+        Text("data"),
+        ],
+    );
+  }
+}
+class MyWid2 extends StatelessWidget {
+  const MyWid2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("this is class two "),
+        Text("this is class two"),
+        Text("data"),
+        ],
     );
   }
 }
