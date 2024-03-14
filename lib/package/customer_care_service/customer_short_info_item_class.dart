@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/info/info_class.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/schedule/schedule_class.dart';
 
 class CustomerShortInfoItemClass extends StatefulWidget {
@@ -205,6 +206,9 @@ class _CustomerShortInfoItemClassState
 
             if(ScheduleMessageInfoSelectIndex==0)...{
               ScheduleDetailsClass(),
+            }
+            else if(ScheduleMessageInfoSelectIndex==2)...{
+              InfoDetailsClass(widthside: double.infinity),
             }
 
             //  const SizedBox(height: 15)
