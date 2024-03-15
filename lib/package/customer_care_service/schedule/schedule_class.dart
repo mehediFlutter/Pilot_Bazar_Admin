@@ -71,9 +71,9 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
 
   int selectedIndex = 0;
   onTabTapped(int index) {
-  setState(() {
+    setState(() {
       selectedIndex = index;
-  });
+    });
   }
 
   @override
@@ -82,6 +82,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+      //  Divider(),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -91,6 +92,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
                 isSelected: selectedIndex == 0,
                 onTap: () {
                   onTabTapped(0);
+                   print(selectedIndex);
                 }),
             width10,
             Tabs(
@@ -98,79 +100,73 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
                 isSelected: selectedIndex == 1,
                 onTap: () {
                   onTabTapped(1);
+                  print(selectedIndex);
                 }),
           ],
         ),
-        Divider(
-          color: Colors.black,
-        ),
-        containerDetailsHeaderTalkWhatsApp("Talk Through Whats app"),
-        Padding(
-          padding: const EdgeInsets.only(left: 35),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 8,
-                    width: 8,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.green),
-                  ),
-                  width10,
-                  Text(
-                    "He is very interested",
-                    style: small12Style,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    height: 8,
-                    width: 8,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.green),
-                  ),
-                  width10,
-                  Expanded(
-                      child: Text(
-                    "He will let us khow after discuss with his family",
-                    style: small12Style,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-                ],
-              ),
-            ],
-          ),
+         Divider(
+          height: 0,
+          color: searchBarBorderColor,
         ),
         height10,
-        containerDetailsHeaderNeedToCall('Need To Call 12 May 2024'),
-        Padding(
-          padding: const EdgeInsets.only(left: 35),
-          child: Column(
+
+      
+      selectedIndex==0?  Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            containerDetailsHeaderTalkWhatsApp("Talk Through Whats app"),
+            ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: ((context, index) {
+                  return detailsSmallArrow('He is very interested');
+                })),
+            height10,
+            containerDetailsHeaderNeedToCall('Need To Call 12 May 2024'),
+            detailsSmallArrow(
+                'He will let us khow after discuss with his family'),
+          ],
+        ):Text("hello")
+      ],
+    );
+  }
+
+  Padding detailsSmallArrow(String text1) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 35),
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Container(
-                    height: 8,
-                    width: 8,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.green),
-                  ),
-                  width10,
-                  Expanded(
-                    child: Text(
-                      "After Call i know that he will visite our showroom fter Call i know that he will visite our showroomfter Call i know that he will visite our showroom",
-                      style: small12Style,
-                    ),
-                  ),
-                ],
+              Icon(
+                Icons.arrow_forward,
+                size: 12,
+                color: Colors.grey,
+              ),
+              width10,
+              Expanded(
+                child: Text(
+                  text1,
+                  style: small12Style,
+                ),
               ),
             ],
           ),
-        ),
-      ],
+          // Row(
+          //   children: [
+          //      Icon(Icons.arrow_forward,size: 12,color: Colors.grey,),
+          //     width10,
+          //     Expanded(
+          //         child: Text(
+          //       text2,
+          //       style: small12Style,
+          //     //  overflow: TextOverflow.ellipsis,
+          //     )),
+          //   ],
+          // ),
+        ],
+      ),
     );
   }
 }
