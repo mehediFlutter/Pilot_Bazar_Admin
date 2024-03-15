@@ -7,6 +7,8 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/package/customer_requirement_store/text_foild.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/widget/confirm_next_button.dart';
+import 'package:pilot_bazar_admin/widget/divider_with_circle.dart';
 
 class CustomerRequirementInputFilds extends StatefulWidget {
   const CustomerRequirementInputFilds({super.key});
@@ -20,11 +22,17 @@ class _CustomerRequirementInputFildsState
     extends State<CustomerRequirementInputFilds> {
   TextEditingController customerNameController = TextEditingController();
   TextEditingController customerNameController2 = TextEditingController();
+  TextEditingController mileageFormController = TextEditingController();
+  TextEditingController mileageToController = TextEditingController();
+  TextEditingController enginesFromController = TextEditingController();
+  TextEditingController enginesToController = TextEditingController();
   String? _selectedItem;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(children: [
+    return ReUsableMotherWidget(
+      isSingleChildScrollView: true,
+      children: [
       CustomerProfileBar(
         profileImagePath: 'assets/images/small_profile.png',
         message_icon_path: 'assets/icons/message_notification.png',
@@ -82,6 +90,7 @@ class _CustomerRequirementInputFildsState
           width10,
           Expanded(
             child: CustmerRequiredTextFild(
+              
               function: (dynamic value) {
                 print(value);
               },
@@ -91,6 +100,9 @@ class _CustomerRequirementInputFildsState
           ),
         ],
       ),
+      height5,
+      height10,
+      Text('Vehicle Info ->',style: small14StyleW500),
       height5,
 
       // TextFormField(
@@ -152,10 +164,47 @@ class _CustomerRequirementInputFildsState
         ],
       ),
       height10,
-        Expanded(child: Padding(
+        Padding(
           padding:  EdgeInsets.only(right: size.width/2.15),
           child: customDropdown('--Select Color--'),
-        )),
+        ),
+        height10,
+
+        DividerWithCircle(),
+        height10,
+        Row(
+        children: [
+          Expanded(child: CustmerRequiredTextFild(
+            function: (dynamic value) {
+                print(value);
+              },
+            customerNameController: mileageFormController, hintTextForCustomerNameController: 'enter mileage form',keyboardType: TextInputType.number,)),
+          syncIconMethode(),
+          Expanded(child: CustmerRequiredTextFild(
+            function: (dynamic value) {
+                print(value);
+              },
+            customerNameController: mileageToController,hintTextForCustomerNameController: 'enter mileage to',keyboardType: TextInputType.number,)),
+        ],
+      ),
+        Row(
+        children: [
+          Expanded(child: CustmerRequiredTextFild(
+            function: (dynamic value) {
+                print(value);
+              },
+            customerNameController: enginesFromController, hintTextForCustomerNameController: 'enter engines form',keyboardType: TextInputType.number,)),
+          syncIconMethode(),
+          Expanded(child: CustmerRequiredTextFild(
+            function: (dynamic value) {
+                print(value);
+              },
+            customerNameController: enginesToController,hintTextForCustomerNameController: 'enter engines to',keyboardType: TextInputType.number,)),
+        ],
+      ),
+      ConfirmAndNextButton(
+        width: 100,
+      ),
 
       IconButton(
           onPressed: () {
@@ -164,6 +213,13 @@ class _CustomerRequirementInputFildsState
           },
           icon: Icon(Icons.add))
     ]);
+  }
+
+  Padding syncIconMethode() {
+    return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+          child: syncIcon,
+        );
   }
 
   DropdownButtonFormField<String> customDropdown(String hintText) {
