@@ -202,8 +202,11 @@ class _CustomerRequirementInputFildsState
             customerNameController: enginesToController,hintTextForCustomerNameController: 'enter engines to',keyboardType: TextInputType.number,)),
         ],
       ),
-      ConfirmAndNextButton(
-        width: 100,
+     const SizedBox(height: 30,),
+     const ConfirmAndNextButton(
+        width: 175,
+        text: 'Confirm & Next',
+        arrowOrPlus: '->',
       ),
 
       IconButton(
