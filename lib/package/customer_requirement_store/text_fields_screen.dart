@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
+import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_required_textFild.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/text_foild.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
+import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerRequirementInputFilds extends StatefulWidget {
   const CustomerRequirementInputFilds({super.key});
@@ -20,123 +23,181 @@ class _CustomerRequirementInputFildsState
   String? _selectedItem;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomerProfileBar(
-              profileImagePath: 'assets/images/small_profile.png',
-              message_icon_path: 'assets/icons/message_notification.png',
-              onTapFunction: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
-              },
-              notificationTap: () {
-                print("notificaiton tap");
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatFontScreen()));
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 25, top: 5),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 38,
-                  width: 144,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      10,
-                    ),
-                    border: Border.all(color: Color(0xFFFDF2F2)),
-                  ),
-                  child: Text(
-                    'Customer Requirement',
-                    style: small10Stylew500,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25, top: 5),
-              child: Text(
-                "Customer Personal info ->",
-                style: small12Style,
-              ),
-            ),
-            CustmerRequiredTextFild(
-              customerNameController: customerNameController,
-              hintTextForCustomerNameController: 'Enter Customer Name',
-            ),
+    Size size = MediaQuery.sizeOf(context);
+    return ReUsableMotherWidget(children: [
+      CustomerProfileBar(
+        profileImagePath: 'assets/images/small_profile.png',
+        message_icon_path: 'assets/icons/message_notification.png',
+        beside_message_icon_path: 'assets/icons/beside_message.png',
+        onTapFunction: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ProfilePage()));
+        },
+        chatTap: () {
+          print("notificaiton tap");
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => NotificaitonScreen()));
+        },
+      ),
 
-            Row(
-              children: [
-                Expanded(
-                  child: CustmerRequiredTextFild(
-                    function: (dynamic value) {
-                      print(value);
-                    },
-                    customerNameController: customerNameController2,
-                    hintTextForCustomerNameController: 'Enter Customer Mobile',
-                  ),
-                ),
-                Expanded(
-                  child: CustmerRequiredTextFild(
-                    function: (dynamic value) {
-                      print(value);
-                    },
-                    customerNameController: customerNameController2,
-                    hintTextForCustomerNameController: 'Enter Customer email',
-                  ),
-                ),
-              ],
+      Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          alignment: Alignment.center,
+          height: 38,
+          width: 144,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              10,
             ),
-
-            // TextFormField(
-            //   controller: customerNameController,
-            //   onChanged: filter
-            // ),
-
-    DropdownButtonFormField<String>(
-          value: _selectedItem,
-          decoration: InputDecoration(
-            labelText: "label Text",
-       
-          hintText: 'hint text',
-            
-            border: OutlineInputBorder()
+            border: Border.all(color: searchBarBorderColor),
           ),
-        
-          
-          onChanged: (String? value) {
-            setState(() {
-              _selectedItem = value;
-            });
-          },
-          items: <String>['Item 1', 'Item 2', 'Item 3', 'Item 4']
-              .map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-
-            IconButton(
-                onPressed: () {
-                  print(customerNameController.text);
-                  print(customerNameController2.text);
-                },
-                icon: Icon(Icons.add))
-          ],
+          child: Text(
+            'Customer Requirement',
+            style: small12Stylew500,
+          ),
         ),
       ),
-    ));
+      Text(
+        "Customer Personal info ->",
+        style: small14StyleW500,
+      ),
+      height5,
+      CustmerRequiredTextFild(
+        customerNameController: customerNameController,
+        hintTextForCustomerNameController: 'Enter Customer Name...',
+      ),
+
+      Row(
+        children: [
+          Expanded(
+            child: CustmerRequiredTextFild(
+              function: (dynamic value) {
+                print(value);
+              },
+              customerNameController: customerNameController2,
+              hintTextForCustomerNameController: 'Enter Customer Mobile...',
+            ),
+          ),
+          width10,
+          Expanded(
+            child: CustmerRequiredTextFild(
+              function: (dynamic value) {
+                print(value);
+              },
+              customerNameController: customerNameController2,
+              hintTextForCustomerNameController: 'Enter Customer email...',
+            ),
+          ),
+        ],
+      ),
+      height5,
+
+      // TextFormField(
+      //   controller: customerNameController,
+      //   onChanged: filter
+      // ),
+
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Select Brand--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Body--')),
+        ],
+      ),
+      height10,
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Select Model--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Transmission--')),
+        ],
+      ),
+      height10,
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Model Year--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Availavle--')),
+        ],
+      ),
+        height10,
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Select Edition--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Fuel--')),
+        ],
+      ),
+        height10,
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Select Condition--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Registration--')),
+        ],
+      ),
+        height10,
+      Row(
+        children: [
+          Expanded(child: customDropdown('--Select Color--')),
+          width10,
+          width5,
+          Expanded(child: customDropdown('--Select Grade--')),
+        ],
+      ),
+      height10,
+        Expanded(child: Padding(
+          padding:  EdgeInsets.only(right: size.width/2.15),
+          child: customDropdown('--Select Color--'),
+        )),
+
+      IconButton(
+          onPressed: () {
+            print(customerNameController.text);
+            print(customerNameController2.text);
+          },
+          icon: Icon(Icons.add))
+    ]);
+  }
+
+  DropdownButtonFormField<String> customDropdown(String hintText) {
+    return DropdownButtonFormField<String>(
+      style: small12Stylew500,
+      value: _selectedItem,
+      decoration: InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+          hintText: hintText,
+          hintStyle: small12Stylew400,
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Color(0xFFEEEEEE))),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey))),
+      onChanged: (String? value) {
+        setState(() {
+          _selectedItem = value;
+        });
+      },
+      items:
+          <String>['Item 1', 'Item 2', 'Item 3', 'Item 4'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      icon: Transform.rotate(
+        angle: 90 * 3.1415927 / 180, // Convert degrees to radians
+        child: Icon(Icons.arrow_forward_ios, size: 11,color: dropdownIconColor,),
+      ),
+    );
   }
 
   filter(String name) {}

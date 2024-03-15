@@ -65,7 +65,7 @@ class _CustomerShortInfoItemClassState
               children: [
                  Text(
                   "Siam Ahmed Jon",
-                  style: small14Style,
+                  style: small14StyleW500,
                 ),
                  Text(
                   "8801969944400",
@@ -122,7 +122,7 @@ class _CustomerShortInfoItemClassState
                             Text(
                               "Schedule",
                               style:
-                                  small12Style.copyWith(color: scheduleColor),
+                                  small12Stylew500.copyWith(color: scheduleColor),
                             ),
                         //   selectSchedule? Icon(Icons.arrow_drop_down_sharp):Icon(Icons.arrow_drop_up_sharp)
                           ],
@@ -161,7 +161,7 @@ class _CustomerShortInfoItemClassState
                             ),
                             Text(
                               "Message",
-                              style: small12Style.copyWith(color: messageColor),
+                              style: small12Stylew500.copyWith(color: messageColor),
                             )
                           ],
                         ),
@@ -197,7 +197,7 @@ class _CustomerShortInfoItemClassState
                               color: infoColor,
                             ),
                             Text("Info",
-                                style: small12Style.copyWith(color: infoColor))
+                                style: small12Stylew500.copyWith(color: infoColor))
                           ],
                         ),
                       ),

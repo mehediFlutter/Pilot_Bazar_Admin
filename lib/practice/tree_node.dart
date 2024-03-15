@@ -1,76 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
-import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/drawer/drawer_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: MyWidget(),
-  ));
+  runApp(MyApp());
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            width: double.infinity,
-            child: Center(
-              child: const Column(
-              //  crossAxisAlignment: ,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment:
-                        MainAxisAlignment.start, // Changed from center to start
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Header1"),
-                          Text("money"),
-                          Text("doller"),
-                        ],
-                      ),
-                      Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Header2",
-                          ),
-                          Text(
-                            "bangla English ",
-                          ),
-                          Text(
-                            "Math",
-                          ),
-                        ],
-                      ),
-                      Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Header3",
-                          ),
-                          Text(
-                            "Sam",
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: myDrawer(),
+      body: Column(
+        children: [
+          ListTile(
+            title: Text("Hello"),
+            trailing: Builder( 
+              builder: (BuildContext context) {
+                return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer(); // Use the context provided by Builder
+                  },
+                  icon: Icon(Icons.menu), // Change the icon to menu
+                );
+              },
             ),
           ),
-        ),
+          Center(
+            child: Text('Home Page'),
+          ),
+        ],
       ),
     );
   }
 }
+
+// class myDrawer extends StatelessWidget {
+//   const myDrawer({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Drawer(
+//       child: ListView(
+//         padding: EdgeInsets.zero,
+//         children: [
+//           DrawerHeader(
+//             decoration: BoxDecoration(
+//               color: Colors.blue,
+//             ),
+//             child: Text(
+//               'Drawer Header',
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 24,
+//               ),
+//             ),
+//           ),
+//           ListTile(
+//             title: Text('Item 1'),
+//             onTap: () {
+//               // Add your action here
+//               Navigator.pop(context); // Close the drawer
+//             },
+//           ),
+//           ListTile(
+//             title: Text('Item 2'),
+//             onTap: () {
+//               // Add your action here
+//               Navigator.pop(context); // Close the drawer
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

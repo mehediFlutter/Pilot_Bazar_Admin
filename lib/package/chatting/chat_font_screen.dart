@@ -8,7 +8,9 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/profile/profile.dart';
 
 class ChatFontScreen extends StatefulWidget {
-  const ChatFontScreen({super.key});
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+   ChatFontScreen({super.key});
 
   @override
   State<ChatFontScreen> createState() => _ChatFontScreenState();
@@ -31,7 +33,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               },
-              notificationTap: () {
+              chatTap: () {
                 print("notificaiton tap");
                 Navigator.push(
                     context,
@@ -88,7 +90,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
                   children: [
                     Text(
                       'Shah Alam',
-                      style: small12Style.copyWith(height: 0),
+                      style: small12Stylew500.copyWith(height: 0),
                       
                     ),
                     Row(

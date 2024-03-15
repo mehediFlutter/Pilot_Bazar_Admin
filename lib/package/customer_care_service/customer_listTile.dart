@@ -5,14 +5,17 @@ import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_short_info_item_class.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/drawer/drawer_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_fields_screen.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/text_fields_screen.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
-  const CustomerListTile({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  CustomerListTile({super.key});
 
   @override
   State<CustomerListTile> createState() => _CustomerListTileState();
@@ -60,90 +63,104 @@ class _CustomerListTileState extends State<CustomerListTile> {
 
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(
-        //  isSingleChildScrollView: true,
-        childred: [
-          CustomerProfileBar(
-            profileImagePath: 'assets/images/small_profile.png',
-            message_icon_path: 'assets/icons/message_notification.png',
-            beside_message_icon_path: 'assets/icons/beside_message.png',
-            onTapFunction: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
-            },
-            notificationTap: () {
-              print("notificaiton tap");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatFontScreen()));
-            },
-            besideMessageTap: () {
-              print("notificaiton tap");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatFontScreen()));
-            },
-          ),
-          height5,
-          height5,
-          Container(
-            height: 40,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadious20,
-            ),
-            child: TextField(
-              cursorColor: Colors.black,
-              cursorWidth: 1.2,
-              controller: _controller,
-              onChanged: _filterList,
-              style: Theme.of(context).textTheme.bodySmall,
-              cursorHeight: 15,
-              decoration: InputDecoration(
-                  enabledBorder: searchBarBorder,
-                  focusedBorder: searchBarBorder,
-                  contentPadding: const EdgeInsets.only(
-                    top: 8,
-                  ),
-                  hintText: "Search",
-                  hintStyle: Theme.of(context).textTheme.bodySmall,
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.only(top: 4),
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 15,
-                    ),
-                  )),
-            ),
-          ),
-          height10,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 144,
-                height: 38,
-                decoration: BoxDecoration(
-                    border: Border.all(color: allCustomerBorderAndTextColor),
-                    borderRadius: borderRadious10),
-                child: Center(
-                    child: Text(
-                  'All Customer',
-                  style: small10Stylew500.copyWith(
-                      color: allCustomerBorderAndTextColor),
-                )),
+    return ReUsableMotherWidget(children: [
+      Builder(builder: (context) {
+        return CustomerProfileBar(
+          profileImagePath: 'assets/images/small_profile.png',
+          message_icon_path: 'assets/icons/message_notification.png',
+          beside_message_icon_path: 'assets/icons/beside_message.png',
+          onTapFunction: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerRequirementInputFilds()));
+          },
+          chatTap: () {
+            print("notificaiton tap");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerRequirementInputFilds()));
+          },
+          drawerTap: () {
+            Scaffold.of(context).openDrawer();
+            
+          },
+        );
+      }),
+      height5,
+      height5,
+      Container(
+        height: 40,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadious20,
+        ),
+        child: TextField(
+          cursorColor: Colors.black,
+          cursorWidth: 1.2,
+          controller: _controller,
+          onChanged: _filterList,
+          style: Theme.of(context).textTheme.bodySmall,
+          cursorHeight: 15,
+          decoration: InputDecoration(
+              enabledBorder: searchBarBorder,
+              focusedBorder: searchBarBorder,
+              contentPadding: const EdgeInsets.only(
+                top: 8,
               ),
-              Container(
-                height: 30,
-                width: 35,
-                padding: EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                    border: Border.all(color: searchBarBorderColor),
-                    borderRadius: borderRadious8),
+              hintText: "Search",
+              hintStyle: Theme.of(context).textTheme.bodySmall,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                  size: 15,
+                ),
+              )),
+        ),
+      ),
+      height10,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 144,
+            height: 38,
+            decoration: BoxDecoration(
+                border: Border.all(color: allCustomerBorderAndTextColor),
+                borderRadius: borderRadious10),
+            child: Center(
+                child: Text(
+              'All Customer',
+              style: small10Stylew500.copyWith(
+                  color: allCustomerBorderAndTextColor),
+            )),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomerRequirementInputFilds()));
+            },
+            child: Container(
+              height: 30,
+              width: 35,
+              padding: EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                  border: Border.all(color: searchBarBorderColor),
+                  borderRadius: borderRadious8),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerRequirementInputFilds()));
+                },
                 child: Container(
                   height: 10,
                   width: 10,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.black),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: Colors.black),
                   child: Icon(
                     Icons.add,
                     color: Colors.white,
@@ -151,36 +168,31 @@ class _CustomerListTileState extends State<CustomerListTile> {
                   ),
                 ),
               ),
-            ],
-          ),
-       //   height10,
-        
-
-
-
-
-
-          // IconButton(
-          //     onPressed: () {
-          //       Navigator.push(
-          //           context,
-          //           MaterialPageRoute(
-          //               builder: (context) => CustomerRequirementInputFilds()));
-          //     },
-          //     icon: Icon(Icons.add)),
-       //   SizedBox(height: size.height / 20),
-       height10,
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredItems.length,
-              itemBuilder: (context, index) {
-                return CustomerShortInfoItemClass();
-              //  return ItemClass(item: _filteredItems[index]);
-              },
             ),
           ),
-        ]);
+        ],
+      ),
+      //   height10,
+
+      // IconButton(
+      //     onPressed: () {
+      //       Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) => CustomerRequirementInputFilds()));
+      //     },
+      //     icon: Icon(Icons.add)),
+      //   SizedBox(height: size.height / 20),
+      height10,
+      Expanded(
+        child: ListView.builder(
+          itemCount: _filteredItems.length,
+          itemBuilder: (context, index) {
+            return CustomerShortInfoItemClass();
+            //  return ItemClass(item: _filteredItems[index]);
+          },
+        ),
+      ),
+    ]);
   }
-
-
 }

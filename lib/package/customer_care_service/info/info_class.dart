@@ -129,6 +129,6 @@ class _InfoDetailsClassState extends State<InfoDetailsClass> {
   
 
   header(String header) {
-    return Text(header, style: small12Style);
+    return Text(header, style: small12Stylew500);
   }
 }

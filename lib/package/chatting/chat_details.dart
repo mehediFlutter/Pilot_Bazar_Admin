@@ -8,7 +8,9 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/profile/profile.dart';
 
 class ChattingDetailsScreen extends StatefulWidget {
-  const ChattingDetailsScreen({super.key});
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+   ChattingDetailsScreen({super.key});
 
   @override
   State<ChattingDetailsScreen> createState() => _ChattingDetailsScreenState();
@@ -32,7 +34,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               },
-              notificationTap: () {
+              chatTap: () {
                 print("notificaiton tap");
                 Navigator.push(
                     context,
@@ -86,7 +88,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 children: [
                   Text(
                     "Shah Alam",
-                    style: small12Style.copyWith(
+                    style: small12Stylew500.copyWith(
                         fontWeight: FontWeight.w900, fontFamily: 'Roboto'),
                   ),
                   Text(

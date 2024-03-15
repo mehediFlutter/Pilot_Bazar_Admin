@@ -19,7 +19,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
         width10,
         Text(
           header,
-          style: small12Style,
+          style: small12Stylew500,
         ),
         Spacer(),
         Container(
@@ -48,7 +48,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
 
         Text(
           header,
-          style: small12Style,
+          style: small12Stylew500,
         ),
         //  Spacer(),
         width10,
@@ -148,7 +148,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
               Expanded(
                 child: Text(
                   text1,
-                  style: small12Style,
+                  style: small12Stylew500,
                 ),
               ),
             ],

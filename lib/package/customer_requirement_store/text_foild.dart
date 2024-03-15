@@ -21,7 +21,7 @@ class _CustmerRequiredTextFildState extends State<CustmerRequiredTextFild> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 5),
       child: TextFormField(
         onChanged: (value) {
           if (widget.function != null) {
@@ -37,7 +37,7 @@ class _CustmerRequiredTextFildState extends State<CustmerRequiredTextFild> {
               width: 20,
             ),
             isDense: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
             hintText: widget.hintTextForCustomerNameController,
             hintStyle: small10Style.copyWith(fontWeight: FontWeight.w400),
             enabledBorder: OutlineInputBorder(
@@ -45,7 +45,8 @@ class _CustmerRequiredTextFildState extends State<CustmerRequiredTextFild> {
                 borderSide: BorderSide(color: Color(0xFFEEEEEE))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Colors.grey))),
+                borderSide: BorderSide(color: Colors.grey))
+                ),
         cursorColor: Colors.black,
         cursorWidth: 1,
         // cursorHeight: 20,

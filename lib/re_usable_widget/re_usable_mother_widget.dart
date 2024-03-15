@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
-  final List<Widget> childred;
+  final List<Widget> children;
+ // final Drawer? drawer;
   final MainAxisAlignment? mainAxis;
   final CrossAxisAlignment? crossAxis;
   final bool isSingleChildScrollView;
-  const ReUsableMotherWidget(
-      {super.key,
-      required this.childred,
-      this.isSingleChildScrollView = false,
-      this.mainAxis,
-      this.crossAxis});
+  const ReUsableMotherWidget({
+    Key? key,
+    required this.children,
+    this.isSingleChildScrollView = false,
+    this.mainAxis,
+    this.crossAxis,
+  //  this.drawer,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget column = Column(
       mainAxisAlignment: mainAxis ?? MainAxisAlignment.start,
       crossAxisAlignment: crossAxis ?? CrossAxisAlignment.start,
-      children: childred,
+      children: children,
     );
+    Widget drawer = Drawer();
     return SafeArea(
-        child: Scaffold(
-            body: Padding(
-              padding:  EdgeInsets.only(left: 20,right: 20),
-              child: isSingleChildScrollView
-                  ? SingleChildScrollView(child: column)
-                  : column,
-            )
-                
-                ));
+      
+      child: Scaffold(
+        drawer: drawer,
+        body: Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: isSingleChildScrollView
+              ? SingleChildScrollView(child: column)
+              : column,
+        ),
+      ),
+    );
   }
 }

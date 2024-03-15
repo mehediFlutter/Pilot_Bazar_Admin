@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 const Color appColor = Color(0xFF666666);
 const Color searchBarBorderColor = Color(0xFFEEEEEE);
+const Color dropdownIconColor = Color(0xFF666666);
 const Color whiteColor = Color.fromRGBO(255, 255, 255, 1);
 const Color allCustomerBorderAndTextColor = Color(0xFF1FB9FC);
 BorderRadius borderRadious10 = BorderRadius.circular(10);
@@ -19,12 +20,17 @@ const TextStyle small10Stylew500 = TextStyle(
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w500);
-const TextStyle small12Style = TextStyle(
+const TextStyle small12Stylew500 = TextStyle(
     fontSize: 12,
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w500);
-const TextStyle small14Style = TextStyle(
+const TextStyle small12Stylew400 = TextStyle(
+    fontSize: 12,
+    fontFamily: 'Inter',
+    color: Colors.black,
+    fontWeight: FontWeight.w400);
+const TextStyle small14StyleW500 = TextStyle(
     fontSize: 14,
     fontFamily: 'Inter',
     color: Colors.black,

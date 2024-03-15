@@ -8,6 +8,8 @@ import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 
 class SearchPage extends StatefulWidget {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -60,13 +62,13 @@ void _filterList(String searchText) {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProfilePage()));
                 },
-                notificationTap: () {
+                chatTap: () {
                   print("notificaiton tap");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => NotificaitonScreen()));
-                },
+                }, 
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 25),
