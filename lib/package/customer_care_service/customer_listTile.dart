@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_short_info_item_class.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_requirement_input_fields_screen.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
-import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
@@ -58,10 +54,12 @@ class _CustomerListTileState extends State<CustomerListTile> {
     });
   }
 
+void openDrawer() {
+    Scaffold.of(context).openDrawer(); // Function to open the drawer
+  }
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return ReUsableMotherWidget(
-        //  isSingleChildScrollView: true,
         childred: [
           CustomerProfileBar(
             profileImagePath: 'assets/images/small_profile.png',
@@ -76,11 +74,10 @@ class _CustomerListTileState extends State<CustomerListTile> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ChatFontScreen()));
             },
-            besideMessageTap: () {
-              print("notificaiton tap");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatFontScreen()));
-            },
+            besideMessageTap:
+             openDrawer,   
+                                       
+          
           ),
           height5,
           height5,
