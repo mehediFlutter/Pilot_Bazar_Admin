@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/drawer/my_drawer.dart';
 import 'package:pilot_bazar_admin/practice/shor_info_practice.dart';
 
 void main() {
@@ -90,7 +91,7 @@ class ReUsableMotherWidgetForPractce extends StatelessWidget {
     );
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(headerText: 'hello',),
+        drawer: MyDrawer(),
       //  key: scaffoldKey,
         body: Padding(
           padding: EdgeInsets.only(left: 20, right: 20),

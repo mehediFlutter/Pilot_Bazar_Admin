@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/drawer/my_drawer.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
   final List<Widget> childred;
@@ -22,6 +22,7 @@ class ReUsableMotherWidget extends StatelessWidget {
     );
     return SafeArea(
         child: Scaffold(
+          drawer: MyDrawer(),
             body: Padding(
               padding:  EdgeInsets.only(left: 20,right: 20),
               child: isSingleChildScrollView

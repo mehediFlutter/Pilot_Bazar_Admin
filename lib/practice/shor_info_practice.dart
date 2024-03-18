@@ -1,107 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:arrow_path/arrow_path.dart';
 
-class ProfileBanner extends StatelessWidget {
-  final Function()? drawerTap;
-  final String iconPath;
-
-  const ProfileBanner({
-    Key? key,
-    this.drawerTap,
-    required this.iconPath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      trailing: GestureDetector(
-        onTap: drawerTap,
-        child: Container(
-          height: 30,
-          width: 35,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8), // Use BorderRadius.circular for border radius
-            border: Border.all(color: Colors.black), // Example border color
+void main() {
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text('90-Degree Curved Arrow Example'),
+      ),
+      body: Center(
+        child: CustomPaint(
+          size: Size(200, 200),
+          painter: CurvedArrowPainter(
+            // Customize these properties for different arrow styles
+            color: Colors.blue,
+            strokeWidth: 5.0,
           ),
-          child: Image.asset(iconPath),
         ),
       ),
-    );
-  }
+    ),
+  ));
 }
 
-// void main() {
-//   runApp(MaterialApp(home: MainClass()));
-// }
+class CurvedArrowPainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
 
-class MainClass extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  CurvedArrowPainter({this.color = Colors.blue, this.strokeWidth = 5.0});
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        drawer: MyDrawer(headerText: 'hello',),
-        body: Builder(
-          builder: (BuildContext context) {
-            return Column(
-              children: [
-                ProfileBanner(
-                  iconPath: 'assets/icons/beside_message.png',
-                  drawerTap: () {
-                    print("pressed");
-                    _scaffoldKey.currentState!.openDrawer();
-                  },
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(50, 50) // Start point
+      ..relativeQuadraticBezierTo(50, 0, 100, 50) // Curve to the right
+      ..relativeLineTo(0, 50) // Line down
+      ..relativeQuadraticBezierTo(-50, 0, -50, -50) // Curve to the left
+      ..close(); // Close the path to form the arrow shape
+
+    final paint = Paint()
+      ..color = color // Use the provided color
+      ..strokeWidth = strokeWidth // Use the provided stroke width
+      ..style = PaintingStyle.stroke; // Draw only the outline
+
+    canvas.drawPath(path, paint);
   }
-}
-
-class MyDrawer extends StatefulWidget {
-  final String headerText;
-  const MyDrawer({
-    super.key, required this.headerText,
-  });
 
   @override
-  State<MyDrawer> createState() => _MyDrawerState();
-}
-
-class _MyDrawerState extends State<MyDrawer> {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      // Your drawer content
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            child: Text(widget.headerText),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-          ),
-          ListTile(
-            title: Text('Item 1'),
-            onTap: () {
-              // Do something
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              // Do something
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  bool shouldRepaint(CurvedArrowPainter oldDelegate) => false;
 }

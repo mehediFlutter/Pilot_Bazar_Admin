@@ -1,36 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/const_radious.dart';
 
-class ProfileBanner extends StatefulWidget {
-  final Function()? drawerTap;
-  final String iconPath;
-
-  const ProfileBanner({
-    super.key,
-    this.drawerTap,
-    required this.iconPath,
-  });
-
-  @override
-  State<ProfileBanner> createState() => _ProfileBannerState();
-}
-
-class _ProfileBannerState extends State<ProfileBanner> {
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      trailing: GestureDetector(
-        onTap: widget.drawerTap,
-        child: Container(
-          height: 30,
-          width: 35,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadious8,
-            border: Border.all(color: BorderRadious8Color),
-          ),
-          child: Image.asset(widget.iconPath),
+void main() {
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text('Curved Arrow Example'),
+      ),
+      body: Center(
+        child: CustomPaint(
+          size: Size(100, 100),
+          painter: CurvedArrowPainter(),
         ),
       ),
-    );
+    ),
+  ));
+}
+
+class CurvedArrowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
+
+    Path path = Path();
+    path.moveTo(200, 10); 
+    path.quadraticBezierTo(100, 100, 200, 50); 
+
+    canvas.drawPath(path, paint);
+
+    // Draw arrowhead at the end of the curve
+    double arrowSize = 10;
+    canvas.drawLine(Offset(180 - arrowSize, 100 - arrowSize), Offset(180, 100), paint);
+    canvas.drawLine(Offset(180 + arrowSize, 100 - arrowSize), Offset(180, 100), paint);
+  }
+
+  @override
+  bool shouldRepaint(CurvedArrowPainter oldDelegate) {
+    return false;
   }
 }

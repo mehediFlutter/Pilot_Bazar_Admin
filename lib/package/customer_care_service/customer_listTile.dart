@@ -61,23 +61,25 @@ void openDrawer() {
     Size size = MediaQuery.sizeOf(context);
     return ReUsableMotherWidget(
         childred: [
-          CustomerProfileBar(
-            profileImagePath: 'assets/images/small_profile.png',
-            message_icon_path: 'assets/icons/message_notification.png',
-            beside_message_icon_path: 'assets/icons/beside_message.png',
-            onTapFunction: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
-            },
-            notificationTap: () {
-              print("notificaiton tap");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatFontScreen()));
-            },
-            besideMessageTap:
-             openDrawer,   
-                                       
-          
+          GestureDetector(
+            child: CustomerProfileBar(
+              profileImagePath: 'assets/images/small_profile.png',
+              message_icon_path: 'assets/icons/message_notification.png',
+              drawer_icon_path: 'assets/icons/beside_message.png',
+              onTapFunction: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+              },
+              notificationTap: () {
+                print("notificaiton tap");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatFontScreen()));
+              },
+              drawerTap:
+               openDrawer,   
+                                         
+            
+            ),
           ),
           height5,
           height5,
