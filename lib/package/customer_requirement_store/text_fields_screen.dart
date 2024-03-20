@@ -4,7 +4,7 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/text_foild.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/input_fild.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/widget/confirm_next_button.dart';
@@ -209,12 +209,12 @@ class _CustomerRequirementInputFildsState
         arrowOrPlus: '->',
       ),
 
-      IconButton(
-          onPressed: () {
-            print(customerNameController.text);
-            print(customerNameController2.text);
-          },
-          icon: Icon(Icons.add))
+      // IconButton(
+      //     onPressed: () {
+      //       print(customerNameController.text);
+      //       print(customerNameController2.text);
+      //     },
+      //     icon: Icon(Icons.add))
     ]);
   }
 
