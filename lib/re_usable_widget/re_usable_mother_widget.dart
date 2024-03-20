@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
   final List<Widget> children;
@@ -22,11 +23,11 @@ class ReUsableMotherWidget extends StatelessWidget {
       crossAxisAlignment: crossAxis ?? CrossAxisAlignment.start,
       children: children,
     );
-    Widget drawer = Drawer();
+  //  Widget drawer = Drawer();
     return SafeArea(
       
       child: Scaffold(
-        drawer: drawer,
+        drawer: MyDrawer(),
         body: Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: isSingleChildScrollView

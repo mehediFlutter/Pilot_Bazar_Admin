@@ -7,7 +7,7 @@ import 'package:pilot_bazar_admin/profile/profile.dart';
 class CustomerProfileBar extends StatefulWidget {
   final String? profileImagePath;
   final String? message_icon_path;
-  final String? beside_message_icon_path;
+  final String? drawer_icon_path;
   final Function()? onTapFunction;
   final Function()? chatTap;
   final Function()? drawerTap;
@@ -17,7 +17,7 @@ class CustomerProfileBar extends StatefulWidget {
       this.onTapFunction,
       this.chatTap,
       this.message_icon_path,
-      this.beside_message_icon_path, this.drawerTap, });
+      this.drawer_icon_path, this.drawerTap, });
 
   @override
   State<CustomerProfileBar> createState() => _CustomerProfileBarState();
@@ -75,25 +75,23 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
             ),
           ),
           SizedBox(width: 10),
-          Builder(
-            builder: (BuildContext context) {
-              return GestureDetector(
-                onTap:
-                  widget.drawerTap,
-                child: Container(
-                  height: 30,
-                  width: 35,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadious8,
-                    border: Border.all(color: BorderRadious8Color),
-                  ),
-                  child: Image.asset(
-                    widget.beside_message_icon_path ??
-                        'assets/icons/notification.png',
-                  ),
-                ),
-              );
+          GestureDetector(
+            onTap:(){
+              Scaffold.of(context).openDrawer();
             },
+              
+            child: Container(
+              height: 30,
+              width: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadious8,
+                border: Border.all(color: BorderRadious8Color),
+              ),
+              child: Image.asset(
+                widget.drawer_icon_path ??
+                    'assets/icons/notification.png',
+              ),
+            ),
           ),
         ],
       ),

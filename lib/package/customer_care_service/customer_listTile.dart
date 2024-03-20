@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/notification/notification_page.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_short_info_item_class.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/drawer/drawer_screen.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/search/search.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/text_fields_screen.dart';
-import 'package:pilot_bazar_admin/profile/profile.dart';
-import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
@@ -68,7 +62,7 @@ class _CustomerListTileState extends State<CustomerListTile> {
         return CustomerProfileBar(
           profileImagePath: 'assets/images/small_profile.png',
           message_icon_path: 'assets/icons/message_notification.png',
-          beside_message_icon_path: 'assets/icons/beside_message.png',
+          drawer_icon_path: 'assets/icons/beside_message.png',
           onTapFunction: () {
             Navigator.push(
                 context,

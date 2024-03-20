@@ -36,7 +36,7 @@ class _CustomerRequirementInputFildsState
       CustomerProfileBar(
         profileImagePath: 'assets/images/small_profile.png',
         message_icon_path: 'assets/icons/message_notification.png',
-        beside_message_icon_path: 'assets/icons/beside_message.png',
+        drawer_icon_path: 'assets/icons/beside_message.png',
         onTapFunction: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => ProfilePage()));
