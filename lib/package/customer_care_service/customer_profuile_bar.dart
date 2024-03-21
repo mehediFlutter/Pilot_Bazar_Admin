@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/drawer/drawer_screen.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/text_fields_screen.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 
 class CustomerProfileBar extends StatefulWidget {

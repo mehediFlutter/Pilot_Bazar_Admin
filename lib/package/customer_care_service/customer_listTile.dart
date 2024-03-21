@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_short_info_item_class.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/text_fields_screen.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
@@ -74,12 +75,12 @@ class _CustomerListTileState extends State<CustomerListTile> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CustomerRequirementInputFilds()));
+                    builder: (context) => ChatFontScreen()));
           },
-          drawerTap: () {
-            Scaffold.of(context).openDrawer();
+          // drawerTap: () {
+          //   Scaffold.of(context).openDrawer();
             
-          },
+          // },
         );
       }),
       height5,

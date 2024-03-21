@@ -9,6 +9,7 @@ const SizedBox height5 = SizedBox(height: 5);
 const SizedBox height10 = SizedBox(height: 10);
 const SizedBox width5 = SizedBox(width: 5);
 const SizedBox width10 = SizedBox(width: 10);
+const SizedBox width20 = SizedBox(width: 20);
 Container horizontalLine = Container(
   height: 55,
   width: 2,
@@ -24,5 +25,13 @@ Container greenTolu = Container(
 Icon syncIcon = Icon(
   Icons.sync,
   size: 15,
-  color: searchBarBorderColor,
+  color: syncIconColor,
 );
+  Padding syncIconMethode() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: syncIcon,
+    );
+  }
+
+  

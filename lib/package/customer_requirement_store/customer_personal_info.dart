@@ -4,6 +4,7 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_budget_info.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/input_fild.dart';
 import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
@@ -30,9 +31,7 @@ class _CustomerRequirementInputFildsState
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(
-      isSingleChildScrollView: true,
-      children: [
+    return ReUsableMotherWidget(isSingleChildScrollView: true, children: [
       CustomerProfileBar(
         profileImagePath: 'assets/images/small_profile.png',
         message_icon_path: 'assets/icons/message_notification.png',
@@ -44,7 +43,7 @@ class _CustomerRequirementInputFildsState
         chatTap: () {
           print("notificaiton tap");
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => NotificaitonScreen()));
+              MaterialPageRoute(builder: (context) => ChatFontScreen()));
         },
       ),
 
@@ -70,39 +69,38 @@ class _CustomerRequirementInputFildsState
         "Customer Personal info ->",
         style: small14StyleW500,
       ),
-      height5,
-      CustmerRequiredTextFild(
-        customerNameController: customerNameController,
-        hintTextForCustomerNameController: 'Enter Customer Name...',
+      height10,
+      CustomerRequiredTextFild(
+        textFildController: customerNameController,
+        hintText: 'Enter Customer Name...',
       ),
 
       Row(
         children: [
           Expanded(
-            child: CustmerRequiredTextFild(
+            child: CustomerRequiredTextFild(
               function: (dynamic value) {
                 print(value);
               },
-              customerNameController: customerNameController2,
-              hintTextForCustomerNameController: 'Enter Customer Mobile...',
+              textFildController: customerNameController2,
+              hintText: 'Enter Customer Mobile...',
             ),
           ),
           width10,
           Expanded(
-            child: CustmerRequiredTextFild(
-              
+            child: CustomerRequiredTextFild(
               function: (dynamic value) {
                 print(value);
               },
-              customerNameController: customerNameController2,
-              hintTextForCustomerNameController: 'Enter Customer email...',
+              textFildController: customerNameController2,
+              hintText: 'Enter Customer email...',
             ),
           ),
         ],
       ),
       height5,
       height10,
-      Text('Vehicle Info ->',style: small14StyleW500),
+      Text('Vehicle Info ->', style: small14StyleW500),
       height5,
 
       // TextFormField(
@@ -136,7 +134,7 @@ class _CustomerRequirementInputFildsState
           Expanded(child: customDropdown('--Select Availavle--')),
         ],
       ),
-        height10,
+      height10,
       Row(
         children: [
           Expanded(child: customDropdown('--Select Edition--')),
@@ -145,7 +143,7 @@ class _CustomerRequirementInputFildsState
           Expanded(child: customDropdown('--Select Fuel--')),
         ],
       ),
-        height10,
+      height10,
       Row(
         children: [
           Expanded(child: customDropdown('--Select Condition--')),
@@ -154,7 +152,7 @@ class _CustomerRequirementInputFildsState
           Expanded(child: customDropdown('--Select Registration--')),
         ],
       ),
-        height10,
+      height10,
       Row(
         children: [
           Expanded(child: customDropdown('--Select Color--')),
@@ -164,66 +162,80 @@ class _CustomerRequirementInputFildsState
         ],
       ),
       height10,
-        Padding(
-          padding:  EdgeInsets.only(right: size.width/2.15),
-          child: customDropdown('--Select Color--'),
+      Padding(
+        padding: EdgeInsets.only(right: size.width / 2.15),
+        child: customDropdown('--Select Color--'),
+      ),
+      height10,
+
+      DividerWithCircle(),
+      height10,
+      Row(
+        children: [
+          Expanded(
+              child: CustomerRequiredTextFild(
+            function: (dynamic value) {
+              print(value);
+            },
+            textFildController: mileageFormController,
+            hintText: 'enter mileage form',
+            keyboardType: TextInputType.number,
+          )),
+          syncIconMethode(),
+          Expanded(
+              child: CustomerRequiredTextFild(
+            function: (dynamic value) {
+              print(value);
+            },
+            textFildController: mileageToController,
+            hintText: 'enter mileage to',
+            keyboardType: TextInputType.number,
+          )),
+        ],
+      ),
+      Row(
+        children: [
+          Expanded(
+              child: CustomerRequiredTextFild(
+            function: (dynamic value) {
+              print(value);
+            },
+            textFildController: enginesFromController,
+            hintText: 'enter engines form',
+            keyboardType: TextInputType.number,
+          )),
+          syncIconMethode(),
+          Expanded(
+              child: CustomerRequiredTextFild(
+            function: (dynamic value) {
+              print(value);
+            },
+            textFildController: enginesToController,
+            hintText: 'enter engines to',
+            keyboardType: TextInputType.number,
+          )),
+        ],
+      ),
+      const SizedBox(
+        height: 30,
+      ),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CustomerBudgetInfo()));
+        },
+        child: ConfirmAndNextButton(
+          width: 175,
+          text: 'Confirm & Next',
+          arrowOrPlus: '->',
         ),
-        height10,
-
-        DividerWithCircle(),
-        height10,
-        Row(
-        children: [
-          Expanded(child: CustmerRequiredTextFild(
-            function: (dynamic value) {
-                print(value);
-              },
-            customerNameController: mileageFormController, hintTextForCustomerNameController: 'enter mileage form',keyboardType: TextInputType.number,)),
-          syncIconMethode(),
-          Expanded(child: CustmerRequiredTextFild(
-            function: (dynamic value) {
-                print(value);
-              },
-            customerNameController: mileageToController,hintTextForCustomerNameController: 'enter mileage to',keyboardType: TextInputType.number,)),
-        ],
-      ),
-        Row(
-        children: [
-          Expanded(child: CustmerRequiredTextFild(
-            function: (dynamic value) {
-                print(value);
-              },
-            customerNameController: enginesFromController, hintTextForCustomerNameController: 'enter engines form',keyboardType: TextInputType.number,)),
-          syncIconMethode(),
-          Expanded(child: CustmerRequiredTextFild(
-            function: (dynamic value) {
-                print(value);
-              },
-            customerNameController: enginesToController,hintTextForCustomerNameController: 'enter engines to',keyboardType: TextInputType.number,)),
-        ],
-      ),
-     const SizedBox(height: 30,),
-     const ConfirmAndNextButton(
-        width: 175,
-        text: 'Confirm & Next',
-        arrowOrPlus: '->',
       ),
 
-      // IconButton(
-      //     onPressed: () {
-      //       print(customerNameController.text);
-      //       print(customerNameController2.text);
-      //     },
-      //     icon: Icon(Icons.add))
+
     ]);
   }
 
-  Padding syncIconMethode() {
-    return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
-          child: syncIcon,
-        );
-  }
+
 
   DropdownButtonFormField<String> customDropdown(String hintText) {
     return DropdownButtonFormField<String>(
@@ -254,7 +266,11 @@ class _CustomerRequirementInputFildsState
       }).toList(),
       icon: Transform.rotate(
         angle: 90 * 3.1415927 / 180, // Convert degrees to radians
-        child: Icon(Icons.arrow_forward_ios, size: 11,color: dropdownIconColor,),
+        child: Icon(
+          Icons.arrow_forward_ios,
+          size: 11,
+          color: dropdownIconColor,
+        ),
       ),
     );
   }

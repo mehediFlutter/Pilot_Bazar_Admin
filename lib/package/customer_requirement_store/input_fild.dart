@@ -1,54 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
+import 'package:pilot_bazar_admin/const/const_radious.dart';
 
-class CustmerRequiredTextFild extends StatefulWidget {
-  final TextEditingController customerNameController;
-  final String? hintTextForCustomerNameController;
+class CustomerRequiredTextFild extends StatefulWidget {
+  final TextEditingController textFildController;
+  final String? hintText;
+  final String? labelText;
   final TextInputType? keyboardType;
   final Function(dynamic)? function;
+  final Function()? onTap;
+  final bool readOnly;
 
-  const CustmerRequiredTextFild(
+  const CustomerRequiredTextFild(
       {super.key,
-      required this.customerNameController,
-      this.hintTextForCustomerNameController,
-      this.function, this.keyboardType});
+      required this.textFildController,
+      this.hintText,
+      this.labelText,
+      this.function,
+      this.keyboardType, this.onTap,  this.readOnly=false});
 
   @override
-  State<CustmerRequiredTextFild> createState() =>
-      _CustmerRequiredTextFildState();
+  State<CustomerRequiredTextFild> createState() =>
+      _CustomerRequiredTextFildState();
 }
 
-class _CustmerRequiredTextFildState extends State<CustmerRequiredTextFild> {
+class _CustomerRequiredTextFildState extends State<CustomerRequiredTextFild> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5),
       child: TextFormField(
+        readOnly: widget.readOnly,
         keyboardType: widget.keyboardType,
         onChanged: (value) {
           if (widget.function != null) {
             widget.function!(value);
           }
         },
+        onTap: () {
+          if(widget.onTap != null){
+            widget.onTap;
+          }
+        },
 
         style: small12Stylew400,
 
-        controller: widget.customerNameController,
+        controller: widget.textFildController,
         decoration: InputDecoration(
-          
-            prefix: SizedBox(
-              width: 20,
-            ),
+  
+
             isDense: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-            hintText: widget.hintTextForCustomerNameController,
+            contentPadding: EdgeInsets.only(top: 12,bottom: 12,left: 20 ),
+            hintText: widget.hintText,
+            labelText: widget.labelText,
             hintStyle: small12Stylew400,
+            labelStyle: small12Stylew400,
+           
+            
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide(color: Color(0xFFEEEEEE))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Colors.grey))),
+                borderSide: BorderSide(color: Colors.grey))
+                
+                ),
         cursorColor: Colors.black,
         cursorWidth: 1,
         // cursorHeight: 20,
