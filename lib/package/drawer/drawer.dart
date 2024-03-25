@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
+import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({
@@ -16,7 +17,9 @@ class _MyDrawerState extends State<MyDrawer> {
   @override
   bool isHomeClick = false;
   bool isCustomerClick = false;
-  bool isCreateClick = false;
+  bool? customerUniversalClick;
+  bool isCreateBool = false;
+  bool? createUniversalClick = false;
   bool isViewClick = false;
 
   bool isMessageClick = false;
@@ -26,9 +29,48 @@ class _MyDrawerState extends State<MyDrawer> {
 
   bool isSettingsClick = false;
   bool isLogOutClick = false;
+  int? emniNumber;
+
+  bool? isShowAnimationContainer;
 
   double calculateHeight() {
-    return isCustomerClick ? 90.0 : 0.0; // Adjust height as needed
+    return isCustomerClick ? 90.0 : 0.0;
+  }
+
+  universalFinalClick() {
+    universalCustumerClick();
+  }
+
+  universalCustumerClick() {
+    if (customerUniversalBaseBool == true) {
+      isCustomerClick = true;
+      setState(() {});
+    }
+  }
+
+  universalCreate() {
+  //  print("universal Create bool ${universalCreateBool}");
+    if (universalCreateBool == true) {
+      isCreateBool = true;
+      setState(() {});
+      print("Now is create bool");
+      print(isCreateBool);
+    }
+    else{
+      print("Nothing found");
+    }
+  }
+
+  @override
+  void initState() {
+    print("Customer Bool is here");
+    print(customerUniversalBaseBool);
+    universalCustumerClick();
+    print("create bool  is here");
+    print(isCreateBool);
+
+   universalCreate();
+       print(isCreateBool);
   }
 
   Widget build(BuildContext context) {
@@ -45,13 +87,6 @@ class _MyDrawerState extends State<MyDrawer> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            // DrawerHeader(
-            //   child: Text('Draer header'),
-            //   decoration: BoxDecoration(
-            //     color: Colors.blue,
-            //   ),
-            // ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -63,22 +98,22 @@ class _MyDrawerState extends State<MyDrawer> {
                     onClick: () {
                       isHomeClick = !isHomeClick;
                       isCustomerClick = false;
+
                       setState(() {});
                     }),
 
                 drawerItemHeader(
-                    isBool: isCustomerClick,
-                    iconPath: 'assets/icons/drawer_customer.png',
-                    text: 'Customer',
-                    onClick: () {
-                      isCustomerClick = !isCustomerClick;
-                      if (isCreateClick == false) {
-                        isCreateClick = false;
-                        isViewClick = false;
-                      }
-                      isCreateClick = false;
-                      setState(() {});
-                    }),
+                  isBool: isCustomerClick,
+                  iconPath: 'assets/icons/drawer_customer.png',
+                  text: 'Customer',
+                  onClick: () async {
+                    isCustomerClick = !isCustomerClick;
+                    customerUniversalBaseBool = isCustomerClick;
+
+                    setState(() {});
+                  },
+                ),
+
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
@@ -88,18 +123,24 @@ class _MyDrawerState extends State<MyDrawer> {
                     child: Column(
                       children: [
                         itemOfHeader(
-                          clickBoolName: isCreateClick,
+                          clickBoolName: isCreateBool,
                           customIcon: Icon(
                             Icons.add,
-                            color: colorMethode(isCreateClick),
+                            color: colorMethode(isCreateBool),
                           ),
                           text: 'Create',
-                          onClick: () {
-                            isCreateClick = !isCreateClick;
+                          onClick: () async {
+                            print("Create is pressed");
+                            isCreateBool = true;
+                            universalCreateBool = true;
                             isViewClick = false;
-
                             setState(() {});
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerRequirementInputFilds()));
+                            Navigator.pop(context);
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CustomerRequirementInputFilds()));
                           },
                         ),
                         itemOfHeader(
@@ -110,9 +151,19 @@ class _MyDrawerState extends State<MyDrawer> {
                             color: colorMethode(isViewClick),
                           ),
                           text: 'View',
-                          onClick: () {
-                            isViewClick = !isViewClick;
-                            isCreateClick = false;
+                          onClick: () async {
+                            isViewClick = true;
+                            isCreateBool = false;
+                            universalViewBool = true;
+                            setState(() {});
+
+                            Navigator.pop(context);
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CustomerRequirementInputFilds()));
+
                             setState(() {});
                           },
                         ),
@@ -121,12 +172,9 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                 ),
 
-   
+                //    Message
 
-            //    Message
-
-
-             //  Message Icon Drawer
+                //  Message Icon Drawer
                 drawerItemHeader(
                     isBool: isMessageClick,
                     iconPath: 'assets/icons/drawer_message.png',
@@ -135,7 +183,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       isMessageClick = !isMessageClick;
                       setState(() {});
                     }),
-               AnimatedContainer(
+                AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   height: isMessageClick ? 140 : 0,
@@ -143,7 +191,6 @@ class _MyDrawerState extends State<MyDrawer> {
                     visible: isMessageClick,
                     child: Column(
                       children: [
-                   
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_followUp.png',
                           isIconPath: true,
@@ -151,13 +198,13 @@ class _MyDrawerState extends State<MyDrawer> {
                           text: 'Follow Up',
                           onClick: () {
                             isFollowUpClick = !isFollowUpClick;
-                        
-                              isFeedbackClick = false;
-                              isPackageClick = false;
-                           
+
+                            isFeedbackClick = false;
+                            isPackageClick = false;
+
                             setState(() {});
                           },
-                        ), 
+                        ),
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_feedBack.png',
                           isIconPath: true,
@@ -165,11 +212,11 @@ class _MyDrawerState extends State<MyDrawer> {
                           text: 'Feed ',
                           onClick: () {
                             isFeedbackClick = !isFeedbackClick;
-                            isFollowUpClick=false;
-                            isPackageClick=false;
+                            isFollowUpClick = false;
+                            isPackageClick = false;
                             setState(() {});
                           },
-                        ), 
+                        ),
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_package.png',
                           isIconPath: true,
@@ -177,8 +224,8 @@ class _MyDrawerState extends State<MyDrawer> {
                           text: 'Package',
                           onClick: () {
                             isPackageClick = !isPackageClick;
-                            isFollowUpClick=false;
-                            isFeedbackClick=false;
+                            isFollowUpClick = false;
+                            isFeedbackClick = false;
                             setState(() {});
                           },
                         ),
@@ -186,8 +233,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                   ),
                 ),
-              
-             drawerItemHeader(
+
+                drawerItemHeader(
                     isBool: isSettingsClick,
                     iconPath: 'assets/icons/drawer_settings.png',
                     text: 'Settings',
@@ -197,7 +244,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         print(isLogOutClick);
                       });
                     }),
-             drawerItemHeader(
+                drawerItemHeader(
                     isBool: isLogOutClick,
                     iconPath: 'assets/icons/drawer_logOut.png',
                     text: 'Log Out',
@@ -215,27 +262,13 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  drawerItemTapDropdoen() {
-    Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          Row(
-            children: [Icon(Icons.add), Text("Create")],
-          )
-        ],
-      ),
-    );
-  }
-
   drawerItemHeader(
       {required Function() onClick,
       String? iconPath,
       text,
       Widget? customIcon,
       bool isArrow = true,
-       bool isImage = false,
-
+      bool isImage = false,
       isBool}) {
     return GestureDetector(
       onTap: onClick,
@@ -278,85 +311,12 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  drawerItemHeaderChild({
-    required Function() createClick,
-    required Function() viewClick,
-  }) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300), // Adjust the duration as needed
-      curve: Curves.easeInOut, // Adjust the curve for the animation
-      // width: double.infinity,
-      height: isCustomerClick
-          ? calculateHeight()
-          : 0, // Calculate the height based on content
-      child: isCustomerClick
-          ? Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: createClick,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 25,
-                            color: isCreateClick
-                                ? activeDrawerItemIconColor
-                                : inActiveDrawerItemIconColor,
-                          ),
-                          width20,
-                          Text(
-                            'Create',
-                            style: isCreateClick
-                                ? activedDrawerItem
-                                : inActivedDrawerItem,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: viewClick,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: 25,
-                            color: isViewClick
-                                ? activeDrawerItemIconColor
-                                : inActiveDrawerItemIconColor,
-                          ),
-                          width20,
-                          Text(
-                            'View',
-                            style: isViewClick
-                                ? activedDrawerItem
-                                : inActivedDrawerItem,
-                          ),
-                          Spacer(),
-                          Text(
-                            '20',
-                            style: inActivedDrawerItem,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : null,
-    );
-  }
-
   Widget itemOfHeader(
       {required Function() onClick,
       required String text,
       iconPath,
-      Widget? customIcon,image,
+      Widget? customIcon,
+      image,
       required bool clickBoolName,
       isTrailling = false,
       isIconPath = false}) {
@@ -372,7 +332,10 @@ class _MyDrawerState extends State<MyDrawer> {
           child: Row(
             children: [
               isIconPath
-                  ? Image.asset(iconPath,fit: BoxFit.cover,)
+                  ? Image.asset(
+                      iconPath,
+                      fit: BoxFit.cover,
+                    )
                   : customIcon ?? SizedBox(),
               SizedBox(width: 20),
               Text(
