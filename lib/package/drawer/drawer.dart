@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyDrawer extends StatefulWidget {
+  final ValueNotifier<ThemeMode> notifier;
   const MyDrawer({
     super.key,
+    required this.notifier,
   });
 
   @override
@@ -15,23 +19,28 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   @override
+
+  // Home Bool
   bool isHomeClick = false;
+
+// Customer Bool
   bool isCustomerClick = false;
-  bool? customerUniversalClick;
   bool isCreateBool = false;
-  bool? createUniversalClick = false;
   bool isViewClick = false;
 
-  bool isMessageClick = false;
-  bool isFollowUpClick = false;
-  bool isFeedbackClick = false;
-  bool isPackageClick = false;
+// Message Bool
+  bool isMessageBool = false;
+  bool isFollowUpBool = false;
+  bool isFeedbackBool = false;
+  bool isPackageBool = false;
 
-  bool isSettingsClick = false;
-  bool isLogOutClick = false;
+// Settings Bool
+  bool isSettingsBool = false;
+  bool isLogOutBool = false;
   int? emniNumber;
 
   bool? isShowAnimationContainer;
+  late SharedPreferences preffs;
 
   double calculateHeight() {
     return isCustomerClick ? 90.0 : 0.0;
@@ -42,35 +51,51 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   universalCustumerClick() {
-    if (customerUniversalBaseBool == true) {
+    if (universalCustomBool == true) {
       isCustomerClick = true;
       setState(() {});
     }
   }
 
+  universalMessageClick() {
+    if (universalMessageBool == true) {
+      isMessageBool = true;
+      setState(() {});
+    }
+  }
+
   universalCreate() {
-  //  print("universal Create bool ${universalCreateBool}");
     if (universalCreateBool == true) {
       isCreateBool = true;
+      universalViewBool = false;
       setState(() {});
-      print("Now is create bool");
-      print(isCreateBool);
     }
-    else{
-      print("Nothing found");
+  }
+
+  universalFollowUp() {
+    if (universalFollowUpBool == true) {
+      isFollowUpBool = true;
+      universalFeedBool = false;
+      universalPackageBool = false;
+    }
+  }
+
+  universalView() {
+    if (universalViewBool == true) {
+      isViewClick = true;
+      universalCreateBool = false;
+      setState(() {});
     }
   }
 
   @override
   void initState() {
-    print("Customer Bool is here");
-    print(customerUniversalBaseBool);
     universalCustumerClick();
-    print("create bool  is here");
-    print(isCreateBool);
-
-   universalCreate();
-       print(isCreateBool);
+    universalCreate();
+    universalView();
+    universalMessageClick();
+    // message
+    universalFollowUp();
   }
 
   Widget build(BuildContext context) {
@@ -98,6 +123,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     onClick: () {
                       isHomeClick = !isHomeClick;
                       isCustomerClick = false;
+                      isMessageBool = false;
 
                       setState(() {});
                     }),
@@ -108,7 +134,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   text: 'Customer',
                   onClick: () async {
                     isCustomerClick = !isCustomerClick;
-                    customerUniversalBaseBool = isCustomerClick;
+                    universalCustomBool = isCustomerClick;
+
+                    // if (isCustomerClick == false) {
+                    //   isCreateBool = false;
+                    //   universalCreateBool = false;
+                    //   isViewClick = false;
+                    //   universalViewBool = false;
+                    //   setState(() {});
+                    // }
+
+                    isMessageBool = false;
+                    universalMessageBool = false;
 
                     setState(() {});
                   },
@@ -128,19 +165,22 @@ class _MyDrawerState extends State<MyDrawer> {
                             Icons.add,
                             color: colorMethode(isCreateBool),
                           ),
-                          text: 'Create',
+                          text: 'Personal',
                           onClick: () async {
-                            print("Create is pressed");
                             isCreateBool = true;
                             universalCreateBool = true;
+                            universalViewBool = false;
                             isViewClick = false;
+
                             setState(() {});
                             Navigator.pop(context);
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        CustomerRequirementInputFilds()));
+                                        CustomerPersonalInfo(
+                                          notifier: widget.notifier,
+                                        )));
                           },
                         ),
                         itemOfHeader(
@@ -150,11 +190,13 @@ class _MyDrawerState extends State<MyDrawer> {
                             Icons.person,
                             color: colorMethode(isViewClick),
                           ),
-                          text: 'View',
+                          text: 'Budget',
                           onClick: () async {
                             isViewClick = true;
+
                             isCreateBool = false;
                             universalViewBool = true;
+                            universalCreateBool = false;
                             setState(() {});
 
                             Navigator.pop(context);
@@ -162,7 +204,9 @@ class _MyDrawerState extends State<MyDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        CustomerRequirementInputFilds()));
+                                        ChatFontScreen(
+                                          notifier: widget.notifier,
+                                        )));
 
                             setState(() {});
                           },
@@ -176,56 +220,87 @@ class _MyDrawerState extends State<MyDrawer> {
 
                 //  Message Icon Drawer
                 drawerItemHeader(
-                    isBool: isMessageClick,
+                    isBool: isMessageBool,
                     iconPath: 'assets/icons/drawer_message.png',
                     text: 'Message',
                     onClick: () {
-                      isMessageClick = !isMessageClick;
+                      // offline customer child
+
+                      // End of Off customer child
+
+                      isMessageBool = !isMessageBool;
+                      universalMessageBool = isMessageBool;
+
+                      // if message if false then all child of message is offline
+
+                      isFollowUpBool = false;
+                      universalFollowUpBool = false;
+                      isFeedbackBool = false;
+                      universalFeedBool = false;
+                      isPackageBool = false;
+                      universalPackageBool = false;
+                      setState(() {});
+
+                      isFeedbackBool = false;
+
+                      // Hide Customer Parent
+                      universalCustomBool = false;
+                      isCustomerClick = false;
+                      // Success Hide Custom Parent
+
                       setState(() {});
                     }),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  height: isMessageClick ? 140 : 0,
+                  height: isMessageBool ? 140 : 0,
                   child: Visibility(
-                    visible: isMessageClick,
+                    visible: isMessageBool,
                     child: Column(
                       children: [
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_followUp.png',
                           isIconPath: true,
-                          clickBoolName: isFollowUpClick,
+                          clickBoolName: isFollowUpBool,
                           text: 'Follow Up',
                           onClick: () {
-                            isFollowUpClick = !isFollowUpClick;
+                            isFollowUpBool = !isFollowUpBool;
+                            universalFollowUpBool = isFollowUpBool;
 
-                            isFeedbackClick = false;
-                            isPackageClick = false;
+                            isFeedbackBool = false;
+                            isPackageBool = false;
 
                             setState(() {});
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CustomerPersonalInfo(
+                                            notifier: widget.notifier)),
+                                (route) => false);
                           },
                         ),
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_feedBack.png',
                           isIconPath: true,
-                          clickBoolName: isFeedbackClick,
+                          clickBoolName: isFeedbackBool,
                           text: 'Feed ',
                           onClick: () {
-                            isFeedbackClick = !isFeedbackClick;
-                            isFollowUpClick = false;
-                            isPackageClick = false;
+                            isFeedbackBool = !isFeedbackBool;
+                            isFollowUpBool = false;
+                            isPackageBool = false;
                             setState(() {});
                           },
                         ),
                         itemOfHeader(
                           iconPath: 'assets/icons/drawer_package.png',
                           isIconPath: true,
-                          clickBoolName: isPackageClick,
+                          clickBoolName: isPackageBool,
                           text: 'Package',
                           onClick: () {
-                            isPackageClick = !isPackageClick;
-                            isFollowUpClick = false;
-                            isFeedbackClick = false;
+                            isPackageBool = !isPackageBool;
+                            isFollowUpBool = false;
+                            isFeedbackBool = false;
                             setState(() {});
                           },
                         ),
@@ -235,25 +310,37 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
 
                 drawerItemHeader(
-                    isBool: isSettingsClick,
+                    isBool: isSettingsBool,
                     iconPath: 'assets/icons/drawer_settings.png',
                     text: 'Settings',
                     onClick: () {
-                      isSettingsClick = !isSettingsClick;
+                      isSettingsBool = !isSettingsBool;
                       setState(() {
-                        print(isLogOutClick);
+                        print(isLogOutBool);
                       });
                     }),
                 drawerItemHeader(
-                    isBool: isLogOutClick,
+                    isBool: isLogOutBool,
                     iconPath: 'assets/icons/drawer_logOut.png',
                     text: 'Log Out',
                     onClick: () {
-                      isLogOutClick = !isLogOutClick;
+                      isLogOutBool = !isLogOutBool;
                       setState(() {
-                        print(isLogOutClick);
+                        print(isLogOutBool);
                       });
                     }),
+                ElevatedButton(
+                    onPressed: () async {
+                      preffs = await SharedPreferences.getInstance();
+                      widget.notifier.value =
+                          widget.notifier.value == ThemeMode.light
+                              ? ThemeMode.dark
+                              : ThemeMode.light;
+                      preffs.setString(
+                          'notifier', widget.notifier.value.toString());
+                      setState(() {});
+                    },
+                    child: Text("Moode"))
               ],
             ),
           ],

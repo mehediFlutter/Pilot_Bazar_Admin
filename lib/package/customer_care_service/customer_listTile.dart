@@ -8,9 +8,10 @@ import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_pe
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 
 class CustomerListTile extends StatefulWidget {
+  final ValueNotifier<ThemeMode> notifier;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  CustomerListTile({super.key});
+  CustomerListTile({super.key, required this.notifier});
 
   @override
   State<CustomerListTile> createState() => _CustomerListTileState();
@@ -58,7 +59,8 @@ class _CustomerListTileState extends State<CustomerListTile> {
 
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(children: [
+    return ReUsableMotherWidget(notifier: widget.notifier,
+    children: [
       Builder(builder: (context) {
         return CustomerProfileBar(
           profileImagePath: 'assets/images/small_profile.png',
@@ -68,14 +70,14 @@ class _CustomerListTileState extends State<CustomerListTile> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CustomerRequirementInputFilds()));
+                    builder: (context) => CustomerPersonalInfo(notifier: widget.notifier,)));
           },
           chatTap: () {
             print("notificaiton tap");
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatFontScreen()));
+                    builder: (context) => ChatFontScreen(notifier: widget.notifier,)));
           },
           // drawerTap: () {
           //   Scaffold.of(context).openDrawer();
@@ -138,18 +140,18 @@ class _CustomerListTileState extends State<CustomerListTile> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CustomerRequirementInputFilds()));
+                      builder: (context) => CustomerPersonalInfo(notifier: widget.notifier)));
             },
             child: Container(
               height: 30,
               width: 35,
               padding: EdgeInsets.all(7),
               decoration: BoxDecoration(
-                  border: Border.all(color: searchBarBorderColor),
+                  border: Border.all(color: Theme.of(context).colorScheme.onBackground),
                   borderRadius: borderRadious8),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerRequirementInputFilds()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerPersonalInfo(notifier: widget.notifier)));
                 },
                 child: Container(
                   height: 10,

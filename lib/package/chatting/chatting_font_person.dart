@@ -19,7 +19,7 @@ class _Chatting_profile_with_green_toluState extends State<Chatting_profile_with
             height: 45.05,
             width: 40,
             decoration: BoxDecoration(shape: BoxShape.circle),
-            child: Image.asset('assets/images/chatting_image.png')),
+            child: Image.asset('assets/images/chatFont.png')),
      
              widget.isActive? Container(
               margin: EdgeInsets.only(left: 30,top: 26),

@@ -1,6 +1,17 @@
-bool? customerUniversalBaseBool;
+
+
+
+/// customer bool
+ 
+bool? universalCustomBool;
 bool? universalCreateBool;
 bool? universalViewBool;
 
-  bool? isCreateClickChecker;
-    bool? isViewClick;
+
+
+/// now message bool    
+ 
+bool? universalMessageBool;
+bool? universalFollowUpBool;
+bool? universalFeedBool;
+bool? universalPackageBool;
