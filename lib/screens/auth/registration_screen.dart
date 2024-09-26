@@ -6,6 +6,7 @@ import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/otp_verification.dart';
+import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 
 import '../../widget/login_registration_textFild.dart';
@@ -37,20 +38,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       "password": passwordController.text,
       "password_confirmation": confirmPasswordController.text,
     };
-    Response response = await post(
-        Uri.parse('${Urls().baseUrl}merchant/auth/register'),
-        headers: {
-          'Accept': 'application/vnd.api+json',
-          'Content-Type': 'application/vnd.api+json'
-        },
-        body: jsonEncode(body));
-    print(response.statusCode);
-    print(response.body);
-    if (response.statusCode == 200) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-          (route) => false);
+    if (passwordController.text == confirmPasswordController.text) {
+      Response response = await post(
+          Uri.parse('${Urls().baseUrl}merchant/auth/register'),
+          headers: {
+            'Accept': 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json'
+          },
+          body: jsonEncode(body));
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+      } else {
+        CustomAlertDialog().showAlertDialog(context, "error", "error");
+      }
+    } else {
+      print("error");
+      CustomAlertDialog()
+          .showAlertDialog(context, "Please Provide Correct Information", "OK");
     }
   }
 
@@ -143,22 +152,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     child: ElevatedButton(
                         style: Theme.of(context).elevatedButtonTheme.style,
                         onPressed: () async {
-                          print(nameController.text);
-                          print(phoneNumberController.text);
-                          print(companyNameController.text);
-                          print(passwordController.text);
-                          print(confirmPasswordController.text);
                           if (!formKey.currentState!.validate()) {
                             return null;
                           }
+
                           await registration();
 
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      OTPVerificationScreen()),
-                              (route) => false);
+                          // Navigator.pushAndRemoveUntil(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             OTPVerificationScreen()),
+                          //     (route) => false);
                         },
                         child: const Text("Register"))),
                 height10,
@@ -175,7 +180,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
+                                  builder: (context) => LoginScreen()),
                               (route) => false);
                         },
                         child: const Text(

@@ -8,18 +8,19 @@ import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_pe
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 
-class CustomerListTile extends StatefulWidget {
+class CustomerOverView extends StatefulWidget {
   final ValueNotifier<ThemeMode> notifier;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  CustomerListTile({super.key, required this.notifier});
+  CustomerOverView({super.key, required this.notifier});
 
   @override
-  State<CustomerListTile> createState() => _CustomerListTileState();
+  State<CustomerOverView> createState() => _CustomerOverViewState();
 }
 
-class _CustomerListTileState extends State<CustomerListTile> {
+class _CustomerOverViewState extends State<CustomerOverView> {
   @override
   final TextEditingController _controller = TextEditingController();
   List customerList = [
@@ -44,20 +45,21 @@ class _CustomerListTileState extends State<CustomerListTile> {
     {'name': 'Mr Hassan', 'price': '54000 tk'},
   ];
   List<Map<String, dynamic>> _filteredItems = [];
+
   var userInfo;
 
   loadUserInfo() async {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
+    print(userInfo.toString());
     setState(() {});
-    print(userInfo);
-    print(userInfo['payload']['merchant']['name'].toString());
   }
 
   @override
   void initState() {
     _filteredItems = List<Map<String, dynamic>>.from(items); // Copy the list
     super.initState();
+
     loadUserInfo();
   }
 
@@ -76,12 +78,15 @@ class _CustomerListTileState extends State<CustomerListTile> {
     return ReUsableMotherWidget(notifier: widget.notifier, children: [
       Builder(builder: (context) {
         return CustomerProfileBar(
-          profileImagePath: userInfo['payload']['merchant']['merchant_info']
-              ['image']['name'],
+          profileImagePath: userInfo?['payload']?['merchant']?['merchant_info']
+                  ?['image']?['name'] ??
+              '',
           message_icon_path: 'assets/icons/message_notification.png',
           drawer_icon_path: 'assets/icons/beside_message.png',
-          companyName: userInfo['payload']['merchant']['name'].toString(),
-          phoneNumber: userInfo['payload']['merchant']['mobile'].toString(),
+          companyName: userInfo?['payload']?['merchant']?['name'] ?? 'None',
+          phoneNumber: userInfo?['payload']?['merchant']?['merchant_info']
+                  ['company_name'] ??
+              "None",
           onTapFunction: () {
             Navigator.push(
                 context,

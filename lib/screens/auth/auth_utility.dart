@@ -14,13 +14,17 @@ class AuthUtility {
 
   static Future<LoginModel> getUserInfo() async {
     SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
-    String value = _sharedPrefs.getString('user-data')!;
+    String value = _sharedPrefs.getString('user-data') ?? '';
     return LoginModel.fromJson(jsonDecode(value));
   }
 
   static Future<void> clearUserInfo() async {
     SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs.clear();
+  }
+
+  static LoginModel getCurrentUserInfo() {
+    return userInfo;
   }
 
   static Future<bool> checkIfUserLoggedIn() async {

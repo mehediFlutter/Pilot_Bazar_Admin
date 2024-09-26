@@ -4,6 +4,8 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
+import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -92,6 +94,16 @@ class _MyDrawerState extends State<MyDrawer> {
       universalCreateBool = false;
       setState(() {});
     }
+  }
+
+  var userInfo;
+
+  loadUserInfo() async {
+    LoginModel user = await AuthUtility.getUserInfo();
+    userInfo = user.toJson();
+    setState(() {});
+    print(userInfo.toString());
+    print(userInfo['payload']['merchant']['name'].toString());
   }
 
   @override
@@ -366,6 +378,19 @@ class _MyDrawerState extends State<MyDrawer> {
                     },
                     child: Text(
                       "Registration",
+                      style: TextStyle(color: Colors.black),
+                    )),
+                ElevatedButton(
+                    onPressed: () async {
+                      await AuthUtility.clearUserInfo();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                      await loadUserInfo();
+                    },
+                    child: Text(
+                      "Log Out",
                       style: TextStyle(color: Colors.black),
                     )),
               ],

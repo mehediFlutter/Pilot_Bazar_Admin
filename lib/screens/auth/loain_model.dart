@@ -122,7 +122,7 @@ class MerchantInfo {
   String? companyName;
   String? createdAt;
   String? updatedAt;
-  Image? image;
+  MerchantImage? merchantImage;
 
   MerchantInfo(
       {this.id,
@@ -135,7 +135,7 @@ class MerchantInfo {
       this.companyName,
       this.createdAt,
       this.updatedAt,
-      this.image});
+      this.merchantImage});
 
   MerchantInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -148,7 +148,9 @@ class MerchantInfo {
     companyName = json['company_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    image = json['image'] != null ? new Image.fromJson(json['image']) : null;
+    merchantImage = json['image'] != null
+        ? new MerchantImage.fromJson(json['image'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -163,14 +165,14 @@ class MerchantInfo {
     data['company_name'] = this.companyName;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    if (this.image != null) {
-      data['image'] = this.image!.toJson();
+    if (this.merchantImage != null) {
+      data['image'] = this.merchantImage!.toJson();
     }
     return data;
   }
 }
 
-class Image {
+class MerchantImage {
   int? id;
   String? imageType;
   int? imageId;
@@ -182,7 +184,7 @@ class Image {
   String? createdAt;
   String? updatedAt;
 
-  Image(
+  MerchantImage(
       {this.id,
       this.imageType,
       this.imageId,
@@ -194,7 +196,7 @@ class Image {
       this.createdAt,
       this.updatedAt});
 
-  Image.fromJson(Map<String, dynamic> json) {
+  MerchantImage.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     imageType = json['image_type'];
     imageId = json['image_id'];

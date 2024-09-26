@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => (userInfo != null)
-                  ? CustomerListTile(
+                  ? CustomerOverView(
                       notifier: widget.notifier,
                     )
                   : LoginScreen()),
