@@ -8,8 +8,6 @@ import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_pe
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
-import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
-import 'package:pilot_bazar_admin/theme_manager.dart';
 
 class CustomerOverView extends StatefulWidget {
   final ValueNotifier<ThemeMode> notifier;
