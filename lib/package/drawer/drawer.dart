@@ -8,6 +8,8 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
+import 'package:pilot_bazar_admin/theme_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -347,9 +349,15 @@ class _MyDrawerState extends State<MyDrawer> {
                     }),
                 ElevatedButton(
                     onPressed: () async {
+
+               
+                             Provider.of<ModeProvider>(context , listen: false).changeMode();
+                      
+                      print(widget.notifier.value);
+
                       preffs = await SharedPreferences.getInstance();
                       widget.notifier.value =
-                          widget.notifier.value == ThemeMode.light
+                          widget.notifier.value == ThemeMode.dark
                               ? ThemeMode.dark
                               : ThemeMode.light;
                       preffs.setString(

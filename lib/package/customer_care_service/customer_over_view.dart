@@ -9,6 +9,7 @@ import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart'
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+import 'package:pilot_bazar_admin/theme_manager.dart';
 
 class CustomerOverView extends StatefulWidget {
   final ValueNotifier<ThemeMode> notifier;
@@ -50,6 +51,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
 
   loadUserInfo() async {
     LoginModel user = await AuthUtility.getUserInfo();
+
     userInfo = user.toJson();
     print(userInfo.toString());
     setState(() {});
@@ -112,6 +114,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
       }),
       height5,
       height5,
+
       Container(
         height: 40,
         width: double.infinity,
