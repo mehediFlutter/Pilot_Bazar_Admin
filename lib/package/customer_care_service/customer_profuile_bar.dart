@@ -10,13 +10,15 @@ class CustomerProfileBar extends StatefulWidget {
   final Function()? onTapFunction;
   final Function()? chatTap;
   final Function()? drawerTap;
-  const CustomerProfileBar(
-      {super.key,
-      this.profileImagePath,
-      this.onTapFunction,
-      this.chatTap,
-      this.message_icon_path,
-      this.drawer_icon_path, this.drawerTap, });
+  const CustomerProfileBar({
+    super.key,
+    this.profileImagePath,
+    this.onTapFunction,
+    this.chatTap,
+    this.message_icon_path,
+    this.drawer_icon_path,
+    this.drawerTap,
+  });
 
   @override
   State<CustomerProfileBar> createState() => _CustomerProfileBarState();
@@ -31,7 +33,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
       leading: Container(
         height: 30,
         width: 35,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadious10,
         ),
         child: Image.asset(
@@ -41,7 +43,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Adrio Rassel",
             style: TextStyle(
               fontFamily: 'Inter',
@@ -60,7 +62,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-            onTap:widget.chatTap,
+            onTap: widget.chatTap,
             child: Container(
               height: 30,
               width: 35,
@@ -73,12 +75,11 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           GestureDetector(
-            onTap:(){
+            onTap: () {
               Scaffold.of(context).openDrawer();
             },
-              
             child: Container(
               height: 30,
               width: 35,
@@ -87,8 +88,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                 border: Border.all(color: BorderRadious8Color),
               ),
               child: Image.asset(
-                widget.drawer_icon_path ??
-                    'assets/icons/notification.png',
+                widget.drawer_icon_path ?? 'assets/icons/notification.png',
               ),
             ),
           ),
@@ -97,4 +97,3 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
     );
   }
 }
-

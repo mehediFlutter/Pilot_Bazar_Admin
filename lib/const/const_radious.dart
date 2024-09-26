@@ -13,7 +13,7 @@ const SizedBox width20 = SizedBox(width: 20);
 Container horizontalLine = Container(
   height: 55,
   width: 2,
-  decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+  decoration: const BoxDecoration(color: Color(0xFFD9D9D9)),
 );
 
 Container greenTolu = Container(
@@ -22,16 +22,14 @@ Container greenTolu = Container(
   decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.green),
 );
 
-Icon syncIcon = Icon(
+Icon syncIcon = const Icon(
   Icons.sync,
   size: 15,
   color: syncIconColor,
 );
-  Padding syncIconMethode() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: syncIcon,
-    );
-  }
-
-  
+Padding syncIconMethode() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 3),
+    child: syncIcon,
+  );
+}

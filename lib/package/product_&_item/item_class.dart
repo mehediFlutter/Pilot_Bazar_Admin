@@ -38,7 +38,7 @@ class _ItemClassState extends State<ItemClass> {
             // height: 138,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Color(0xFFEEEEEE),
+              color: const Color(0xFFEEEEEE),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -48,7 +48,7 @@ class _ItemClassState extends State<ItemClass> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 10, top: 10),
-                      child: Container(
+                      child: SizedBox(
                         height: 45,
                         width: 45,
                         child: Center(
@@ -135,8 +135,8 @@ class _ItemClassState extends State<ItemClass> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Divider(
                     thickness: 1.5,
                     color: Color(0xFFD9D9D9),
@@ -145,7 +145,7 @@ class _ItemClassState extends State<ItemClass> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Model: X-Tral', style: small10Style),
@@ -156,9 +156,9 @@ class _ItemClassState extends State<ItemClass> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Condition: New', style: small10Style),
-                        Text('Fuel: CNG, OCT', style: small10Style),
-                        Text(
+                        const Text('Condition: New', style: small10Style),
+                        const Text('Fuel: CNG, OCT', style: small10Style),
+                        const Text(
                           'Color: Red',
                           style: small10Style,
                           overflow: TextOverflow.ellipsis,
@@ -183,14 +183,14 @@ class _ItemClassState extends State<ItemClass> {
                         //   child: Text('position'),
                         // ),
                         PopupMenuButton(
-                            child: Icon(Icons.share),
+                            child: const Icon(Icons.share),
                             itemBuilder: (context) {
                               return [
                                 PopupMenuItem(
                                     child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.center,
                                       child: Text(
                                         'Send as Visitor',
@@ -200,7 +200,7 @@ class _ItemClassState extends State<ItemClass> {
                                             fontSize: 12),
                                       ),
                                     ),
-                                    Divider(
+                                    const Divider(
                                       color: Colors.black,
                                     ),
                                     InkWell(
@@ -210,10 +210,11 @@ class _ItemClassState extends State<ItemClass> {
                                       child: shareButtom(context,
                                           "Taka, Link, Details, Image  "),
                                     ),
-                                        SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     height10,
                                     InkWell(
-                                      child: shareButtom(context,  "Taka, Link, Details"),
+                                      child: shareButtom(
+                                          context, "Taka, Link, Details"),
                                       onTap: () {
                                         print("I am  Taka, Link, Details");
                                         Navigator.pop(context);
@@ -221,7 +222,7 @@ class _ItemClassState extends State<ItemClass> {
                                     ),
                                     height10,
                                     height10,
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.center,
                                       child: Text(
                                         'Send as Media (মিডিয়া)',
@@ -231,11 +232,12 @@ class _ItemClassState extends State<ItemClass> {
                                             fontSize: 12),
                                       ),
                                     ),
-                                    Divider(
+                                    const Divider(
                                       color: Colors.black,
                                     ),
                                     InkWell(
-                                      child: shareButtom(context,  "All Images (শুধু ছবি)"),
+                                      child: shareButtom(
+                                          context, "All Images (শুধু ছবি)"),
                                       onTap: () {
                                         print("I am  Taka, Link, Details");
                                         Navigator.pop(context);
@@ -243,11 +245,12 @@ class _ItemClassState extends State<ItemClass> {
                                     ),
                                     height10,
                                     InkWell(
-                                        onTap: ()  {
+                                        onTap: () {
                                           print("Onli image");
-                                        Navigator.pop(context);
+                                          Navigator.pop(context);
                                         },
-                                        child:shareButtom(context, "Details (শুধু তথ্য)")),
+                                        child: shareButtom(
+                                            context, "Details (শুধু তথ্য)")),
                                   ],
                                 ))
                               ];
@@ -295,20 +298,25 @@ class _ItemClassState extends State<ItemClass> {
   Container shareButtom(BuildContext context, String name) {
     return Container(
       height: 25,
-      padding: EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.only(top: 5),
       child: Row(
         children: [
           Text(
             name,
-            style: TextStyle(fontSize: 12, color: Colors.black87),
+            style: const TextStyle(fontSize: 12, color: Colors.black87),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           green10R
         ],
       ),
     );
   }
-  Icon green10R =   Icon(Icons.circle,color: Colors.green,size: 10,);
+
+  Icon green10R = const Icon(
+    Icons.circle,
+    color: Colors.green,
+    size: 10,
+  );
 
   name() {
     print("object");

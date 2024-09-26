@@ -8,45 +8,46 @@ import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/package/product_&_item/item_class.dart';
 
 class SearchPage extends StatefulWidget {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  SearchPage({super.key});
 
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
-List<Map<String, dynamic>> items = [
-  {'name': 'Banana','price':'80000 tk'},
-  {'name': 'Orange','price':'850000 tk'},
-  {'name': 'Mango','price':'80430 tk'},
-  {'name': 'Pineapple','price':'804540 tk'},
-  {'name': 'Apple','price':'8004243 tk'},
-  {'name': 'Banana','price':'853400 tk'},
-  {'name': 'Orange','price':'80000 tk'},
-  {'name': 'Mango','price':'80040 tk'},
-  {'name': 'Pineapple','price':'785455 tk'},
-  {'name': 'Apple','price':'54000 tk'},
-];
-List<Map<String, dynamic>> _filteredItems = [];
+  List<Map<String, dynamic>> items = [
+    {'name': 'Banana', 'price': '80000 tk'},
+    {'name': 'Orange', 'price': '850000 tk'},
+    {'name': 'Mango', 'price': '80430 tk'},
+    {'name': 'Pineapple', 'price': '804540 tk'},
+    {'name': 'Apple', 'price': '8004243 tk'},
+    {'name': 'Banana', 'price': '853400 tk'},
+    {'name': 'Orange', 'price': '80000 tk'},
+    {'name': 'Mango', 'price': '80040 tk'},
+    {'name': 'Pineapple', 'price': '785455 tk'},
+    {'name': 'Apple', 'price': '54000 tk'},
+  ];
+  List<Map<String, dynamic>> _filteredItems = [];
 
-@override
-void initState() {
-  _filteredItems = List<Map<String, dynamic>>.from(items); // Copy the list
-  print('length of items');
-  print(items.length);
-}
+  @override
+  void initState() {
+    _filteredItems = List<Map<String, dynamic>>.from(items); // Copy the list
+    print('length of items');
+    print(items.length);
+  }
 
-void _filterList(String searchText) {
-  setState(() {
-    _filteredItems = items
-        .where((item) => item['name']
-            .toLowerCase()
-            .contains(searchText.toLowerCase()))
-        .toList();
-  });
-}
+  void _filterList(String searchText) {
+    setState(() {
+      _filteredItems = items
+          .where((item) =>
+              item['name'].toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,23 +60,25 @@ void _filterList(String searchText) {
               CustomerProfileBar(
                 profileImagePath: 'assets/images/small_profile.png',
                 onTapFunction: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfilePage()));
                 },
                 chatTap: () {
                   print("notificaiton tap");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificaitonScreen()));
-                }, 
+                          builder: (context) => const NotificaitonScreen()));
+                },
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 25),
                 child: Container(
                   height: 30,
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFEDEDED),
                     borderRadius: BorderRadious20,
                   ),
@@ -84,15 +87,14 @@ void _filterList(String searchText) {
                     child: TextField(
                       controller: _controller,
                       onChanged: _filterList,
-                     
                       style: Theme.of(context).textTheme.bodySmall,
                       cursorHeight: 15,
                       decoration: InputDecoration(
                           hintText: "Search",
                           hintStyle: Theme.of(context).textTheme.bodySmall,
                           border: InputBorder.none,
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(top: 4),
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(top: 4),
                             child: Icon(
                               Icons.search,
                               color: Colors.black,
@@ -103,14 +105,14 @@ void _filterList(String searchText) {
                   ),
                 ),
               ),
-               Expanded(
-              child: ListView.builder(
-                itemCount: _filteredItems.length,
-                itemBuilder: (context, index) {
-                  return ItemClass(item: _filteredItems[index]);
-                },
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _filteredItems.length,
+                  itemBuilder: (context, index) {
+                    return ItemClass(item: _filteredItems[index]);
+                  },
+                ),
               ),
-            ),
             ],
           ),
         ),

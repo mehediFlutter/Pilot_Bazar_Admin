@@ -53,6 +53,10 @@ class _MyDrawerState extends State<MyDrawer> {
   universalCustumerClick() {
     if (universalCustomBool == true) {
       isCustomerClick = true;
+
+      setState(() {});
+    } else if (universalCustomBool == true && universalViewBool == true) {
+      isViewClick = true;
       setState(() {});
     }
   }
@@ -98,6 +102,7 @@ class _MyDrawerState extends State<MyDrawer> {
     universalFollowUp();
   }
 
+  @override
   Widget build(BuildContext context) {
     Color changableIconColor;
     Color colorMethode(bool isBool) {
@@ -108,7 +113,7 @@ class _MyDrawerState extends State<MyDrawer> {
     return Drawer(
       // Your drawer content
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -152,7 +157,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
 
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   height: isCustomerClick ? 90 : 0,
                   child: Visibility(
@@ -165,7 +170,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             Icons.add,
                             color: colorMethode(isCreateBool),
                           ),
-                          text: 'Personal',
+                          text: 'Personal/Create',
                           onClick: () async {
                             isCreateBool = true;
                             universalCreateBool = true;
@@ -177,8 +182,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustomerPersonalInfo(
+                                    builder: (context) => CustomerPersonalInfo(
                                           notifier: widget.notifier,
                                         )));
                           },
@@ -190,7 +194,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             Icons.person,
                             color: colorMethode(isViewClick),
                           ),
-                          text: 'Budget',
+                          text: 'Budget/View',
                           onClick: () async {
                             isViewClick = true;
 
@@ -203,8 +207,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChatFontScreen(
+                                    builder: (context) => ChatFontScreen(
                                           notifier: widget.notifier,
                                         )));
 
@@ -251,7 +254,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       setState(() {});
                     }),
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   height: isMessageBool ? 140 : 0,
                   child: Visibility(
@@ -274,9 +277,8 @@ class _MyDrawerState extends State<MyDrawer> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustomerPersonalInfo(
-                                            notifier: widget.notifier)),
+                                    builder: (context) => CustomerPersonalInfo(
+                                        notifier: widget.notifier)),
                                 (route) => false);
                           },
                         ),
@@ -340,7 +342,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           'notifier', widget.notifier.value.toString());
                       setState(() {});
                     },
-                    child: Text("Moode"))
+                    child: const Text("Moode"))
               ],
             ),
           ],
@@ -360,7 +362,7 @@ class _MyDrawerState extends State<MyDrawer> {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        padding: EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 20),
         width: double.infinity,
         height: 59,
         decoration: BoxDecoration(
@@ -371,16 +373,16 @@ class _MyDrawerState extends State<MyDrawer> {
           children: [
             Image.asset(
               iconPath ?? '',
-              color: isBool ? Colors.blue : Color(0xFF666666),
+              color: isBool ? Colors.blue : const Color(0xFF666666),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Text(
               text,
               style: small14StyleW500.copyWith(
                 color: isBool ? Colors.blue : Colors.black,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             isArrow
                 ? Transform.rotate(
                     angle: isBool ? 1.5708 : 0, // 90 degrees in radians
@@ -390,8 +392,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       color: isBool ? Colors.blue : null,
                     ),
                   )
-                : SizedBox(),
-            SizedBox(width: 20),
+                : const SizedBox(),
+            const SizedBox(width: 20),
           ],
         ),
       ),
@@ -423,13 +425,13 @@ class _MyDrawerState extends State<MyDrawer> {
                       iconPath,
                       fit: BoxFit.cover,
                     )
-                  : customIcon ?? SizedBox(),
-              SizedBox(width: 20),
+                  : customIcon ?? const SizedBox(),
+              const SizedBox(width: 20),
               Text(
                 text,
                 style: clickBoolName ? activedDrawerItem : inActivedDrawerItem,
               ),
-              Spacer(),
+              const Spacer(),
               isTrailling
                   ? Text(
                       '20',
@@ -437,7 +439,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           ? activedDrawerItem
                           : inActivedDrawerItem,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               width20
             ],
           ),

@@ -19,7 +19,7 @@ class CustomerListTile extends StatefulWidget {
 
 class _CustomerListTileState extends State<CustomerListTile> {
   @override
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List customerList = [
     'customer1',
     'customer2',
@@ -57,10 +57,10 @@ class _CustomerListTileState extends State<CustomerListTile> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(notifier: widget.notifier,
-    children: [
+    return ReUsableMotherWidget(notifier: widget.notifier, children: [
       Builder(builder: (context) {
         return CustomerProfileBar(
           profileImagePath: 'assets/images/small_profile.png',
@@ -70,18 +70,22 @@ class _CustomerListTileState extends State<CustomerListTile> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CustomerPersonalInfo(notifier: widget.notifier,)));
+                    builder: (context) => CustomerPersonalInfo(
+                          notifier: widget.notifier,
+                        )));
           },
           chatTap: () {
             print("notificaiton tap");
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatFontScreen(notifier: widget.notifier,)));
+                    builder: (context) => ChatFontScreen(
+                          notifier: widget.notifier,
+                        )));
           },
           // drawerTap: () {
           //   Scaffold.of(context).openDrawer();
-            
+
           // },
         );
       }),
@@ -140,25 +144,31 @@ class _CustomerListTileState extends State<CustomerListTile> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CustomerPersonalInfo(notifier: widget.notifier)));
+                      builder: (context) =>
+                          CustomerPersonalInfo(notifier: widget.notifier)));
             },
             child: Container(
               height: 30,
               width: 35,
-              padding: EdgeInsets.all(7),
+              padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).colorScheme.onBackground),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.onSurface),
                   borderRadius: borderRadious8),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerPersonalInfo(notifier: widget.notifier)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              CustomerPersonalInfo(notifier: widget.notifier)));
                 },
                 child: Container(
                   height: 10,
                   width: 10,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.black),
-                  child: Icon(
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.black),
+                  child: const Icon(
                     Icons.add,
                     color: Colors.white,
                     size: 10,
@@ -185,7 +195,7 @@ class _CustomerListTileState extends State<CustomerListTile> {
         child: ListView.builder(
           itemCount: _filteredItems.length,
           itemBuilder: (context, index) {
-            return CustomerShortInfoItemClass();
+            return const CustomerShortInfoItemClass();
             //  return ItemClass(item: _filteredItems[index]);
           },
         ),

@@ -6,6 +6,7 @@ class Tabs extends StatelessWidget {
   final Function onTap;
 
   const Tabs({
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onTap,
@@ -32,7 +33,7 @@ class Tabs extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 4), // Adding gap between text and underline
+          const SizedBox(height: 4), // Adding gap between text and underline
           Container(
             height: 2,
             width: underlineWidth, // Dynamic width for underline

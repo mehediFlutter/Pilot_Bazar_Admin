@@ -17,7 +17,9 @@ class CustomerRequiredTextFild extends StatefulWidget {
       this.hintText,
       this.labelText,
       this.function,
-      this.keyboardType, this.onTap,  this.readOnly=false});
+      this.keyboardType,
+      this.onTap,
+      this.readOnly = false});
 
   @override
   State<CustomerRequiredTextFild> createState() =>
@@ -28,7 +30,7 @@ class _CustomerRequiredTextFildState extends State<CustomerRequiredTextFild> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: TextFormField(
         readOnly: widget.readOnly,
         keyboardType: widget.keyboardType,
@@ -38,7 +40,7 @@ class _CustomerRequiredTextFildState extends State<CustomerRequiredTextFild> {
           }
         },
         onTap: () {
-          if(widget.onTap != null){
+          if (widget.onTap != null) {
             widget.onTap;
           }
         },
@@ -47,24 +49,19 @@ class _CustomerRequiredTextFildState extends State<CustomerRequiredTextFild> {
 
         controller: widget.textFildController,
         decoration: InputDecoration(
-  
-
             isDense: true,
-            contentPadding: EdgeInsets.only(top: 12,bottom: 12,left: 20 ),
+            contentPadding:
+                const EdgeInsets.only(top: 12, bottom: 12, left: 20),
             hintText: widget.hintText,
             labelText: widget.labelText,
             hintStyle: small12Stylew400,
             labelStyle: small12Stylew400,
-           
-            
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Color(0xFFEEEEEE))),
+                borderSide: const BorderSide(color: Color(0xFFEEEEEE))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Colors.grey))
-                
-                ),
+                borderSide: const BorderSide(color: Colors.grey))),
         cursorColor: Colors.black,
         cursorWidth: 1,
         // cursorHeight: 20,

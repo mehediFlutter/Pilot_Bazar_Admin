@@ -21,8 +21,8 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
 
   calculateHeight() async {
     if (isCustomerClick) {
-      totalHeight = await drawerItemHeaderChildHeight *
-          numberOfDrawerItemHeaderChildWidgets;
+      totalHeight =
+          drawerItemHeaderChildHeight * numberOfDrawerItemHeaderChildWidgets;
       setState(() {});
       print(totalHeight);
     }
@@ -32,7 +32,7 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -43,19 +43,17 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
                   onClick: () {
                     setState(() {
                       isCustomerClick = !isCustomerClick;
-                    
                     });
                   },
                 ),
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   height: isCustomerClick ? 100 : 0,
                   child: isCustomerClick
                       ? Column(
                           children: [
                             drawerItemHeaderChild(
-                           
                               viewClick: () {
                                 setState(() {
                                   isCreateClick = !isCreateClick;
@@ -80,7 +78,7 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
                             ),
                           ],
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 ),
               ],
             ),
@@ -94,7 +92,7 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        padding: EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 20),
         width: double.infinity,
         height: 59,
         decoration: BoxDecoration(
@@ -105,16 +103,16 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
           children: [
             Icon(
               Icons.person,
-              color: isCustomerClick ? Colors.blue : Color(0xFF666666),
+              color: isCustomerClick ? Colors.blue : const Color(0xFF666666),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Text(
               'Customers',
               style: TextStyle(
                 color: isCustomerClick ? Colors.blue : Colors.black,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Transform.rotate(
               angle: isCustomerClick ? 1.5708 : 0, // 90 degrees in radians
               child: Icon(
@@ -123,15 +121,14 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
                 color: isCustomerClick ? Colors.blue : null,
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget drawerItemHeaderChild(
-      {required Function() viewClick }) {
+  Widget drawerItemHeaderChild({required Function() viewClick}) {
     setState(() {});
     return Expanded(
       child: InkWell(
@@ -144,12 +141,12 @@ class _MyDrawerPracticeState extends State<MyDrawerPractice> {
                   ? activeDrawerItemIconColor
                   : inActiveDrawerItemIconColor,
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Text(
               'View',
               style: isViewClick ? activedDrawerItem : inActivedDrawerItem,
             ),
-            Spacer(),
+            const Spacer(),
             Text(
               '20',
               style: inActivedDrawerItem,

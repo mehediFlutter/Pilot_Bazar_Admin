@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
-import 'package:pilot_bazar_admin/practice/drawer_practice.dart';
+import 'package:pilot_bazar_admin/re_usable_widget/custom_button.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
-    final ValueNotifier<ThemeMode> notifier;
+  final ValueNotifier<ThemeMode> notifier;
 
   final List<Widget> children;
- // final Drawer? drawer;
+  // final Drawer? drawer;
   final MainAxisAlignment? mainAxis;
   final CrossAxisAlignment? crossAxis;
   final bool isSingleChildScrollView;
-
+  final bool isFloatingActionButton;
   const ReUsableMotherWidget({
     Key? key,
     required this.children,
     this.isSingleChildScrollView = false,
     this.mainAxis,
-    this.crossAxis, required this.notifier,
-  //  this.drawer,
+    this.crossAxis,
+    required this.notifier,
+    this.isFloatingActionButton = false,
+    //  this.drawer,
   }) : super(key: key);
 
   @override
@@ -27,13 +29,19 @@ class ReUsableMotherWidget extends StatelessWidget {
       crossAxisAlignment: crossAxis ?? CrossAxisAlignment.start,
       children: children,
     );
-  //  Widget drawer = Drawer();
+    //  Widget drawer = Drawer();
     return SafeArea(
-      
       child: Scaffold(
-        drawer: MyDrawer(notifier: notifier,),
+        drawer: MyDrawer(
+          notifier: notifier,
+        ),
+        floatingActionButton: isFloatingActionButton
+            ? Row(
+                children: children,
+              )
+            : const SizedBox(),
         body: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: isSingleChildScrollView
               ? SingleChildScrollView(child: column)
               : column,

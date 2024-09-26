@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 
 class DividerWithCircle extends StatelessWidget {
+  const DividerWithCircle({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Divider(
+        const Divider(
           color: searchBarBorderColor, // Customize the color of the divider
           thickness: 1, // Adjust the thickness of the divider
         ),
@@ -14,15 +16,14 @@ class DividerWithCircle extends StatelessWidget {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-            
               width: 15, // Adjust the size of the circle
               height: 15, // Adjust the size of the circle
               decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: searchBarBorderColor)
-               // Customize the color of the circle
-              ),
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: searchBarBorderColor)
+                  // Customize the color of the circle
+                  ),
             ),
           ),
         ),

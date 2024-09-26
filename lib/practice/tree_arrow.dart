@@ -1,104 +1,85 @@
-// import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
-// void main() {
-//   runApp(MyApp());
-// }
+import 'package:arrow_path/arrow_path.dart';
+import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/const/color.dart';
 
-// class MyApp extends StatelessWidget {
-//   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+void main() => runApp(const MyApp());
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         key: scaffoldKey, // Define scaffoldKey here
-//         appBar: AppBar(title: Text('Demo')),
-//         body: ReUsableMotherWidget(
-//           drawer: Drawer(
-//             child: Text("I am a drawer"),
-//           ),
-//           children: [
-//             CustomerProfileBar(
-//               profileImagePath: 'assets/images/small_profile.png',
-//               message_icon_path: 'assets/icons/message_notification.png',
-//               beside_message_icon_path: 'assets/icons/beside_message.png',
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-// class ReUsableMotherWidget extends StatelessWidget {
-//   final List<Widget> children;
-//   final Drawer? drawer;
-//   final MainAxisAlignment? mainAxis;
-//   final CrossAxisAlignment? crossAxis;
-//   final bool isSingleChildScrollView;
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Arrow Path Example',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: const ExampleApp(),
+      );
+}
 
-//   const ReUsableMotherWidget({
-//     Key? key,
-//     required this.children,
-//     this.isSingleChildScrollView = false,
-//     this.mainAxis,
-//     this.crossAxis,
-//     this.drawer,
-//   }) : super(key: key);
+class ExampleApp extends StatelessWidget {
+  const ExampleApp({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     Widget column = Column(
-//       mainAxisAlignment: mainAxis ?? MainAxisAlignment.start,
-//       crossAxisAlignment: crossAxis ?? CrossAxisAlignment.start,
-//       children: children,
-//     );
-//     return SafeArea(
-//       child: Scaffold(
-//         drawer: drawer,
-//         body: Padding(
-//           padding: EdgeInsets.only(left: 20, right: 20),
-//           child: isSingleChildScrollView
-//               ? SingleChildScrollView(child: column)
-//               : column,
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Arrow Path Example'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Icon(
+                Icons.subdirectory_arrow_right_rounded,
+                color: syncIconColor,
+              ),
+              ClipRect(
+                child: CustomPaint(
+                  size: Size(MediaQuery.of(context).size.width, 700),
+                  painter: ArrowPainter(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
 
-// class CustomerProfileBar extends StatelessWidget {
-//   final String? profileImagePath;
-//   final String? message_icon_path;
-//   final String? beside_message_icon_path;
-//   final Function()? drawerTap;
+class ArrowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    /// The arrows usually looks better with rounded caps.
+    final Paint paint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 3.0;
 
-//   const CustomerProfileBar({
-//     Key? key,
-//     this.profileImagePath,
-//     this.message_icon_path,
-//     this.beside_message_icon_path,
-//     this.drawerTap,
-//   }) : super(key: key);
+    /// Draw a single arrow.
+    {
+      Path path = Path();
+      path.moveTo(size.width * 0.25, 60);
+      path.relativeCubicTo(0, 0, 20 * 20, 20, 10 * 10, 10);
+      path = ArrowPath.addTip(path);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListTile(
-//       contentPadding: EdgeInsets.zero,
-//       trailing: GestureDetector(
-//         onTap: drawerTap,
-//         child: Container(
-//           height: 30,
-//           width: 35,
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(8), // Use BorderRadius.circular instead of BorderRadious8
-//             border: Border.all(color: Colors.black), // Use Colors.black instead of BorderRadious8Color
-//           ),
-//           child: Image.asset(
-//             beside_message_icon_path ?? 'assets/icons/notification.png',
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+      canvas.drawPath(path, paint..color = Colors.blue);
+
+      const TextSpan textSpan = TextSpan(
+        text: 'Single arrow',
+        style: TextStyle(color: Colors.blue),
+      );
+      final TextPainter textPainter = TextPainter(
+        text: textSpan,
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(minWidth: size.width);
+      textPainter.paint(canvas, const Offset(0, 36));
+    }
+
+    /// Draw a double sided arrow.
+  }
+
+  @override
+  bool shouldRepaint(ArrowPainter oldDelegate) => false;
+}

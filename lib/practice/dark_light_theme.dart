@@ -9,8 +9,8 @@ class MyThemePage extends StatelessWidget {
   MyThemePage({super.key});
 
   final ThemeData lightTheme = ThemeData(
-    colorScheme: ColorScheme.light(
-      background: Colors.white,
+    colorScheme: const ColorScheme.light(
+      surface: Colors.white,
       primary: Colors.black,
       secondary: Colors.blue,
     ),
@@ -20,25 +20,23 @@ class MyThemePage extends StatelessWidget {
       backgroundColor: Colors.blue,
     ),
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(color: Colors.black,fontSize: 20),
-      bodySmall: TextStyle(color: Colors.black,fontSize:12),
+      bodyMedium: TextStyle(color: Colors.black, fontSize: 20),
+      bodySmall: TextStyle(color: Colors.black, fontSize: 12),
     ),
   );
 
   final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.white,
-    colorScheme: ColorScheme.dark(
-      background: Colors.black,
+    colorScheme: const ColorScheme.dark(
+      surface: Colors.black,
       primary: Colors.white,
       secondary: Colors.grey,
     ),
     textTheme: const TextTheme(
-       bodyMedium: TextStyle(color: Colors.white,fontSize: 20),
-      bodySmall: TextStyle(color: Colors.white,fontSize: 12),
-     
+      bodyMedium: TextStyle(color: Colors.white, fontSize: 20),
+      bodySmall: TextStyle(color: Colors.white, fontSize: 12),
     ),
-    
   );
 
   @override
@@ -69,23 +67,31 @@ class _ApplyDarkModeState extends State<ApplyDarkMode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Container(
           height: 200,
           width: 300,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-
+            color: Theme.of(context).colorScheme.surface,
           ),
           child: Row(
             children: [
-              Text("Here is Text Style",style: Theme.of(context).textTheme.bodyMedium,),
+              Text(
+                "Here is Text Style",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
               ElevatedButton(
                 onPressed: () {
-                  widget.notifier.value = widget.notifier.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+                  widget.notifier.value =
+                      widget.notifier.value == ThemeMode.light
+                          ? ThemeMode.dark
+                          : ThemeMode.light;
                 },
-                child: Text("Change",style: Theme.of(context).textTheme.bodySmall,),
+                child: Text(
+                  "Change",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
             ],
           ),

@@ -34,6 +34,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
   void initState() {
     // TODO: implement initState
     universalCreateBool = true;
+    universalCustomBool = true;
     setState(() {});
   }
 
@@ -50,7 +51,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
             drawer_icon_path: 'assets/icons/beside_message.png',
             onTapFunction: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
             },
             chatTap: () {
               print("notificaiton tap");
@@ -75,13 +76,13 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
                 ),
                 border: Border.all(color: searchBarBorderColor),
               ),
-              child: Text(
+              child: const Text(
                 'Customer Requirement',
                 style: small12Stylew500,
               ),
             ),
           ),
-          Text(
+          const Text(
             "Customer Personal info ->",
             style: small14StyleW500,
           ),
@@ -116,7 +117,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
           ),
           height5,
           height10,
-          Text('Vehicle Info ->', style: small14StyleW500),
+          const Text('Vehicle Info ->', style: small14StyleW500),
           height5,
 
           // TextFormField(
@@ -244,7 +245,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
                             notifier: widget.notifier,
                           )));
             },
-            child: ConfirmAndNextButton(
+            child: const ConfirmAndNextButton(
               width: 175,
               text: 'Confirm & Next',
               arrowOrPlus: '->',
@@ -259,15 +260,16 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
       value: _selectedItem,
       decoration: InputDecoration(
           isDense: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 6, horizontal: 15),
           hintText: hintText,
           hintStyle: small12Stylew400,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Color(0xFFEEEEEE))),
+              borderSide: const BorderSide(color: Color(0xFFEEEEEE))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey))),
+              borderSide: const BorderSide(color: Colors.grey))),
       onChanged: (String? value) {
         setState(() {
           _selectedItem = value;
@@ -282,7 +284,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
       }).toList(),
       icon: Transform.rotate(
         angle: 90 * 3.1415927 / 180, // Convert degrees to radians
-        child: Icon(
+        child: const Icon(
           Icons.arrow_forward_ios,
           size: 11,
           color: dropdownIconColor,

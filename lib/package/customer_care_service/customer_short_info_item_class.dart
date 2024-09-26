@@ -17,9 +17,9 @@ class _CustomerShortInfoItemClassState
   Color scheduleColor = Colors.black;
   Color messageColor = Colors.black;
   Color infoColor = Colors.black;
-  bool selectSchedule=false;
-  bool selectMessage=false;
-  bool selectInfo=false;
+  bool selectSchedule = false;
+  bool selectMessage = false;
+  bool selectInfo = false;
 
   int selectedIndex = 0;
 
@@ -35,13 +35,13 @@ class _CustomerShortInfoItemClassState
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         width: double.infinity,
         decoration: BoxDecoration(
             borderRadius: borderRadious10,
             border: Border.all(color: searchBarBorderColor)),
         child: Column(
-         // crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
@@ -59,30 +59,30 @@ class _CustomerShortInfoItemClassState
                     child: Image.asset('assets/images/jon_profile.png'),
                   ),
                 ),
-               
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Text(
-                  "Siam Ahmed Jon",
-                  style: small14StyleW500,
-                ),
-                 Text(
-                  "8801969944400",
-                  style: small10Style,
-                ),
-              ],
-            ),
-            Spacer(),
-            Icon(Icons.more_horiz,color: Color(0xFF959090),),
-         //   SizedBox(height: 10,)
-              
 
-               
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Siam Ahmed Jon",
+                      style: small14StyleW500,
+                    ),
+                    Text(
+                      "8801969944400",
+                      style: small10Style,
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.more_horiz,
+                  color: Color(0xFF959090),
+                ),
+                //   SizedBox(height: 10,)
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 0),
               child: Divider(
                 color: searchBarBorderColor,
                 thickness: 1,
@@ -97,14 +97,15 @@ class _CustomerShortInfoItemClassState
                       onTap: () {
                         messageColor = Colors.black;
                         infoColor = Colors.black;
-                       
+
                         ScheduleMessageInfoSelectIndex = 0;
-                        selectSchedule=!selectSchedule;
-                        selectInfo=false;
-                        selectMessage=false;
-                       selectSchedule? scheduleColor = Colors.blue: scheduleColor = Colors.black;
+                        selectSchedule = !selectSchedule;
+                        selectInfo = false;
+                        selectMessage = false;
+                        selectSchedule
+                            ? scheduleColor = Colors.blue
+                            : scheduleColor = Colors.black;
                         setState(() {});
-                         
                       },
                       child: Container(
                         height: 30,
@@ -121,10 +122,10 @@ class _CustomerShortInfoItemClassState
                             ),
                             Text(
                               "Schedule",
-                              style:
-                                  small12Stylew500.copyWith(color: scheduleColor),
+                              style: small12Stylew500.copyWith(
+                                  color: scheduleColor),
                             ),
-                        //   selectSchedule? Icon(Icons.arrow_drop_down_sharp):Icon(Icons.arrow_drop_up_sharp)
+                            //   selectSchedule? Icon(Icons.arrow_drop_down_sharp):Icon(Icons.arrow_drop_up_sharp)
                           ],
                         ),
                       ),
@@ -138,11 +139,13 @@ class _CustomerShortInfoItemClassState
                         scheduleColor = Colors.black;
                         infoColor = Colors.black;
                         ScheduleMessageInfoSelectIndex = 1;
-                        selectMessage = ! selectMessage;
-                        selectSchedule=false;
-                        selectInfo= false;
-                      
-                       selectMessage? messageColor = Colors.blue: messageColor = Colors.black;
+                        selectMessage = !selectMessage;
+                        selectSchedule = false;
+                        selectInfo = false;
+
+                        selectMessage
+                            ? messageColor = Colors.blue
+                            : messageColor = Colors.black;
 
                         setState(() {});
                       },
@@ -161,7 +164,8 @@ class _CustomerShortInfoItemClassState
                             ),
                             Text(
                               "Message",
-                              style: small12Stylew500.copyWith(color: messageColor),
+                              style: small12Stylew500.copyWith(
+                                  color: messageColor),
                             )
                           ],
                         ),
@@ -177,9 +181,11 @@ class _CustomerShortInfoItemClassState
                         scheduleColor = Colors.black;
                         ScheduleMessageInfoSelectIndex = 2;
                         selectInfo = !selectInfo;
-                        selectSchedule=false;
-                        selectMessage=false;
-                        selectInfo? infoColor=Colors.blue:infoColor=Colors.black;
+                        selectSchedule = false;
+                        selectMessage = false;
+                        selectInfo
+                            ? infoColor = Colors.blue
+                            : infoColor = Colors.black;
 
                         setState(() {});
                       },
@@ -197,7 +203,8 @@ class _CustomerShortInfoItemClassState
                               color: infoColor,
                             ),
                             Text("Info",
-                                style: small12Stylew500.copyWith(color: infoColor))
+                                style:
+                                    small12Stylew500.copyWith(color: infoColor))
                           ],
                         ),
                       ),
@@ -207,14 +214,14 @@ class _CustomerShortInfoItemClassState
               ],
             ),
 
-            Divider(
+            const Divider(
               color: searchBarBorderColor,
             ),
 
             if (selectSchedule == true) ...{
-              ScheduleDetailsClass(),
+              const ScheduleDetailsClass(),
             } else if (selectInfo == true) ...{
-              InfoDetailsClass(widthside: double.infinity),
+              const InfoDetailsClass(widthside: double.infinity),
             }
 
             //  const SizedBox(height: 15)
@@ -231,6 +238,7 @@ class Tabs extends StatelessWidget {
   final Function onTap;
 
   const Tabs({
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onTap,
@@ -257,7 +265,7 @@ class Tabs extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 4), // Adding gap between text and underline
+          const SizedBox(height: 4), // Adding gap between text and underline
           Container(
             height: 2,
             width: underlineWidth, // Dynamic width for underline

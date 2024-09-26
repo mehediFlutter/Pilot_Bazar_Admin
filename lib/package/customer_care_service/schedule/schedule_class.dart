@@ -21,14 +21,14 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
           header,
           style: small12Stylew500,
         ),
-        Spacer(),
+        const Spacer(),
         Container(
           height: 20,
           width: 20,
           decoration: BoxDecoration(
               border: Border.all(color: searchBarBorderColor),
               borderRadius: BorderRadius.circular(4)),
-          child: Icon(
+          child: const Icon(
             Icons.add,
             color: Colors.black,
             size: 15,
@@ -58,7 +58,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
           decoration: BoxDecoration(
               border: Border.all(color: searchBarBorderColor),
               borderRadius: BorderRadius.circular(4)),
-          child: Icon(
+          child: const Icon(
             Icons.phone,
             color: Colors.black,
             size: 13,
@@ -82,7 +82,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      //  Divider(),
+        //  Divider(),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -92,7 +92,7 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
                 isSelected: selectedIndex == 0,
                 onTap: () {
                   onTabTapped(0);
-                   print(selectedIndex);
+                  print(selectedIndex);
                 }),
             width10,
             Tabs(
@@ -104,30 +104,31 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
                 }),
           ],
         ),
-         Divider(
+        const Divider(
           height: 0,
           color: searchBarBorderColor,
         ),
         height10,
 
-      
-      selectedIndex==0?  Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            containerDetailsHeaderTalkWhatsApp("Talk Through Whats app"),
-            ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: ((context, index) {
-                  return detailsSmallArrow('He is very interested');
-                })),
-            height10,
-            containerDetailsHeaderNeedToCall('Need To Call 12 May 2024'),
-            detailsSmallArrow(
-                'He will let us khow after discuss with his family'),
-          ],
-        ):Text("hello")
+        selectedIndex == 0
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  containerDetailsHeaderTalkWhatsApp("Talk Through Whats app"),
+                  ListView.builder(
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: 5,
+                      itemBuilder: ((context, index) {
+                        return detailsSmallArrow('He is very interested');
+                      })),
+                  height10,
+                  containerDetailsHeaderNeedToCall('Need To Call 12 May 2024'),
+                  detailsSmallArrow(
+                      'He will let us khow after discuss with his family'),
+                ],
+              )
+            : const Text("hello")
       ],
     );
   }
@@ -139,12 +140,11 @@ class _ScheduleDetailsClassState extends State<ScheduleDetailsClass> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.arrow_forward,
-                size: 12,
-                color: Colors.grey,
+              const Icon(
+                Icons.subdirectory_arrow_right_rounded,
+                color: syncIconColor,
+                size: 15,
               ),
-              width10,
               Expanded(
                 child: Text(
                   text1,

@@ -38,7 +38,6 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
   TextEditingController dateAndTimeController = TextEditingController();
   @override
   void initState() {
-    universalViewBool = true;
     setState(() {});
     dateAndTimeController = TextEditingController(text: _getFormattedDate());
   }
@@ -65,6 +64,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
   }
 
   String? _selectedItem;
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return ReUsableMotherWidget(
@@ -77,7 +77,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
             drawer_icon_path: 'assets/icons/beside_message.png',
             onTapFunction: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
             },
             chatTap: () {
               print("notificaiton tap");
@@ -107,7 +107,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
               ),
             ),
           ),
-          Text(
+          const Text(
             "Customer Budget info ->",
             style: small14StyleW500,
           ),
@@ -164,7 +164,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
             ],
           ),
           height10,
-          Text(
+          const Text(
             "Customer Lone info ->",
             style: small14StyleW500,
           ),
@@ -210,7 +210,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
             ),
           ),
           height10,
-          Text("Performance Info ->", style: small14StyleW500),
+          const Text("Performance Info ->", style: small14StyleW500),
 
           height10,
           Row(
@@ -239,17 +239,18 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
                   decoration: InputDecoration(
                       isDense: true,
                       contentPadding:
-                          EdgeInsets.only(top: 12, bottom: 12, left: 20),
+                          const EdgeInsets.only(top: 12, bottom: 12, left: 20),
                       hintText: 'Purchase Date',
                       labelText: 'Purchase Date',
                       hintStyle: small12Stylew400,
                       labelStyle: small12Stylew400,
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Color(0xFFEEEEEE))),
+                          borderSide:
+                              const BorderSide(color: Color(0xFFEEEEEE))),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.grey))),
+                          borderSide: const BorderSide(color: Colors.grey))),
                   style: small14StyleW500,
                   cursorColor: Colors.white,
                   onTap: () async {
@@ -317,7 +318,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
                             notifier: widget.notifier,
                           )));
             },
-            child: Align(
+            child: const Align(
               alignment: Alignment.bottomRight,
               child: ConfirmAndNextButton(
                 width: 100,
@@ -339,17 +340,18 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
       value: _selectedItem,
       decoration: InputDecoration(
           isDense: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 6, horizontal: 15),
           hintText: hintText,
           labelText: hintText,
           hintStyle: small12Stylew400,
           labelStyle: small12Stylew400,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Color(0xFFEEEEEE))),
+              borderSide: const BorderSide(color: Color(0xFFEEEEEE))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey))),
+              borderSide: const BorderSide(color: Colors.grey))),
       onChanged: (String? value) {
         setState(() {
           _selectedItem = value;
@@ -364,7 +366,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
       }).toList(),
       icon: Transform.rotate(
         angle: 90 * 3.1415927 / 180, // Convert degrees to radians
-        child: Icon(
+        child: const Icon(
           Icons.arrow_forward_ios,
           size: 11,
           color: dropdownIconColor,

@@ -11,13 +11,13 @@ class ItemDetails extends StatefulWidget {
 class _ItemDetailsState extends State<ItemDetails> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
+    return SafeArea(
+        child: Scaffold(
       body: Column(
         children: [
-          Text("Details of item"),
+          const Text("Details of item"),
           Text("This fruits name is ${widget.item['name']}"),
           Text("This fruits price is ${widget.item['price']}"),
-
         ],
       ),
     ));
