@@ -342,7 +342,20 @@ class _MyDrawerState extends State<MyDrawer> {
                           'notifier', widget.notifier.value.toString());
                       setState(() {});
                     },
-                    child: const Text("Moode"))
+                    child: const Text("Moode")),
+
+                ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: Colors.black),
+                    )),
+                ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Registration",
+                      style: TextStyle(color: Colors.black),
+                    )),
               ],
             ),
           ],

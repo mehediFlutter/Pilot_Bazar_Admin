@@ -11,9 +11,11 @@ ThemeData lightTheme = ThemeData(
 
 ThemeData darkTheme = ThemeData(
   colorScheme: const ColorScheme.light(
-    surface: Colors.green,
+    surface: Colors.grey,
     onSurface: Colors.blue,
     primary: Colors.black,
+    secondary: Colors.grey,
+
     //  secondary: Colors.black,
   ),
 );
