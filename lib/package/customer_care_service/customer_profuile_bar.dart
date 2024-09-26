@@ -7,6 +7,8 @@ class CustomerProfileBar extends StatefulWidget {
   final String? profileImagePath;
   final String? message_icon_path;
   final String? drawer_icon_path;
+  final String? companyName;
+  final String? phoneNumber;
   final Function()? onTapFunction;
   final Function()? chatTap;
   final Function()? drawerTap;
@@ -18,6 +20,8 @@ class CustomerProfileBar extends StatefulWidget {
     this.message_icon_path,
     this.drawer_icon_path,
     this.drawerTap,
+    this.companyName,
+    this.phoneNumber,
   });
 
   @override
@@ -36,15 +40,14 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
         decoration: const BoxDecoration(
           borderRadius: BorderRadious10,
         ),
-        child: Image.asset(
-          widget.profileImagePath ?? 'assets/images/small_profile.png',
-        ),
+        child: Image.network(
+            "https://click4details.com/storage/merchants/${widget.profileImagePath}"),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Adrio Rassel",
+          Text(
+            widget.companyName ?? 'None',
             style: TextStyle(
               fontFamily: 'Inter',
               fontWeight: FontWeight.w500,
@@ -53,7 +56,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
             ),
           ),
           Text(
-            'adriorassel@gmail.com',
+            widget.phoneNumber ?? 'None',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

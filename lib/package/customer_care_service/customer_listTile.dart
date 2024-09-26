@@ -6,6 +6,8 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_short_info_item_class.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 
 class CustomerListTile extends StatefulWidget {
   final ValueNotifier<ThemeMode> notifier;
@@ -42,10 +44,21 @@ class _CustomerListTileState extends State<CustomerListTile> {
     {'name': 'Mr Hassan', 'price': '54000 tk'},
   ];
   List<Map<String, dynamic>> _filteredItems = [];
+  var userInfo;
+
+  loadUserInfo() async {
+    LoginModel user = await AuthUtility.getUserInfo();
+    userInfo = user.toJson();
+    setState(() {});
+    print(userInfo);
+    print(userInfo['payload']['merchant']['name'].toString());
+  }
+
   @override
   void initState() {
     _filteredItems = List<Map<String, dynamic>>.from(items); // Copy the list
     super.initState();
+    loadUserInfo();
   }
 
   void _filterList(String searchText) {
@@ -63,9 +76,12 @@ class _CustomerListTileState extends State<CustomerListTile> {
     return ReUsableMotherWidget(notifier: widget.notifier, children: [
       Builder(builder: (context) {
         return CustomerProfileBar(
-          profileImagePath: 'assets/images/small_profile.png',
+          profileImagePath: userInfo['payload']['merchant']['merchant_info']
+              ['image']['name'],
           message_icon_path: 'assets/icons/message_notification.png',
           drawer_icon_path: 'assets/icons/beside_message.png',
+          companyName: userInfo['payload']['merchant']['name'].toString(),
+          phoneNumber: userInfo['payload']['merchant']['mobile'].toString(),
           onTapFunction: () {
             Navigator.push(
                 context,
