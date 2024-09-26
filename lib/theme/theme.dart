@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     surface: Colors.white,
-    onSurface: Color(0xFFEEEEEE),
-    primary: Colors.white,
-    secondary: Colors.black,
+    //  onSurface: Color(0xFFEEEEEE),
+    primary: Colors.black,
+    secondary: Colors.grey,
   ),
   dropdownMenuTheme: DropdownMenuThemeData(
       inputDecorationTheme: InputDecorationTheme(

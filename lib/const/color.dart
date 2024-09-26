@@ -28,16 +28,30 @@ const TextStyle small12Stylew500 = TextStyle(
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w500);
+
 const TextStyle small12Stylew400 = TextStyle(
     fontSize: 12,
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w400);
+
 const TextStyle small14StyleW500 = TextStyle(
     fontSize: 14,
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w500);
+
+const TextStyle small14StyleW600 = TextStyle(
+    fontSize: 14,
+    fontFamily: 'Inter',
+    color: Colors.black,
+    fontWeight: FontWeight.w600);
+
+const TextStyle loginRegistrationHintTextStyle = TextStyle(
+  fontSize: 14,
+  fontFamily: 'Inter',
+  color: Colors.black,
+);
 
 TextStyle activedDrawerItem = const TextStyle(
   fontSize: 14,

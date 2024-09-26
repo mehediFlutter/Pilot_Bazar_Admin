@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+
+import '../../widget/login_registration_textFild.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -14,6 +18,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  late bool passwordVisible;
+  late bool confirmPasswordVisible;
+
+  @override
+  void initState() {
+    passwordVisible = false;
+    confirmPasswordVisible = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,20 +46,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 myController: nameController,
                 hintText: "Enter Name",
                 validatorText: "Please Emter Name",
+                keyboardType: TextInputType.text,
               ),
               height10,
               MyTextFromFild(
                 myController: phoneNumberController,
                 hintText: "Enter Phone Number",
                 validatorText: "Please Enter Phone Number",
+                keyboardType: TextInputType.number,
               ),
               height10,
               MyTextFromFild(
-                  myController: companyNameController,
-                  hintText: "Company Name",
-                  validatorText: "Please Company Name"),
+                myController: companyNameController,
+                hintText: "Company Name",
+                validatorText: "Please Company Name",
+                keyboardType: TextInputType.text,
+              ),
               height10,
+              MyTextFromFild(
+                myController: passwordController,
+                hintText: "Password",
+                validatorText: "Please Enter Password",
+                keyboardType: TextInputType.text,
+                obscureText: !passwordVisible,
+                icon: IconButton(
+                    icon: Icon(
+                      passwordVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.grey.shade800,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = !passwordVisible;
+                      });
+                    }),
+              ),
               height10,
+              MyTextFromFild(
+                myController: confirmPasswordController,
+                hintText: "Confirm Password",
+                validatorText: "Please Confirm Password",
+                keyboardType: TextInputType.text,
+                obscureText: !confirmPasswordVisible,
+                icon: IconButton(
+                    icon: Icon(
+                      confirmPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.grey.shade800,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        confirmPasswordVisible = !confirmPasswordVisible;
+                      });
+                    }),
+              ),
+              height30,
               SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -53,43 +110,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         if (!formKey.currentState!.validate()) {
                           return null;
                         }
+
+                        print(nameController.text);
+                        print(phoneNumberController.text);
+                        print(companyNameController.text);
                       },
-                      child: const Text("Register")))
+                      child: const Text("Register"))),
+              height10,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "If Already have Account ",
+                    style: small14StyleW500,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                            (route) => false);
+                      },
+                      child: Text(
+                        "Login",
+                        style: small14StyleW600,
+                      ))
+                ],
+              )
             ],
           ),
         ),
       ),
     ));
-  }
-}
-
-class MyTextFromFild extends StatelessWidget {
-  final TextEditingController myController;
-  final String hintText;
-  final String validatorText;
-  const MyTextFromFild({
-    super.key,
-    required this.hintText,
-    required this.validatorText,
-    required this.myController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: myController,
-      cursorColor: Colors.black,
-      cursorWidth: 1,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 13),
-      ),
-      validator: (value) {
-        if (value?.isEmpty ?? true) {
-          return validatorText;
-        }
-        return null;
-      },
-    );
   }
 }
