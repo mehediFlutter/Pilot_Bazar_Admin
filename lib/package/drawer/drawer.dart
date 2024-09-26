@@ -4,6 +4,8 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -345,13 +347,23 @@ class _MyDrawerState extends State<MyDrawer> {
                     child: const Text("Moode")),
 
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    },
                     child: Text(
                       "Login",
                       style: TextStyle(color: Colors.black),
                     )),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegistrationScreen()));
+                    },
                     child: Text(
                       "Registration",
                       style: TextStyle(color: Colors.black),

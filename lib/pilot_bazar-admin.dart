@@ -24,10 +24,9 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
   initSharedPrefs() async {
     preffs = await SharedPreferences.getInstance();
     if (preffs.containsKey('notifier')) {
-      widget.notifier.value =
-          (preffs.getString('notifier') == 'ThemeMode.dark')
-              ? ThemeMode.dark
-              : ThemeMode.light;
+      widget.notifier.value = (preffs.getString('notifier') == 'ThemeMode.dark')
+          ? ThemeMode.dark
+          : ThemeMode.light;
     }
     setState(() {});
   }
@@ -42,7 +41,9 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
           theme: lightTheme,
           darkTheme: darkTheme,
           debugShowCheckedModeBanner: false,
-          home: CustomerListTile(notifier: widget.notifier,),
+          home: CustomerListTile(
+            notifier: widget.notifier,
+          ),
         );
       },
     );

@@ -33,3 +33,14 @@ Padding syncIconMethode() {
     child: syncIcon,
   );
 }
+
+OutlineInputBorder border = OutlineInputBorder(
+    borderSide: const BorderSide(color: Colors.grey),
+    borderRadius: BorderRadius.circular(10));
+OutlineInputBorder focusBorder = OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey),
+    borderRadius: BorderRadius.circular(10));
+
+OutlineInputBorder errorBorder = OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.red),
+    borderRadius: BorderRadius.circular(10));
