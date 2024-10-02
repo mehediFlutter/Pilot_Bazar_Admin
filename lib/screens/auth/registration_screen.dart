@@ -198,7 +198,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         },
                         child: const Text(
                           "Register",
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(fontSize: 25, color: Colors.white),
                         ))),
                 height40,
                 height40,
