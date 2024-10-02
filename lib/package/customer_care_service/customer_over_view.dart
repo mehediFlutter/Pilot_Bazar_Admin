@@ -10,10 +10,11 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 
 class CustomerOverView extends StatefulWidget {
-  final ValueNotifier<ThemeMode> notifier;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  CustomerOverView({super.key, required this.notifier});
+  CustomerOverView({
+    super.key,
+  });
 
   @override
   State<CustomerOverView> createState() => _CustomerOverViewState();
@@ -75,7 +76,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(notifier: widget.notifier, children: [
+    return ReUsableMotherWidget(children: [
       Builder(builder: (context) {
         return CustomerProfileBar(
           profileImagePath: userInfo?['payload']?['merchant']?['merchant_info']
@@ -91,18 +92,12 @@ class _CustomerOverViewState extends State<CustomerOverView> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CustomerPersonalInfo(
-                          notifier: widget.notifier,
-                        )));
+                    builder: (context) => CustomerPersonalInfo()));
           },
           chatTap: () {
             print("notificaiton tap");
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChatFontScreen(
-                          notifier: widget.notifier,
-                        )));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ChatFontScreen()));
           },
           // drawerTap: () {
           //   Scaffold.of(context).openDrawer();
@@ -166,8 +161,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          CustomerPersonalInfo(notifier: widget.notifier)));
+                      builder: (context) => CustomerPersonalInfo()));
             },
             child: Container(
               height: 30,
@@ -182,8 +176,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              CustomerPersonalInfo(notifier: widget.notifier)));
+                          builder: (context) => CustomerPersonalInfo()));
                 },
                 child: Container(
                   height: 10,

@@ -5,6 +5,7 @@ import 'package:pilot_bazar_admin/pilot_bazar-admin.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -28,14 +29,25 @@ class _SplashScreenState extends State<SplashScreen> {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
     setState(() {});
-    print(userInfo);
-    print(userInfo['payload']['merchant']['name'].toString());
+    saveToken(userInfo['payload']['token'].toString());
+    AuthToken().getToken();
+  }
+
+  // Save Token here
+  saveToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+
+  // Get token here
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token') ?? '';
   }
 
   @override
   void initState() {
     super.initState();
-    //  loadSelectedScreenType();
     loadUserInfo();
     navigateToLoginOrHome();
   }
@@ -49,11 +61,8 @@ class _SplashScreenState extends State<SplashScreen> {
       (_) => Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => (userInfo != null)
-                  ? CustomerOverView(
-                      notifier: widget.notifier,
-                    )
-                  : LoginScreen()),
+              builder: (context) =>
+                  (userInfo != null) ? CustomerOverView() : LoginScreen()),
           (route) => false),
     );
   }

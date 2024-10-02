@@ -12,11 +12,11 @@ import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart'
 import '../drawer/drawer_bool.dart';
 
 class ChatFontScreen extends StatefulWidget {
-  final ValueNotifier<ThemeMode> notifier;
-
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ChatFontScreen({super.key, required this.notifier});
+  ChatFontScreen({
+    super.key,
+  });
 
   @override
   State<ChatFontScreen> createState() => _ChatFontScreenState();
@@ -37,7 +37,6 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return ReUsableMotherWidget(
-      notifier: widget.notifier,
       children: [
         CustomerProfileBar(
           profileImagePath: 'assets/images/small_profile.png',
@@ -49,9 +48,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChattingDetailsScreen(
-                          notifier: widget.notifier,
-                        )));
+                    builder: (context) => ChattingDetailsScreen()));
           },
         ),
         height5,
@@ -111,9 +108,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ChattingDetailsScreen(
-                                    notifier: widget.notifier,
-                                  )));
+                              builder: (context) => ChattingDetailsScreen()));
                     },
                     leading: const Chatting_profile_with_green_tolu(),
                     title: Column(

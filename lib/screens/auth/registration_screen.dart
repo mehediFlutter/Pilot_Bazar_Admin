@@ -4,10 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/network_service/network_caller.dart';
+import 'package:pilot_bazar_admin/network_service/network_response.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_view.dart';
+import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/otp_verification.dart';
+import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widget/login_registration_textFild.dart';
 
@@ -49,17 +56,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-            (route) => false);
+        newlyRegistraterdWithLogin();
       } else {
-        CustomAlertDialog().showAlertDialog(context, "error", "error");
+        CustomAlertDialog()
+            .showAlertDialog(context, "Fill the Filds Properly ", "OK");
       }
     } else {
       print("error");
       CustomAlertDialog()
           .showAlertDialog(context, "Please Provide Correct Information", "OK");
+    }
+  }
+
+  newlyRegistraterdWithLogin() async {
+    NetworkResponse response = await NetworkCaller().newlyRegisterLogin(
+        '${Urls().baseUrl}merchant/auth/login', <String, dynamic>{
+      "mobile": phoneNumberController.text,
+      "password": passwordController.text,
+    });
+    if (response.isSuccess) {
+      LoginModel model = LoginModel.fromJson(response.body!);
+      await AuthUtility.saveUserInfo(model);
+      print("Registred login body");
+      print(model.toJson()['payload'].toString());
+      print(model.toJson()['payload']['merchant']['name'].toString());
+      await AuthToken().saveToken(model.toJson()['payload']['token']);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => CustomerOverView()),
+          (route) => false);
+    } else {
+      CustomAlertDialog()
+          .showAlertDialog(context, "Some thing error Try Agein", "OK");
     }
   }
 
@@ -157,13 +185,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           }
 
                           await registration();
-
-                          // Navigator.pushAndRemoveUntil(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             OTPVerificationScreen()),
-                          //     (route) => false);
                         },
                         child: const Text("Register"))),
                 height10,

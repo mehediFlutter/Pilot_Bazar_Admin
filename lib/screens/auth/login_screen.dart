@@ -15,8 +15,15 @@ import '../../widget/urls.dart';
 
 class LoginScreen extends StatefulWidget {
   final ValueNotifier<ThemeMode> notifier = ValueNotifier(ThemeMode.light);
+  final bool isNewRegistrated;
+  final String? phoneNUmber;
+  final String? password;
 
-  LoginScreen({super.key});
+  LoginScreen(
+      {super.key,
+      this.isNewRegistrated = false,
+      this.phoneNUmber,
+      this.password});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -49,16 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.statusCode);
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
+
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
       print(model.toJson()['payload']['merchant']['name']);
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => CustomerOverView(
-                    notifier: widget.notifier,
-                  )),
+          MaterialPageRoute(builder: (context) => CustomerOverView()),
           (route) => false);
     }
   }
@@ -67,9 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
   loadUserInfo() async {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
-
-    //  print(userInfo);
-    // print(userInfo['payload']['merchant']['name'].toString());
   }
 
   @override

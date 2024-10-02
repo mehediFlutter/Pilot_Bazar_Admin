@@ -1,0 +1,16 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AuthToken {
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("Token from Auth Token class");
+    print(prefs.getString('auth_token'));
+    return prefs.getString('auth_token') ?? '';
+  }
+
+  saveToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("save token methode");
+    await prefs.setString('auth_token', token);
+  }
+}

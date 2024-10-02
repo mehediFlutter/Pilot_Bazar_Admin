@@ -6,9 +6,7 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/package/customer_requirement_store/input_fild.dart';
 
 class ChattingDetailsScreen extends StatefulWidget {
-  final ValueNotifier<ThemeMode> notifier;
-
-  const ChattingDetailsScreen({super.key, required this.notifier});
+  const ChattingDetailsScreen({super.key});
 
   @override
   State<ChattingDetailsScreen> createState() => _ChattingDetailsScreenState();
@@ -78,9 +76,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ChattingDetailsScreen(
-                              notifier: widget.notifier,
-                            )));
+                        builder: (context) => ChattingDetailsScreen()));
               },
             ),
             height10,

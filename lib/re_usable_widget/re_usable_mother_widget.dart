@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
-  final ValueNotifier<ThemeMode> notifier;
-
   final List<Widget> children;
   // final Drawer? drawer;
   final MainAxisAlignment? mainAxis;
@@ -16,7 +14,6 @@ class ReUsableMotherWidget extends StatelessWidget {
     this.isSingleChildScrollView = false,
     this.mainAxis,
     this.crossAxis,
-    required this.notifier,
     this.isFloatingActionButton = false,
     //  this.drawer,
   }) : super(key: key);
@@ -31,9 +28,7 @@ class ReUsableMotherWidget extends StatelessWidget {
     //  Widget drawer = Drawer();
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(
-          notifier: notifier,
-        ),
+        drawer: MyDrawer(),
         floatingActionButton: isFloatingActionButton
             ? Row(
                 children: children,

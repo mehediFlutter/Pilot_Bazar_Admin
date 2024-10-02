@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/mode_provider.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
@@ -9,14 +8,13 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
+import 'package:pilot_bazar_admin/mode_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyDrawer extends StatefulWidget {
-  final ValueNotifier<ThemeMode> notifier;
   const MyDrawer({
     super.key,
-    required this.notifier,
   });
 
   @override
@@ -198,9 +196,8 @@ class _MyDrawerState extends State<MyDrawer> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CustomerPersonalInfo(
-                                          notifier: widget.notifier,
-                                        )));
+                                    builder: (context) =>
+                                        CustomerPersonalInfo()));
                           },
                         ),
                         itemOfHeader(
@@ -223,9 +220,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ChatFontScreen(
-                                          notifier: widget.notifier,
-                                        )));
+                                    builder: (context) => ChatFontScreen()));
 
                             setState(() {});
                           },
@@ -293,8 +288,8 @@ class _MyDrawerState extends State<MyDrawer> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CustomerPersonalInfo(
-                                        notifier: widget.notifier)),
+                                    builder: (context) =>
+                                        CustomerPersonalInfo()),
                                 (route) => false);
                           },
                         ),
@@ -349,19 +344,11 @@ class _MyDrawerState extends State<MyDrawer> {
                     }),
                 ElevatedButton(
                     onPressed: () async {
-
-               
-                             Provider.of<ModeProvider>(context , listen: false).changeMode();
-                      
-                      print(widget.notifier.value);
+                      Provider.of<ModeProvider>(context, listen: false)
+                          .changeMode();
 
                       preffs = await SharedPreferences.getInstance();
-                      widget.notifier.value =
-                          widget.notifier.value == ThemeMode.dark
-                              ? ThemeMode.dark
-                              : ThemeMode.light;
-                      preffs.setString(
-                          'notifier', widget.notifier.value.toString());
+
                       setState(() {});
                     },
                     child: const Text("Moode")),
