@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
+import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/widget/item.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
+import 'package:pilot_bazar_admin/widget/urls.dart';
 
-class DoubleVehicleScreen extends StatefulWidget {
-  const DoubleVehicleScreen({super.key});
+class SingleVehicleScreen extends StatefulWidget {
+  const SingleVehicleScreen({super.key});
 
   @override
-  State<DoubleVehicleScreen> createState() => _DoubleVehicleScreenState();
+  State<SingleVehicleScreen> createState() => _SingleVehicleScreenState();
 }
 
-class _DoubleVehicleScreenState extends State<DoubleVehicleScreen> {
+class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   @override
   Map<String, dynamic>? userInfo;
   TextEditingController searchController = TextEditingController();
@@ -76,14 +81,9 @@ class _DoubleVehicleScreenState extends State<DoubleVehicleScreen> {
               ),
               height20,
               Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 2.0,
-                    crossAxisSpacing: 0.0,
-                  ),
+                child: ListView.builder(
                   itemCount: 20,
-                  itemBuilder: (BuildContext context, index) {
+                  itemBuilder: (context, index) {
                     return Padding(
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Item());

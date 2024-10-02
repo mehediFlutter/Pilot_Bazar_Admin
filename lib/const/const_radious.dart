@@ -16,6 +16,7 @@ const SizedBox height40 = SizedBox(height: 40);
 
 const SizedBox width5 = SizedBox(width: 5);
 const SizedBox width10 = SizedBox(width: 10);
+const SizedBox width15 = SizedBox(width: 15);
 const SizedBox width20 = SizedBox(width: 20);
 Container horizontalLine = Container(
   height: 55,

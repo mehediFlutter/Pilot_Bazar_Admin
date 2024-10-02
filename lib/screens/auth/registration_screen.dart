@@ -47,7 +47,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     };
     if (passwordController.text == confirmPasswordController.text) {
       Response response = await post(
-          Uri.parse('${Urls().baseUrl}merchant/auth/register'),
+          Uri.parse('${baseUrlWithAPI_EndPoint}merchant/auth/register'),
           headers: {
             'Accept': 'application/vnd.api+json',
             'Content-Type': 'application/vnd.api+json'
@@ -70,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   newlyRegistraterdWithLogin() async {
     NetworkResponse response = await NetworkCaller().newlyRegisterLogin(
-        '${Urls().baseUrl}merchant/auth/login', <String, dynamic>{
+        '${baseUrlWithAPI_EndPoint}merchant/auth/login', <String, dynamic>{
       "mobile": phoneNumberController.text,
       "password": passwordController.text,
     });

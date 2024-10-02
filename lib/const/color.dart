@@ -65,3 +65,26 @@ TextStyle inActivedDrawerItem = const TextStyle(
   color: inActiveDrawerItemIconColor,
   fontWeight: FontWeight.w500,
 );
+TextStyle fontSize14 = const TextStyle(
+  fontSize: 14,
+  fontFamily: 'Inter',
+  color: Color(0xFF444444),
+  fontWeight: FontWeight.w500,
+);
+TextStyle fontSize12FW400 = const TextStyle(
+  fontSize: 12,
+  fontFamily: 'Inter',
+  color: Color(0xFF444444),
+  fontWeight: FontWeight.w400,
+);
+
+TextStyle registrationR = const TextStyle(
+  color: Colors.white,
+  fontSize: 13,
+);
+
+Container dariContainer = Container(
+  height: 20,
+  width: 2,
+  decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+);

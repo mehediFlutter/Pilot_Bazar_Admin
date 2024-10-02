@@ -7,6 +7,7 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_vi
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
+import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart';
 
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": passwordController.text, //01407054411
     };
     Response response = await post(
-        Uri.parse('${Urls().baseUrl}merchant/auth/login'),
+        Uri.parse('${baseUrlWithAPI_EndPoint}merchant/auth/login'),
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json'
@@ -63,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print(model.toJson()['payload']['merchant']['name']);
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => CustomerOverView()),
+          MaterialPageRoute(builder: (context) => SingleVehicleScreen()),
           (route) => false);
     }
   }

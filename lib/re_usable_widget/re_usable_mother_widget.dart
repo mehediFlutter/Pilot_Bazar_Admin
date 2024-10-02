@@ -37,7 +37,7 @@ class ReUsableMotherWidget extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: isSingleChildScrollView
-              ? SingleChildScrollView(child: column)
+              ? SingleChildScrollView(primary: false, child: column)
               : column,
         ),
       ),

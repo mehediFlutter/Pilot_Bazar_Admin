@@ -84,10 +84,11 @@ class _CustomerOverViewState extends State<CustomerOverView> {
               '',
           message_icon_path: 'assets/icons/message_notification.png',
           drawer_icon_path: 'assets/icons/beside_message.png',
-          companyName: userInfo?['payload']?['merchant']?['name'] ?? 'None',
-          phoneNumber: userInfo?['payload']?['merchant']?['merchant_info']
+          merchantName: userInfo?['payload']?['merchant']?['name'] ?? 'None',
+          companyName: userInfo?['payload']?['merchant']?['merchant_info']
                   ['company_name'] ??
               "None",
+
           onTapFunction: () {
             Navigator.push(
                 context,
@@ -108,37 +109,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
       height5,
       height5,
 
-      Container(
-        height: 40,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadious20,
-        ),
-        child: TextField(
-          cursorColor: Colors.black,
-          cursorWidth: 1.2,
-          controller: _controller,
-          onChanged: _filterList,
-          style: Theme.of(context).textTheme.bodySmall,
-          cursorHeight: 15,
-          decoration: InputDecoration(
-              enabledBorder: searchBarBorder,
-              focusedBorder: searchBarBorder,
-              contentPadding: const EdgeInsets.only(
-                top: 8,
-              ),
-              hintText: "Search",
-              hintStyle: Theme.of(context).textTheme.bodySmall,
-              prefixIcon: const Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                  size: 15,
-                ),
-              )),
-        ),
-      ),
+      searchWidgetDesign(context),
       height10,
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,5 +187,39 @@ class _CustomerOverViewState extends State<CustomerOverView> {
         ),
       ),
     ]);
+  }
+
+  Container searchWidgetDesign(BuildContext context) {
+    return Container(
+      height: 40,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadious20,
+      ),
+      child: TextField(
+        cursorColor: Colors.black,
+        cursorWidth: 1.2,
+        controller: _controller,
+        onChanged: _filterList,
+        style: Theme.of(context).textTheme.bodySmall,
+        cursorHeight: 15,
+        decoration: InputDecoration(
+            enabledBorder: searchBarBorder,
+            focusedBorder: searchBarBorder,
+            contentPadding: const EdgeInsets.only(
+              top: 8,
+            ),
+            hintText: "Search",
+            hintStyle: Theme.of(context).textTheme.bodySmall,
+            prefixIcon: const Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Icon(
+                Icons.search,
+                color: Colors.black,
+                size: 15,
+              ),
+            )),
+      ),
+    );
   }
 }

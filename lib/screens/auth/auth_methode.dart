@@ -11,7 +11,7 @@ class AuthMethode {
   Future login(Map body, context) async {
     body;
     Response response = await post(
-        Uri.parse('${Urls().baseUrl}merchant/auth/login'),
+        Uri.parse('${baseUrlWithAPI_EndPoint}merchant/auth/login'),
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json'

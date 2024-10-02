@@ -6,6 +6,8 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
+import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -62,7 +64,19 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  (userInfo != null) ? CustomerOverView() : LoginScreen()),
+                  (userInfo != null) ? BottomNavBaseScreen() : LoginScreen()),
+          (route) => false),
+    );
+  }
+
+  Future<void> navigateToLoginOrBottomNavBaseScreen() async {
+    setState(() {});
+    print("Is login");
+
+    Future.delayed(const Duration(seconds: 1)).then(
+      (_) => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false),
     );
   }
