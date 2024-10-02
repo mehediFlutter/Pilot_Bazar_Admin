@@ -4,6 +4,7 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_vi
 import 'package:pilot_bazar_admin/pilot_bazar-admin.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
@@ -54,6 +55,13 @@ class _SplashScreenState extends State<SplashScreen> {
     navigateToLoginOrHome();
   }
 
+  int selectedIndex = 0;
+  onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
   @override
   Future<void> navigateToLoginOrHome() async {
     setState(() {});
@@ -63,8 +71,9 @@ class _SplashScreenState extends State<SplashScreen> {
       (_) => Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  (userInfo != null) ? BottomNavBaseScreen() : LoginScreen()),
+              builder: (context) => (userInfo != null)
+                  ? BottomNavBaseScreen()
+                  : TabBarViewLoginAndRegistration()),
           (route) => false),
     );
   }

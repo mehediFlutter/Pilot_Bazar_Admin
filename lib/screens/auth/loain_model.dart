@@ -52,7 +52,7 @@ class Merchant {
   String? email;
   String? emailVerifiedAt;
   String? mobile;
-  Null? mobileVerifiedAt;
+  String? mobileVerifiedAt;
   int? status;
   String? merchantType;
   Null? deletedAt;
@@ -114,15 +114,15 @@ class Merchant {
 class MerchantInfo {
   int? id;
   int? merchantId;
-  Null? address;
+  String? address;
   String? website;
-  Null? facebook;
-  Null? youtube;
+  String? facebook;
+  String? youtube;
   String? location;
   String? companyName;
   String? createdAt;
   String? updatedAt;
-  MerchantImage? merchantImage;
+  Imagee? image;
 
   MerchantInfo(
       {this.id,
@@ -135,7 +135,7 @@ class MerchantInfo {
       this.companyName,
       this.createdAt,
       this.updatedAt,
-      this.merchantImage});
+      this.image});
 
   MerchantInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -148,9 +148,7 @@ class MerchantInfo {
     companyName = json['company_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    merchantImage = json['image'] != null
-        ? new MerchantImage.fromJson(json['image'])
-        : null;
+    image = json['image'] != null ? new Imagee.fromJson(json['image']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -165,14 +163,14 @@ class MerchantInfo {
     data['company_name'] = this.companyName;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    if (this.merchantImage != null) {
-      data['image'] = this.merchantImage!.toJson();
+    if (this.image != null) {
+      data['image'] = this.image!.toJson();
     }
     return data;
   }
 }
 
-class MerchantImage {
+class Imagee {
   int? id;
   String? imageType;
   int? imageId;
@@ -184,7 +182,7 @@ class MerchantImage {
   String? createdAt;
   String? updatedAt;
 
-  MerchantImage(
+  Imagee(
       {this.id,
       this.imageType,
       this.imageId,
@@ -196,7 +194,7 @@ class MerchantImage {
       this.createdAt,
       this.updatedAt});
 
-  MerchantImage.fromJson(Map<String, dynamic> json) {
+  Imagee.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     imageType = json['image_type'];
     imageId = json['image_id'];

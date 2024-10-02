@@ -111,19 +111,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: size.height / 5),
-                const Text("Registration"),
+                //  height10,
+                //    const Text("Registration"),
                 MyTextFromFild(
                   myController: nameController,
                   hintText: "Enter Name",
                   validatorText: "Please Emter Name",
                   keyboardType: TextInputType.text,
+                  prefixIcon: Image.asset('assets/icons/person_icon.png'),
                 ),
                 height10,
                 MyTextFromFild(
                   myController: phoneNumberController,
                   hintText: "Enter Phone Number",
                   validatorText: "Please Enter Phone Number",
+                  prefixIcon: Image.asset('assets/icons/phone_icon.png'),
                   keyboardType: TextInputType.number,
                 ),
                 height10,
@@ -131,6 +133,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   myController: companyNameController,
                   hintText: "Company Name",
                   validatorText: "Please Company Name",
+                  prefixIcon: Image.asset('assets/icons/company_icon.png'),
                   keyboardType: TextInputType.text,
                 ),
                 height10,
@@ -138,6 +141,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   myController: passwordController,
                   hintText: "Password",
                   validatorText: "Please Enter Password",
+                  prefixIcon: Image.asset('assets/icons/password_icon.png'),
                   keyboardType: TextInputType.text,
                   obscureText: !passwordVisible,
                   icon: IconButton(
@@ -158,6 +162,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   myController: confirmPasswordController,
                   hintText: "Confirm Password",
                   validatorText: "Please Confirm Password",
+                  prefixIcon: Image.asset('assets/icons/password_icon.png'),
                   keyboardType: TextInputType.text,
                   obscureText: !confirmPasswordVisible,
                   icon: IconButton(
@@ -178,7 +183,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                        style: Theme.of(context).elevatedButtonTheme.style,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF0386D0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
                         onPressed: () async {
                           if (!formKey.currentState!.validate()) {
                             return null;
@@ -186,30 +196,44 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                           await registration();
                         },
-                        child: const Text("Register"))),
-                height10,
-                const Text("We Will Send a OTP to your phone number"),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "If Already have Account ",
-                      style: small14StyleW500,
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()),
-                              (route) => false);
-                        },
                         child: const Text(
-                          "Login",
-                          style: small14StyleW600,
-                        ))
-                  ],
-                )
+                          "Register",
+                          style: TextStyle(fontSize: 25),
+                        ))),
+                height40,
+                height40,
+
+                Text(
+                  "By Sharing in your agreeing our",
+                  style: TextStyle(fontSize: 18),
+                ),
+                Text(
+                  "Term and privacy policy",
+                  style: TextStyle(color: Colors.blue, fontSize: 18),
+                ),
+                Image.asset('assets/icons/login_page_down_icon.png'),
+                //  const Text("We Will Send a OTP to your phone number"),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     const Text(
+                //       "If Already have Account ",
+                //       style: small14StyleW500,
+                //     ),
+                //     TextButton(
+                //         onPressed: () {
+                //           Navigator.pushAndRemoveUntil(
+                //               context,
+                //               MaterialPageRoute(
+                //                   builder: (context) => LoginScreen()),
+                //               (route) => false);
+                //         },
+                //         child: const Text(
+                //           "Login",
+                //           style: small14StyleW600,
+                //         ))
+                //   ],
+                // )
               ],
             ),
           ),

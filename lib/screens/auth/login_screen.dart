@@ -37,12 +37,16 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   late bool passwordVisible;
   late SharedPreferences prefss;
-  var token;
+  String? token;
   var merchantId;
   var merchantName;
   var mobileNumber;
+  initSharedPref() async {
+    prefss = await SharedPreferences.getInstance();
+  }
 
   Future login() async {
+    prefss = await SharedPreferences.getInstance();
     Map<String, dynamic> body = {
       "mobile": phoneNumberController.text,
       "password": passwordController.text, //01407054411
@@ -62,6 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
       print(model.toJson()['payload']['merchant']['name']);
+      token = model.toJson()['payload']['token'];
+      print(token);
+      await prefss.setString('token', token ?? '');
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => SingleVehicleScreen()),
@@ -79,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     passwordVisible = false;
     loadUserInfo();
+    initSharedPref();
   }
 
   @override
@@ -95,23 +103,23 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: size.height / 3.5),
-                Text(
-                  "Login",
-                  style: small14StyleW600,
-                ),
-                height10,
+                height20,
+
                 MyTextFromFild(
                   myController: phoneNumberController,
-                  hintText: "Enter Phonr Number",
+                  hintText: "Phonr Number",
                   validatorText: "Please Emter Phone number",
+                  prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Image.asset('assets/icons/phone_icon.png')),
                   keyboardType: TextInputType.number,
                 ),
                 height10,
                 MyTextFromFild(
                   myController: passwordController,
-                  hintText: "Enter Password",
+                  hintText: "Password",
                   validatorText: "Please Enter Password",
+                  prefixIcon: Image.asset('assets/icons/password_icon.png'),
                   keyboardType: TextInputType.text,
                   obscureText: !passwordVisible,
                   icon: IconButton(
@@ -133,7 +141,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                        style: Theme.of(context).elevatedButtonTheme.style,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF0386D0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
+                        //  style: Theme.of(context).elevatedButtonTheme.style,
                         onPressed: () async {
                           if (!formKey.currentState!.validate()) {
                             return null;
@@ -143,29 +157,43 @@ class _LoginScreenState extends State<LoginScreen> {
                           print(passwordController.text);
                           await login();
                         },
-                        child: const Text("Login"))),
-                height10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't Have an account ?",
-                      style: small14StyleW500,
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegistrationScreen()),
-                              (route) => false);
-                        },
-                        child: Text(
-                          "Registration",
-                          style: small14StyleW600,
-                        ))
-                  ],
-                )
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(fontSize: 25),
+                        ))),
+                height40,
+                height40,
+                height40,
+                Text(
+                  "By Sharing in your agreeing our",
+                  style: TextStyle(fontSize: 18),
+                ),
+                Text(
+                  "Term and privacy policy",
+                  style: TextStyle(color: Colors.blue, fontSize: 18),
+                ),
+                Image.asset('assets/icons/login_page_down_icon.png'),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     // Text(
+                //     //   "Don't Have an account ?",
+                //     //   style: small14StyleW500,
+                //     // ),
+                //     // TextButton(
+                //     //     onPressed: () {
+                //     //       Navigator.pushAndRemoveUntil(
+                //     //           context,
+                //     //           MaterialPageRoute(
+                //     //               builder: (context) => RegistrationScreen()),
+                //     //           (route) => false);
+                //     //     },
+                //     //     child: Text(
+                //     //       "Registration",
+                //     //       style: small14StyleW600,
+                //     //     ))
+                //   ],
+                // )
               ],
             ),
           ),

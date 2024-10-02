@@ -4,10 +4,11 @@ import 'package:pilot_bazar_admin/network_service/network_response.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 
 class NetworkCaller {
-  Future<NetworkResponse> getRequest(String url) async {
+  Future<NetworkResponse> getRequest(
+      String url, Map<String, String> header) async {
     try {
-      Response response = await get(Uri.parse(url),
-          headers: {'token': AuthUtility.userInfo.payload!.token.toString()});
+      Response response = await get(Uri.parse(url), headers: header);
+      //{'token': AuthUtility.userInfo.payload!.token.toString()}
       if (response.statusCode == 200) {
         return NetworkResponse(
             true, response.statusCode, jsonDecode(response.body));
