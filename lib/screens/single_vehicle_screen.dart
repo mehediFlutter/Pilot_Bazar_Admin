@@ -41,7 +41,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
       child: Scaffold(
         drawer: MyDrawer(),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
             children: [
               Builder(builder: (context) {
@@ -82,7 +82,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
               height20,
               Expanded(
                 child: ListView.builder(
-                  itemCount: 20,
+                  itemCount: 10,
                   itemBuilder: (context, index) {
                     return Padding(
                         padding: const EdgeInsets.only(bottom: 20),

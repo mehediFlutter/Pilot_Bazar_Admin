@@ -21,7 +21,7 @@ class Item extends StatelessWidget {
                 'https://pilotbazar.com/storage/galleries/65e584ecc47d6.jpeg'),
           ),
           height5,
-          enterSingleData("Land Cruser Prado"),
+          enterSingleData16("Land Cruser Prado"),
           height5,
           Row(
             children: [
@@ -34,8 +34,6 @@ class Item extends StatelessWidget {
                   child: Text("R", style: registrationR),
                 ),
               ),
-              width15,
-              dariContainer,
               width15,
               enterSingleData("2017"),
               width15,
@@ -54,9 +52,24 @@ class Item extends StatelessWidget {
           ),
           height20,
           enterSingleDataSmall('Mongla Port'),
-          height5,
-          enterSingleDataSmall('Code : PBL-90'),
-          height5,
+
+          //  height5,
+          Row(
+            children: [
+              enterSingleDataSmall('Code : PBL-90'),
+              const Spacer(),
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: TextButton(
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                    onPressed: () {},
+                    child: Center(child: Icon(Icons.more_vert))),
+              )
+            ],
+          ),
+          //  height5,
           enterSingleDataSmall('TK : 9850000'),
         ],
       ),
@@ -70,10 +83,17 @@ class Item extends StatelessWidget {
     );
   }
 
+  Text enterSingleData16(String? data) {
+    return Text(
+      '$data',
+      style: fontSize14.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+    );
+  }
+
   Text enterSingleDataSmall(String? data) {
     return Text(
       '$data',
-      style: fontSize12FW400,
+      style: fontSize12FW400.copyWith(height: 0),
     );
   }
 }
