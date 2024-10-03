@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_view.dart';
-import 'package:pilot_bazar_admin/pilot_bazar-admin.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
-import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -73,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(
               builder: (context) => (userInfo != null)
                   ? BottomNavBaseScreen()
-                  : TabBarViewLoginAndRegistration()),
+                  : TabBarViewLoginAndRegistration()), // ? BottomNavBaseScreen() : TabBarViewLoginAndRegistration()
           (route) => false),
     );
   }

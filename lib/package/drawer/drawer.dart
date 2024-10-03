@@ -6,9 +6,11 @@ import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_pe
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
 import 'package:pilot_bazar_admin/mode_provider.dart';
+import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -134,260 +136,286 @@ class _MyDrawerState extends State<MyDrawer> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                drawerItemHeader(
-                    isArrow: false,
-                    isBool: isHomeClick,
-                    iconPath: 'assets/icons/drawer_home.png',
-                    text: 'Home',
-                    onClick: () {
-                      isHomeClick = !isHomeClick;
-                      isCustomerClick = false;
-                      isMessageBool = false;
+                // drawerItemHeader(
+                //     isArrow: false,
+                //     isBool: isHomeClick,
+                //     iconPath: 'assets/icons/drawer_home.png',
+                //     text: 'Home',
+                //     onClick: () {
+                //       isHomeClick = !isHomeClick;
+                //       isCustomerClick = false;
+                //       isMessageBool = false;
 
-                      setState(() {});
-                    }),
+                //       setState(() {});
+                //     }),
 
-                drawerItemHeader(
-                  isBool: isCustomerClick,
-                  iconPath: 'assets/icons/drawer_customer.png',
-                  text: 'Customer',
-                  onClick: () async {
-                    isCustomerClick = !isCustomerClick;
-                    universalCustomBool = isCustomerClick;
+                // drawerItemHeader(
+                //   isBool: isCustomerClick,
+                //   iconPath: 'assets/icons/drawer_customer.png',
+                //   text: 'Customer',
+                //   onClick: () async {
+                //     isCustomerClick = !isCustomerClick;
+                //     universalCustomBool = isCustomerClick;
 
-                    // if (isCustomerClick == false) {
-                    //   isCreateBool = false;
-                    //   universalCreateBool = false;
-                    //   isViewClick = false;
-                    //   universalViewBool = false;
-                    //   setState(() {});
-                    // }
+                //     // if (isCustomerClick == false) {
+                //     //   isCreateBool = false;
+                //     //   universalCreateBool = false;
+                //     //   isViewClick = false;
+                //     //   universalViewBool = false;
+                //     //   setState(() {});
+                //     // }
 
-                    isMessageBool = false;
-                    universalMessageBool = false;
+                //     isMessageBool = false;
+                //     universalMessageBool = false;
 
-                    setState(() {});
-                  },
-                ),
+                //     setState(() {});
+                //   },
+                // ),
 
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  height: isCustomerClick ? 90 : 0,
-                  child: Visibility(
-                    visible: isCustomerClick,
-                    child: Column(
-                      children: [
-                        itemOfHeader(
-                          clickBoolName: isCreateBool,
-                          customIcon: Icon(
-                            Icons.add,
-                            color: colorMethode(isCreateBool),
-                          ),
-                          text: 'Personal/Create',
-                          onClick: () async {
-                            isCreateBool = true;
-                            universalCreateBool = true;
-                            universalViewBool = false;
-                            isViewClick = false;
+                // AnimatedContainer(
+                //   duration: const Duration(milliseconds: 300),
+                //   curve: Curves.easeInOut,
+                //   height: isCustomerClick ? 90 : 0,
+                //   child: Visibility(
+                //     visible: isCustomerClick,
+                //     child: Column(
+                //       children: [
+                //         itemOfHeader(
+                //           clickBoolName: isCreateBool,
+                //           customIcon: Icon(
+                //             Icons.add,
+                //             color: colorMethode(isCreateBool),
+                //           ),
+                //           text: 'Personal/Create',
+                //           onClick: () async {
+                //             isCreateBool = true;
+                //             universalCreateBool = true;
+                //             universalViewBool = false;
+                //             isViewClick = false;
 
-                            setState(() {});
-                            Navigator.pop(context);
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustomerPersonalInfo()));
-                          },
-                        ),
-                        itemOfHeader(
-                          clickBoolName: isViewClick,
-                          isTrailling: true,
-                          customIcon: Icon(
-                            Icons.person,
-                            color: colorMethode(isViewClick),
-                          ),
-                          text: 'Budget/View',
-                          onClick: () async {
-                            isViewClick = true;
+                //             setState(() {});
+                //             Navigator.pop(context);
+                //             await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                     builder: (context) =>
+                //                         CustomerPersonalInfo()));
+                //           },
+                //         ),
+                //         itemOfHeader(
+                //           clickBoolName: isViewClick,
+                //           isTrailling: true,
+                //           customIcon: Icon(
+                //             Icons.person,
+                //             color: colorMethode(isViewClick),
+                //           ),
+                //           text: 'Budget/View',
+                //           onClick: () async {
+                //             isViewClick = true;
 
-                            isCreateBool = false;
-                            universalViewBool = true;
-                            universalCreateBool = false;
-                            setState(() {});
+                //             isCreateBool = false;
+                //             universalViewBool = true;
+                //             universalCreateBool = false;
+                //             setState(() {});
 
-                            Navigator.pop(context);
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChatFontScreen()));
+                //             Navigator.pop(context);
+                //             await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                     builder: (context) => ChatFontScreen()));
 
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                //             setState(() {});
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
 
                 //    Message
 
                 //  Message Icon Drawer
-                drawerItemHeader(
-                    isBool: isMessageBool,
-                    iconPath: 'assets/icons/drawer_message.png',
-                    text: 'Message',
-                    onClick: () {
-                      // offline customer child
+                // drawerItemHeader(
+                //     isBool: isMessageBool,
+                //     iconPath: 'assets/icons/drawer_message.png',
+                //     text: 'Message',
+                //     onClick: () {
+                //       // offline customer child
 
-                      // End of Off customer child
+                //       // End of Off customer child
 
-                      isMessageBool = !isMessageBool;
-                      universalMessageBool = isMessageBool;
+                //       isMessageBool = !isMessageBool;
+                //       universalMessageBool = isMessageBool;
 
-                      // if message if false then all child of message is offline
+                //       // if message if false then all child of message is offline
 
-                      isFollowUpBool = false;
-                      universalFollowUpBool = false;
-                      isFeedbackBool = false;
-                      universalFeedBool = false;
-                      isPackageBool = false;
-                      universalPackageBool = false;
-                      setState(() {});
+                //       isFollowUpBool = false;
+                //       universalFollowUpBool = false;
+                //       isFeedbackBool = false;
+                //       universalFeedBool = false;
+                //       isPackageBool = false;
+                //       universalPackageBool = false;
+                //       setState(() {});
 
-                      isFeedbackBool = false;
+                //       isFeedbackBool = false;
 
-                      // Hide Customer Parent
-                      universalCustomBool = false;
-                      isCustomerClick = false;
-                      // Success Hide Custom Parent
+                //       // Hide Customer Parent
+                //       universalCustomBool = false;
+                //       isCustomerClick = false;
+                //       // Success Hide Custom Parent
 
-                      setState(() {});
-                    }),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  height: isMessageBool ? 140 : 0,
-                  child: Visibility(
-                    visible: isMessageBool,
-                    child: Column(
-                      children: [
-                        itemOfHeader(
-                          iconPath: 'assets/icons/drawer_followUp.png',
-                          isIconPath: true,
-                          clickBoolName: isFollowUpBool,
-                          text: 'Follow Up',
-                          onClick: () {
-                            isFollowUpBool = !isFollowUpBool;
-                            universalFollowUpBool = isFollowUpBool;
+                //       setState(() {});
+                //     }),
+                // AnimatedContainer(
+                //   duration: const Duration(milliseconds: 300),
+                //   curve: Curves.easeInOut,
+                //   height: isMessageBool ? 140 : 0,
+                //   child: Visibility(
+                //     visible: isMessageBool,
+                //     child: Column(
+                //       children: [
+                //         itemOfHeader(
+                //           iconPath: 'assets/icons/drawer_followUp.png',
+                //           isIconPath: true,
+                //           clickBoolName: isFollowUpBool,
+                //           text: 'Follow Up',
+                //           onClick: () {
+                //             isFollowUpBool = !isFollowUpBool;
+                //             universalFollowUpBool = isFollowUpBool;
 
-                            isFeedbackBool = false;
-                            isPackageBool = false;
+                //             isFeedbackBool = false;
+                //             isPackageBool = false;
 
-                            setState(() {});
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustomerPersonalInfo()),
-                                (route) => false);
-                          },
-                        ),
-                        itemOfHeader(
-                          iconPath: 'assets/icons/drawer_feedBack.png',
-                          isIconPath: true,
-                          clickBoolName: isFeedbackBool,
-                          text: 'Feed ',
-                          onClick: () {
-                            isFeedbackBool = !isFeedbackBool;
-                            isFollowUpBool = false;
-                            isPackageBool = false;
-                            setState(() {});
-                          },
-                        ),
-                        itemOfHeader(
-                          iconPath: 'assets/icons/drawer_package.png',
-                          isIconPath: true,
-                          clickBoolName: isPackageBool,
-                          text: 'Package',
-                          onClick: () {
-                            isPackageBool = !isPackageBool;
-                            isFollowUpBool = false;
-                            isFeedbackBool = false;
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                //             setState(() {});
+                //             Navigator.pushAndRemoveUntil(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                     builder: (context) =>
+                //                         CustomerPersonalInfo()),
+                //                 (route) => false);
+                //           },
+                //         ),
+                //         itemOfHeader(
+                //           iconPath: 'assets/icons/drawer_feedBack.png',
+                //           isIconPath: true,
+                //           clickBoolName: isFeedbackBool,
+                //           text: 'Feed ',
+                //           onClick: () {
+                //             isFeedbackBool = !isFeedbackBool;
+                //             isFollowUpBool = false;
+                //             isPackageBool = false;
+                //             setState(() {});
+                //           },
+                //         ),
+                //         itemOfHeader(
+                //           iconPath: 'assets/icons/drawer_package.png',
+                //           isIconPath: true,
+                //           clickBoolName: isPackageBool,
+                //           text: 'Package',
+                //           onClick: () {
+                //             isPackageBool = !isPackageBool;
+                //             isFollowUpBool = false;
+                //             isFeedbackBool = false;
+                //             setState(() {});
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
 
+                // drawerItemHeader(
+                //     isBool: isSettingsBool,
+                //     iconPath: 'assets/icons/drawer_settings.png',
+                //     text: 'Settings',
+                //     onClick: () {
+                //       isSettingsBool = !isSettingsBool;
+                //       setState(() {
+                //         print(isLogOutBool);
+                //       });
+                //     }),
                 drawerItemHeader(
                     isBool: isSettingsBool,
-                    iconPath: 'assets/icons/drawer_settings.png',
-                    text: 'Settings',
+                    iconPath:
+                        'assets/icons/bottom_nav_screen.png', //drawer_settings.png
+                    text: 'My Shop',
                     onClick: () {
                       isSettingsBool = !isSettingsBool;
                       setState(() {
-                        print(isLogOutBool);
+                        Navigator.pop(context);
                       });
                     }),
                 drawerItemHeader(
                     isBool: isLogOutBool,
                     iconPath: 'assets/icons/drawer_logOut.png',
                     text: 'Log Out',
-                    onClick: () {
-                      isLogOutBool = !isLogOutBool;
-                      setState(() {
-                        print(isLogOutBool);
+                    onClick: () async {
+                      CustomAlertDialog().logOutDialog(
+                          context,
+                          "Are you sure want to logOut ? ",
+                          'Yes',
+                          'No', () async {
+                        await AuthUtility.clearUserInfo();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TabBarViewLoginAndRegistration()));
+                        await loadUserInfo();
                       });
-                    }),
-                ElevatedButton(
-                    onPressed: () async {
-                      Provider.of<ModeProvider>(context, listen: false)
-                          .changeMode();
-
-                      preffs = await SharedPreferences.getInstance();
-
+                      isLogOutBool = !isLogOutBool;
                       setState(() {});
-                    },
-                    child: const Text("Moode")),
+                    }),
 
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    },
-                    child: Text(
-                      "Login",
-                      style: TextStyle(color: Colors.black),
-                    )),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegistrationScreen()));
-                    },
-                    child: Text(
-                      "Registration",
-                      style: TextStyle(color: Colors.black),
-                    )),
-                ElevatedButton(
-                    onPressed: () async {
-                      await AuthUtility.clearUserInfo();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                      await loadUserInfo();
-                    },
-                    child: Text(
-                      "Log Out",
-                      style: TextStyle(color: Colors.black),
-                    )),
+                // change theme
+
+                // ElevatedButton(
+                //     onPressed: () async {
+                //       Provider.of<ModeProvider>(context, listen: false)
+                //           .changeMode();
+
+                //       preffs = await SharedPreferences.getInstance();
+
+                //       setState(() {});
+                //     },
+                //     child: const Text("Moode")),
+
+                // ElevatedButton(
+                //     onPressed: () {
+
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => LoginScreen()));
+                //     },
+                //     child: Text(
+                //       "Login",
+                //       style: TextStyle(color: Colors.black),
+                //     )),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => RegistrationScreen()));
+                //     },
+                //     child: Text(
+                //       "Registration",
+                //       style: TextStyle(color: Colors.black),
+                //     )),
+                // ElevatedButton(
+                //     onPressed: () async {
+                //       await AuthUtility.clearUserInfo();
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => LoginScreen()));
+                //       await loadUserInfo();
+                //     },
+                //     child: Text(
+                //       "Log Out",
+                //       style: TextStyle(color: Colors.black),
+                //     )),
               ],
             ),
           ],

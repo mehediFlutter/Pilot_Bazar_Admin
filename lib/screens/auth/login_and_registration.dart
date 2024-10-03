@@ -40,11 +40,11 @@ class _TabBarViewLoginAndRegistrationState
         children: [
           height10,
           _tabController.index == 0
-              ? Text(
+              ? const Text(
                   "Login",
                   style: TextStyle(fontSize: 24),
                 )
-              : Text(
+              : const Text(
                   "Register",
                   style: TextStyle(fontSize: 24),
                 ),
@@ -55,7 +55,7 @@ class _TabBarViewLoginAndRegistrationState
             dividerColor: Colors.transparent,
             labelColor: Colors.blue,
             unselectedLabelColor: Colors.black,
-            tabs: [
+            tabs: const [
               Tab(
                 child: Text(
                   "Login",
@@ -73,7 +73,7 @@ class _TabBarViewLoginAndRegistrationState
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [LoginScreen(), RegistrationScreen()],
+              children: [LoginScreen(), const RegistrationScreen()],
             ),
           ),
         ],

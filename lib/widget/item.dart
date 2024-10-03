@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/widget/products.dart';
 
-class Item extends StatelessWidget {
-  const Item({super.key});
+class Item extends StatefulWidget {
+  final Product indexItem;
+  const Item({super.key, required this.indexItem});
 
+  @override
+  State<Item> createState() => _ItemState();
+}
+
+class _ItemState extends State<Item> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +28,7 @@ class Item extends StatelessWidget {
                 'https://pilotbazar.com/storage/galleries/65e584ecc47d6.jpeg'),
           ),
           height5,
-          enterSingleData16("Land Cruser Prado"),
+          enterSingleData16(widget.indexItem.vehicleName.toString()),
           height5,
           Row(
             children: [
@@ -66,7 +73,7 @@ class Item extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     onPressed: () {},
                     child: Center(child: Icon(Icons.more_vert))),
-              )
+              ),
             ],
           ),
           //  height5,

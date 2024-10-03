@@ -7,7 +7,9 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_vi
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
+import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
+import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart';
 
@@ -35,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController demoController = TextEditingController();
   late bool passwordVisible;
   late SharedPreferences prefss;
   String? token;
@@ -59,8 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         body: jsonEncode(body));
     print(response.statusCode);
+    Map decodedBody = jsonDecode(response.body.toString());
+    print(decodedBody['message']);
+
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
+      print(decodedBody['message']);
 
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
@@ -71,8 +78,14 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefss.setString('token', token ?? '');
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => SingleVehicleScreen()),
+          MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false);
+    } else {
+      CustomAlertDialog().showAlertDialog(
+        context,
+        decodedBody['message'] + ' Please Try Again'.toString(),
+        "OK",
+      );
     }
   }
 
@@ -135,7 +148,26 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       }),
                 ),
+
                 height10,
+
+                // TextFormField(
+                //   controller: demoController,
+                //   decoration: InputDecoration(
+                //     contentPadding: EdgeInsets.only(top: 15),
+                //     hintText: "Hint text",
+                //     prefixIcon: Image.asset('assets/icons/password_icon.png'),
+                //   ),
+                //   validator: (value) {
+                //     if (value?.isEmpty ?? true) {
+                //       setState(() {});
+
+                //       return "Enter Value";
+                //     }
+
+                //     return null;
+                //   },
+                // ),
                 height30,
                 SizedBox(
                     width: double.infinity,

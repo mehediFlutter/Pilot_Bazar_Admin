@@ -5,8 +5,12 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 class SearchTextFild extends StatelessWidget {
   final TextEditingController searchController;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmit;
   const SearchTextFild(
-      {super.key, required this.searchController, this.onChanged});
+      {super.key,
+      required this.searchController,
+      this.onChanged,
+      this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,8 @@ class SearchTextFild extends StatelessWidget {
         cursorColor: Colors.black,
         cursorWidth: 1.2,
         controller: searchController,
-        onChanged: onChanged,
+        // onChanged: onChanged,
+        onSubmitted: onSubmit,
         style: Theme.of(context).textTheme.bodySmall,
         cursorHeight: 15,
         decoration: InputDecoration(

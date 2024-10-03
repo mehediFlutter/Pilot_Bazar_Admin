@@ -12,6 +12,7 @@ import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/otp_verification.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
+import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,7 +69,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
+  String? token;
+
   newlyRegistraterdWithLogin() async {
+    SharedPreferences prefss = await SharedPreferences.getInstance();
     NetworkResponse response = await NetworkCaller().newlyRegisterLogin(
         '${baseUrlWithAPI_EndPoint}merchant/auth/login', <String, dynamic>{
       "mobile": phoneNumberController.text,
@@ -78,12 +82,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       LoginModel model = LoginModel.fromJson(response.body!);
       await AuthUtility.saveUserInfo(model);
       print("Registred login body");
-      print(model.toJson()['payload'].toString());
+
       print(model.toJson()['payload']['merchant']['name'].toString());
+      token = model.toJson()['payload']['token'];
+      print(token);
+      await prefss.setString('token', token ?? '');
       await AuthToken().saveToken(model.toJson()['payload']['token']);
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => CustomerOverView()),
+          MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false);
     } else {
       CustomAlertDialog()

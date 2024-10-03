@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
 
-class MyTextFromFild extends StatelessWidget {
+class MyTextFromFild extends StatefulWidget {
   final TextEditingController myController;
   final String hintText;
   final String validatorText;
@@ -22,38 +21,49 @@ class MyTextFromFild extends StatelessWidget {
   });
 
   @override
+  State<MyTextFromFild> createState() => _MyTextFromFildState();
+}
+
+class _MyTextFromFildState extends State<MyTextFromFild> {
+  bool isError = false;
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      height: 40,
-      child: TextFormField(
-        keyboardType: keyboardType,
-        style: TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
-        controller: myController,
-        cursorColor: Color(0xFFA6A6A6),
-        cursorWidth: 1,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          // isDense: true,
-          hintText: hintText,
-          hintStyle:
-              TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
-          suffixIcon: icon,
-          prefixIcon: prefixIcon,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFFA6A6A6)),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFFA6A6A6), width: 2.0),
-          ),
+    return TextFormField(
+      keyboardType: widget.keyboardType,
+      style: const TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
+      controller: widget.myController,
+      cursorColor: const Color(0xFFA6A6A6),
+      cursorWidth: 1,
+      obscureText: widget.obscureText,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(top: 15),
+        hintText: widget.hintText,
+        hintStyle:
+            const TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
+        suffixIcon: widget.icon,
+        prefixIcon: widget.prefixIcon,
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFA6A6A6), width: 2.0),
         ),
-        validator: (value) {
-          if (value?.isEmpty ?? true) {
-            return validatorText;
-          }
-          return null;
-        },
+        errorBorder: const UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Colors.red), // Define error border style
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFFA6A6A6)),
+        ),
       ),
+      validator: (value) {
+        if (value?.isEmpty ?? true) {
+          isError = true;
+          setState(() {});
+
+          return widget.validatorText;
+        }
+        isError = false;
+        setState(() {});
+        return null;
+      },
     );
   }
 }

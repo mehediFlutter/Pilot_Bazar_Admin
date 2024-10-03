@@ -1,4 +1,5 @@
 String baseUrlWithAPI_EndPoint = "https://click4details.com/api/";
+String baseUrl = "https://click4details.com/";
 //https://click4details.com/
 //https://pilotbazar.com/
 

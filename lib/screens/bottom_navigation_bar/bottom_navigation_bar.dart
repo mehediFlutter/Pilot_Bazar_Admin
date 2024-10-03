@@ -34,14 +34,20 @@ class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
-            items: const [
+            showUnselectedLabels: false, // Hide the labels for unselected items
+            showSelectedLabels: false, // Hide the labels for selected items
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.single_bed),
-                label: 'Single Screen',
+                icon: Image.asset(
+                  'assets/icons/shopping.png',
+                  height: 20,
+                ),
+                label:
+                    '', // Even though label is empty, it won't take extra space
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.single_bed),
-                label: 'Single Screen',
+                icon: Container(), // Or an invisible item if needed
+                label: '', // This will also not take extra space
               ),
             ],
           ),

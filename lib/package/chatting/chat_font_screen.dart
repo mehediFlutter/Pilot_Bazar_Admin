@@ -92,8 +92,11 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
               border: Border.all(color: Colors.blue),
               borderRadius: BorderRadius.circular(30)),
           child: Center(
-              child: Text("Inbox",
-                  style: small14StyleW500.copyWith(color: Colors.blue))),
+            child: Text(
+              "Inbox",
+              style: small14StyleW500.copyWith(color: Colors.blue),
+            ),
+          ),
         ),
         height10,
         Expanded(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/splash_screen/splash_screen.dart';
+import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
 import 'package:pilot_bazar_admin/theme/theme.dart';
 import 'package:pilot_bazar_admin/mode_provider.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,13 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
           theme: lightTheme,
           darkTheme: darkTheme,
           debugShowCheckedModeBanner: false,
-          home: SplashScreen(
+          home:
+
+              // ShimmarEffectForSingleVehicle(
+              //   isShareOptio: true,
+              // )
+
+              SplashScreen(
             notifier: widget.notifier,
           ),
         );
