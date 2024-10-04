@@ -4,7 +4,7 @@
  <uses-permission android:name="android.permission.READ_CONTACTS" />
  <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <application
-        android:label="pilot_bazar_admin"
+        android:label="Click4Details"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

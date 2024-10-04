@@ -336,8 +336,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 //     }),
                 drawerItemHeader(
                     isBool: isSettingsBool,
-                    iconPath:
-                        'assets/icons/bottom_nav_screen.png', //drawer_settings.png
+                    iconPath: 'assets/icons/shopping.png', //drawer_settings.png
                     text: 'My Shop',
                     onClick: () {
                       isSettingsBool = !isSettingsBool;
@@ -456,17 +455,17 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
             const Spacer(),
-            isArrow
-                ? Transform.rotate(
-                    angle: isBool ? 1.5708 : 0, // 90 degrees in radians
-                    child: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 18,
-                      color: isBool ? Colors.blue : null,
-                    ),
-                  )
-                : const SizedBox(),
-            const SizedBox(width: 20),
+            // isArrow
+            //     ? Transform.rotate(
+            //         angle: isBool ? 1.5708 : 0, // 90 degrees in radians
+            //         child: Icon(
+            //           Icons.arrow_forward_ios_outlined,
+            //           size: 18,
+            //           color: isBool ? Colors.blue : null,
+            //         ),
+            //       )
+            //     : const SizedBox(),
+            // const SizedBox(width: 20),
           ],
         ),
       ),

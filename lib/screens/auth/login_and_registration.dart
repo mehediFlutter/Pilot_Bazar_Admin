@@ -34,15 +34,21 @@ class _TabBarViewLoginAndRegistrationState
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(),
       body: Column(
         children: [
-          height10,
+          // height10,
           _tabController.index == 0
-              ? const Text(
-                  "Login",
-                  style: TextStyle(fontSize: 24),
+              ? Column(
+                  children: [
+                    SizedBox(height: size.height / 15),
+                    const Text(
+                      "Login",
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ],
                 )
               : const Text(
                   "Register",

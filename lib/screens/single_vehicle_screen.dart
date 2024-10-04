@@ -19,6 +19,7 @@ import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigatio
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
+import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/products.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
 import 'package:pilot_bazar_admin/widget/snack_bar.dart';
@@ -39,14 +40,9 @@ class SingleVehicleScreen extends StatefulWidget {
 }
 
 class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
-  // yVjInK9erYHC0iHW9ehY8c6J4y79fbNzCEIWtZvQ.jpg
-  //${baseUrl}storage/vehicles/
-  //static String imagePath = "${baseUrl}storage/vehicles/";
   static late int page;
   static late int i;
   late SharedPreferences prefss;
-  //static List allSearchProducts = [];
-  static List newSearchProducts = [];
   String searchValue = '';
   bool searchInProgress = false;
   bool shareInProgress = false;
@@ -54,7 +50,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   bool _isDeviceConnected = false;
   bool _isAlertShown = false;
   bool showAskingPrice = true;
-  // late StreamSubscription<ConnectivityResult> _subscription;
 
   int getIntPreef = 0;
   Future<void> getPreffs() async {
@@ -68,15 +63,15 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   Map<String, dynamic>? userInfo;
 
-  loadUserInfo() async {
-    LoginModel user = await AuthUtility.getUserInfo();
-    userInfo = user.toJson();
-    print("User info ");
-    print(userInfo);
-    print(userInfo?['payload']['token']);
+  // loadUserInfo() async {
+  //   LoginModel user = await AuthUtility.getUserInfo();
+  //   userInfo = user.toJson();
+  //   print("User info ");
+  //   print(userInfo);
+  //   print(userInfo?['payload']['token']);
 
-    setState(() {});
-  }
+  //   setState(() {});
+  // }
 
   List<Contact> contacts = [];
 
@@ -95,29 +90,51 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     });
   }
 
+  LoginModel? userInfoFromPrefs;
+  void printUserInfo() async {
+    userInfoFromPrefs = await AuthUtility.getUserInfo();
+
+    print(
+        "User info (from prefs): ${userInfoFromPrefs?.payload?.merchant?.name.toString()}, ${userInfoFromPrefs?.payload?.merchant?.mobile.toString()}");
+  }
+
+  void _listenToScroolMoments() {
+    if (scrollController.offset == scrollController.position.maxScrollExtent) {
+      page++;
+      setState(() {});
+      getNewProduct(page);
+    }
+  }
+
+  bool hasTypedText = false;
   @override
   initState() {
-    getContactPermission();
-    _checkConnectivity();
-    //  _listenForChanges();
-    loadUserInfo();
-    page = 1;
-    initializePreffsBool();
+    isRefresh = false;
     page = 1;
     i = 0;
+    setState(() {});
+    printUserInfo();
+    _checkConnectivity();
+
+    // initializePreffsBool();
+
     getProduct(page);
-    _scrollController.addListener(_listenToScroolMoments);
+    scrollController.addListener(_listenToScroolMoments);
 
     searchController.addListener(() {
-      if (searchController.text.isEmpty) {
+      if (searchController.text.isNotEmpty) {
+        print(hasTypedText);
+        hasTypedText = true;
+      }
+      if (searchController.text.isEmpty && hasTypedText) {
         page = 1;
         i = 0;
         searchProducts.clear();
         products.clear();
-        getProduct(page);
+        getProduct(page); // Call getProduct only when cleared after typing
+        hasTypedText = false; // Reset the flag
         setState(() {});
       }
-      _listenToScroolMoments;
     });
 
     setState(() {});
@@ -295,18 +312,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   bool _detailsInProgress = false;
 
   static int x = 0;
-  void _listenToScroolMoments() {
-    if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent) {
-      page++;
-      setState(() {});
-      getNewProduct(page);
-
-      if (mounted) {
-        setState(() {});
-      }
-    }
-  }
 
   getNewProduct(int page) async {
     print("I am new products methode");
@@ -423,10 +428,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   bool isLoading = false;
+
+  String? jsonString;
+  bool? isRefresh = false;
   @override
   Future getProduct(int page) async {
     prefss = await SharedPreferences.getInstance();
-    print("Here double vehicle token from share preff");
     products.clear();
     _getProductinProgress = true;
     if (mounted) {
@@ -445,12 +452,11 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json',
-          'Authorization': 'Bearer ${prefss.getString('token')}',
+          'Authorization':
+              'Bearer ${userInfoFromPrefs?.payload?.token}', //prefss.getString('token')
         },
       );
     }
-    //${baseUrl}api/vehicle?page=0
-    //https://crud.teamrabbil.com/api/v1/ReadProduct
 
     final Map<String, dynamic> decodedResponse1 = jsonDecode(response.body);
     final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
@@ -461,7 +467,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
     for (i; i < getproductsList.length; i++) {
       print('length of this products');
-      // print(decodedResponse['data'].length);
 
       newPrice = (getproductsList[i]['fixed_price'] != null &&
               getproductsList[i]['fixed_price'].toInt() > 0)
@@ -527,10 +532,9 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         ),
       );
     }
-    for (var item in products) {
-      //  print("new Price");
-      print(item.newPrice.toString());
-    }
+    jsonString = jsonEncode(products.toString());
+    await prefss.setString('productsListInCatch', jsonString ?? '');
+
     if (getproductsList == null) {
       return;
     }
@@ -684,7 +688,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   static List showImageList = [];
   late String ImageLink;
   late List ImageLinkList = [];
-  bool _shareAllImageInProgress = false;
+
   bool shareAllImagesInProgress = false;
 
   Future<void> sendAllImages(int id) async {
@@ -935,6 +939,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   bool enterDetailsMethodeWithLotsOfDetails = false;
+
   Future newGetDetails(int id) async {
     print("get details methode");
     prefss = await SharedPreferences.getInstance();
@@ -1355,7 +1360,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     }
   }
 
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   bool myBoolValue = true;
   bool fixedPriceChange = false;
@@ -1378,8 +1383,8 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _scrollController.addListener(() {
-      print(_scrollController.offset);
+    scrollController.addListener(() {
+      print(scrollController.offset);
     });
 
     Size size = MediaQuery.of(context).size;
@@ -1396,26 +1401,28 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                 children: [
                   Builder(builder: (context) {
                     return CustomerProfileBar(
-                      profileImagePath: userInfo?['payload']?['merchant']
-                              ?['merchant_info']?['image']?['name'] ??
+                      profileImagePath: userInfoFromPrefs
+                              ?.payload?.merchant?.merchantInfo?.image?.name ??
                           '',
                       message_icon_path:
                           'assets/icons/message_notification.png',
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:
-                          userInfo?['payload']?['merchant']?['name'] ?? 'None',
-                      companyName: userInfo?['payload']?['merchant']
-                              ?['merchant_info']['company_name'] ??
+                          userInfoFromPrefs?.payload?.merchant?.name ?? 'None',
+                      companyName: userInfoFromPrefs
+                              ?.payload?.merchant?.merchantInfo?.companyName ??
                           "None",
                     );
                   }),
-                  SearchTextFild(
-                    searchController: searchController,
-                    onSubmit: (value) async {
-                      print("onSubmitted: $value");
-                      await search(value);
-                    },
-                  ),
+                  products.length > 0
+                      ? SearchTextFild(
+                          searchController: searchController,
+                          onSubmit: (value) async {
+                            print("onSubmitted: $value");
+                            await search(value);
+                          },
+                        )
+                      : SizedBox(),
                   // (getIntPreef >= 1)
                   //     ? AskingFixedAndStockList(
                   //         askingPriceFunction: () {
@@ -1438,8 +1445,9 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
-                        initState();
+                        isRefresh = true;
                         setState(() {});
+                        initState();
                       },
                       child: (_getProductinProgress ||
                               _searchInProgress) //_getProductinProgress || _searchInProgress
@@ -1461,15 +1469,32 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                 ],
                               ),
                             )
-                          : ListView.builder(
-                              primary: false,
-                              shrinkWrap: true,
-                              controller: _scrollController,
-                              itemCount: products.length,
-                              itemBuilder: (BuildContext context, index) {
-                                return productList(index + j, size);
-                              },
-                            ),
+                          : products.length > 1
+                              ? ListView.builder(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  controller: scrollController,
+                                  itemCount: products.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    return productList(index + j, size);
+                                  },
+                                )
+                              : Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("No Car Available In Your Account"),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            CustomAlertDialog().showAlertDialog(
+                                                context,
+                                                "Add Car Functionality not Available",
+                                                "OK");
+                                          },
+                                          child: Icon(Icons.add))
+                                    ],
+                                  ),
+                                ),
                     ),
                   ),
                   Visibility(
@@ -1507,7 +1532,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
           children: [
             GestureDetector(
               onTap: () async {
-                print(x);
+                // print(products[x].index);
                 print("This is my on tap functioin for details");
                 print("Image name");
                 print(products[x].imageName);
@@ -1602,25 +1627,23 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                     enterSingleDataSmall('Code :${products[x].code}'),
                     const Spacer(),
                     PopupMenuButton(
-                        child: shareAllImagesInProgress
-                            ? const SizedBox(
-                                height: 24,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                ))
-                            : Container(
-                                height: 30,
-                                width: 30,
-                                decoration:
-                                    const BoxDecoration(shape: BoxShape.circle),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.more_vert,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration:
+                              const BoxDecoration(shape: BoxShape.circle),
+                          child: Center(
+                              child: shareAllImagesInProgress
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                          // value: 20,
+                                          ),
+                                    )
+                                  : Icon(
+                                      Icons.more_vert,
+                                      size: 20,
+                                    )),
+                        ),
                         itemBuilder: (context) {
                           return [
                             PopupMenuItem(
@@ -1643,6 +1666,30 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                 const Divider(
                                   color: Colors.black,
                                 ),
+                                InkWell(
+                                    onTap: () async {
+                                      print("Onli image");
+                                      Navigator.pop(context);
+
+                                      //    await newGetDetails(products[x + j].id);
+                                      await getLink(products[x + j].id);
+                                      await shareDetailsWithOneImage(
+                                        products[x + j].id,
+                                        products[x + j].imageName,
+                                        products[x + j].vehicleName,
+                                        products[x + j].manufacture,
+                                        products[x + j].condition,
+                                        products[x + j].registration,
+                                        products[x + j].onlyMileage,
+                                        products[x + j].price,
+                                        products[x + j].newPrice,
+                                        products[x + j].fixed_price,
+                                        detailsLink,
+                                      );
+                                    },
+                                    child: insidePopubButton(context,
+                                        "One Image, Short Details, Link")),
+                                height5,
                                 InkWell(
                                   onTap: () async {
                                     Navigator.pop(context);
@@ -1706,7 +1753,10 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                       context, "All Images (শুধু ছবি)"),
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    await sendAllImages(products[x + j].id);
+                                    print(products[x + j].id);
+                                    await sendAllImages(
+                                      products[x + j].id,
+                                    );
                                   },
                                 ),
                                 height5,
@@ -1728,29 +1778,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                     },
                                     child: insidePopubButton(
                                         context, "Details (শুধু তথ্য)")),
-                                InkWell(
-                                    onTap: () async {
-                                      print("Onli image");
-                                      Navigator.pop(context);
-
-                                      //    await newGetDetails(products[x + j].id);
-                                      await getLink(products[x + j].id);
-                                      await shareDetailsWithOneImage(
-                                        products[x + j].id,
-                                        products[x + j].imageName,
-                                        products[x + j].vehicleName,
-                                        products[x + j].manufacture,
-                                        products[x + j].condition,
-                                        products[x + j].registration,
-                                        products[x + j].onlyMileage,
-                                        products[x + j].price,
-                                        products[x + j].newPrice,
-                                        products[x + j].fixed_price,
-                                        detailsLink,
-                                      );
-                                    },
-                                    child: insidePopubButton(context,
-                                        "One Image, Short Details, Link")),
                               ],
                             ))
                           ];

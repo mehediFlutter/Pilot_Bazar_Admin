@@ -37,8 +37,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   late bool passwordVisible;
   late bool confirmPasswordVisible;
+  bool isRegistrationInProgress = false;
 
   Future registration() async {
+    isRegistrationInProgress = true;
     Map<String, dynamic> body = {
       "name": nameController.text,
       "company_name": companyNameController.text,
@@ -56,16 +58,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           body: jsonEncode(body));
       print(response.statusCode);
       print(response.body);
+      Map decodedBody = jsonDecode(response.body.toString());
       if (response.statusCode == 200) {
         newlyRegistraterdWithLogin();
       } else {
-        CustomAlertDialog()
-            .showAlertDialog(context, "Fill the Filds Properly ", "OK");
+        CustomAlertDialog().showAlertDialog(
+          context,
+          decodedBody['message'] + ' Please Try Again'.toString(),
+          "OK",
+        );
       }
     } else {
       print("error");
       CustomAlertDialog()
           .showAlertDialog(context, "Please Provide Correct Information", "OK");
+    }
+    isRegistrationInProgress = false;
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -78,6 +88,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       "mobile": phoneNumberController.text,
       "password": passwordController.text,
     });
+    print("response . body is");
+    print(response.body);
+    // Map? decodedBody = jsonDecode(response.body.toString());
     if (response.isSuccess) {
       LoginModel model = LoginModel.fromJson(response.body!);
       await AuthUtility.saveUserInfo(model);
@@ -93,9 +106,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false);
     } else {
-      CustomAlertDialog()
-          .showAlertDialog(context, "Some thing error Try Agein", "OK");
+      CustomAlertDialog().showAlertDialog(
+        context,
+        "Something wrong" + ' Please Try Again'.toString(),
+        "OK",
+      );
     }
+    isRegistrationInProgress = false;
+    setState(() {});
   }
 
   @override
@@ -118,7 +136,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //  height10,
+                height10,
                 //    const Text("Registration"),
                 MyTextFromFild(
                   myController: nameController,
@@ -203,15 +221,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                           await registration();
                         },
-                        child: const Text(
-                          "Register",
-                          style: TextStyle(fontSize: 25, color: Colors.white),
-                        ))),
-                height40,
-                height40,
+                        child: isRegistrationInProgress
+                            ? Center(child: CircularProgressIndicator())
+                            : const Text(
+                                "Register",
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.white),
+                              ))),
+                SizedBox(height: size.height / 13),
 
                 Text(
-                  "By Sharing in your agreeing our",
+                  "By Clicking Register agreeing our",
                   style: TextStyle(fontSize: 18),
                 ),
                 Text(

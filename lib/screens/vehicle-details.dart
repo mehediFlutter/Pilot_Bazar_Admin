@@ -91,6 +91,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
   bool isDetailsEmpty = false;
 
   Future getDetails() async {
+    print(widget.id);
     Preffs = await SharedPreferences.getInstance();
 
     _getDataInProgress = true;

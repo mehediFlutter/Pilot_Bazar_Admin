@@ -1,14 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_view.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
-import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart';
@@ -48,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
     prefss = await SharedPreferences.getInstance();
   }
 
+  bool loginInProgress = false;
+
   Future login() async {
+    loginInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
     prefss = await SharedPreferences.getInstance();
     Map<String, dynamic> body = {
       "mobile": phoneNumberController.text,
@@ -76,6 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
       token = model.toJson()['payload']['token'];
       print(token);
       await prefss.setString('token', token ?? '');
+      loginInProgress = false;
+      if (mounted) {
+        setState(() {});
+      }
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
@@ -122,9 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   myController: phoneNumberController,
                   hintText: "Phonr Number",
                   validatorText: "Please Emter Phone number",
-                  prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Image.asset('assets/icons/phone_icon.png')),
+                  prefixIcon: Image.asset('assets/icons/phone_icon.png'),
                   keyboardType: TextInputType.number,
                 ),
                 height10,
@@ -172,32 +176,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF0386D0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                        //  style: Theme.of(context).elevatedButtonTheme.style,
-                        onPressed: () async {
-                          if (!formKey.currentState!.validate()) {
-                            return null;
-                          }
+                    child: loginInProgress
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            color: Color(0xFF0386D0),
+                          ))
+                        : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF0386D0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                            //  style: Theme.of(context).elevatedButtonTheme.style,
+                            onPressed: () async {
+                              if (!formKey.currentState!.validate()) {
+                                return null;
+                              }
 
-                          print(phoneNumberController.text);
-                          print(passwordController.text);
-                          await login();
-                        },
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 25, color: Colors.white),
-                        ))),
-                height40,
-                height40,
-                height40,
+                              print(phoneNumberController.text);
+                              print(passwordController.text);
+                              await login();
+                            },
+                            child: const Text(
+                              "Login",
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.white),
+                            ))),
+                SizedBox(height: size.height / 8),
                 Text(
-                  "By Sharing in your agreeing our",
+                  "By Sharing in your Agreeing our",
                   style: TextStyle(fontSize: 18),
                 ),
                 Text(
