@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/notification/notification_page.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
 import 'package:pilot_bazar_admin/package/chatting/chatting_font_person.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
-import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
-import 'package:pilot_bazar_admin/profile/profile.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import '../drawer/drawer_bool.dart';
 

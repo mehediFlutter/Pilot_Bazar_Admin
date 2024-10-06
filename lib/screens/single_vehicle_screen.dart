@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +9,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 import 'package:pilot_bazar_admin/screens/advance_edit_screen.dart';
@@ -73,23 +73,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   //   setState(() {});
   // }
 
-  List<Contact> contacts = [];
-
-  void getContactPermission() async {
-    if (await Permission.contacts.isGranted) {
-      fetchContacts();
-    } else {
-      await Permission.contacts.request();
-    }
-  }
-
-  void fetchContacts() async {
-    contacts = await ContactsService.getContacts();
-    contacts.forEach((e) {
-      print(e);
-    });
-  }
-
   LoginModel? userInfoFromPrefs;
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
@@ -115,9 +98,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     setState(() {});
     printUserInfo();
     _checkConnectivity();
-
     // initializePreffsBool();
-
     getProduct(page);
     scrollController.addListener(_listenToScroolMoments);
 
@@ -137,7 +118,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
       }
     });
 
-    setState(() {});
+    // setState(() {});
   }
 
   @override
@@ -1406,6 +1387,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                           '',
                       message_icon_path:
                           'assets/icons/message_notification.png',
+                      chatTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatFontScreen()));
+                      },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:
                           userInfoFromPrefs?.payload?.merchant?.name ?? 'None',

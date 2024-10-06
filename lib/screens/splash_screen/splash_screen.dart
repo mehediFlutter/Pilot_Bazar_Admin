@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_view.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';

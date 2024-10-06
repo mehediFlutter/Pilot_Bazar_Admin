@@ -68,20 +68,20 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // here is the message option temporary comment out
-          // GestureDetector(
-          //   onTap: widget.chatTap,
-          //   child: Container(
-          //     height: 30,
-          //     width: 35,
-          //     decoration: BoxDecoration(
-          //       borderRadius: BorderRadious8,
-          //       border: Border.all(color: BorderRadious8Color),
-          //     ),
-          //     child: Image.asset(
-          //       widget.message_icon_path ?? 'assets/icons/notification.png',
-          //     ),
-          //   ),
-          // ),
+          GestureDetector(
+            onTap: widget.chatTap,
+            child: Container(
+              height: 30,
+              width: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadious8,
+                border: Border.all(color: BorderRadious8Color),
+              ),
+              child: Image.asset(
+                widget.message_icon_path ?? 'assets/icons/notification.png',
+              ),
+            ),
+          ),
           const SizedBox(width: 10),
           GestureDetector(
             onTap: () {
