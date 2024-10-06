@@ -50,7 +50,7 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     preffs = await SharedPreferences.getInstance();
     setState(() {});
     if (preffs.containsKey('notifier')) {
-      print("Notefier");
+ 
       print(preffs.containsKey('notifier'));
       widget.notifier.value = (preffs.getString('notifier') == 'ThemeMode.dark')
           ? ThemeMode.light

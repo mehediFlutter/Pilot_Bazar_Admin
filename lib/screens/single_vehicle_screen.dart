@@ -19,6 +19,7 @@ import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigatio
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/products.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
@@ -27,7 +28,6 @@ import 'package:pilot_bazar_admin/widget/unic_title_and_details_function_class.d
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // https://websocket.pilotbazar.xyz/
 
@@ -90,8 +90,46 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   bool hasTypedText = false;
+  var socket = SocketManager().socket;
   @override
+  
+Future<void> authorizeTokenChat() async {
+ 
+  final url = 'https://messenger.pilotbazar.xyz/api/v1/vendor-management/authorize';
+  final headers = {
+    "Accept":"application/json",
+    'Content-Type': 'application/json',
+    "Accept-Encoding":"application/gzip"
+  };
+  Map<String, dynamic> body= {
+    "userid": "01j9f3d86s4wgnnxjja828dez0",
+    "socket": "${socket.id}",
+    "issued": "F"
+};
+
+
+  Response response = await http.post(
+    Uri.parse(url),
+    headers: headers,
+    body: jsonEncode(body),
+  );
+  
+  print("Chat Athorize Methode body");
+  print(response.statusCode);
+  print(response.body.toString());
+
+  if (response.statusCode == 200) {
+     print(response.body.toString());
+    print('POST request successful!');
+    print('Response: ${response.body}');
+  } else {
+    print('Error: ${response.statusCode}');
+  }
+}
+
   initState() {
+    print("Socke id in single Vehicle screen : ${socket.id}");
+    
     isRefresh = false;
     page = 1;
     i = 0;
@@ -117,7 +155,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         setState(() {});
       }
     });
-
+  
     // setState(() {});
   }
 
@@ -443,11 +481,10 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
     final getproductsList = decodedResponse['data'];
     setState(() {});
-    print('Length is');
-    print(getproductsList.length);
+ 
 
     for (i; i < getproductsList.length; i++) {
-      print('length of this products');
+   
 
       newPrice = (getproductsList[i]['fixed_price'] != null &&
               getproductsList[i]['fixed_price'].toInt() > 0)
@@ -456,7 +493,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
           : int.parse(getproductsList[i]['price'].toString());
       setState(() {});
 
-      print(newPrice);
+
 
       products.add(
         Product(

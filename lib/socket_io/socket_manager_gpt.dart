@@ -1,14 +1,16 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class SocketManagerGPT {
-  static final SocketManagerGPT _instance = SocketManagerGPT._internal();
+class SocketManager {
+  static final SocketManager _instance = SocketManager._internal();
+
+
   late IO.Socket socket;
 
-  factory SocketManagerGPT() {
+  factory SocketManager() {
     return _instance;
   }
 
-  SocketManagerGPT._internal() {
+  SocketManager._internal() {
     print("From Socket Manager GPT");
     initSocket();
   }
@@ -21,8 +23,13 @@ class SocketManagerGPT {
       'reconnectionAttempts': 5,
       'debug': true, // Enable debug logging
     });
+    socket.on('me', (data) async {
+      print('Received message: $data'); // Debug print
+    });
 
     socket.onConnect((_) async {
+      
+     
       print('Socket connected: ${socket.id}'); // Print Socket ID on connect
     });
 
@@ -34,13 +41,13 @@ class SocketManagerGPT {
       print('Socket disconnected'); // Debug print
     });
 
-    socket.on('me', (data) async {
-      print('Received message: $data'); // Debug print
-    });
-
     print('Attempting to connect...'); // Debug print
     socket.connect();
   }
+
+
+
+
 
   // Getter to access the socket ID
   // String get socketId => socket.id; // You can access the socket ID

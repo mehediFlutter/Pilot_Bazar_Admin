@@ -1,10 +1,14 @@
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
 import 'package:pilot_bazar_admin/package/chatting/chatting_font_person.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
 import '../drawer/drawer_bool.dart';
 
 class ChatFontScreen extends StatefulWidget {
@@ -20,13 +24,56 @@ class ChatFontScreen extends StatefulWidget {
 
 class _ChatFontScreenState extends State<ChatFontScreen> {
   TextEditingController searchController = TextEditingController();
+
+  String? socketId;
+  var socket = SocketManager().socket;
+
+  List contacts = [];
+  List contactNumber = [];
+  Map<String, dynamic>? body;
+
+  Future<void> _fetchContacts() async {
+    // Request permission to read contacts
+    var status = await Permission.contacts.request();
+
+    if (status.isGranted) {
+      // Fetch all contacts
+      contacts = await FlutterContacts.getContacts(withProperties: true);
+      setState(() {});
+      // setState(() {
+      //   contacts = contacts; // Update the contacts list
+      // });
+
+      contacts.forEach((contact) {
+        if (contact.phones.isNotEmpty) {
+          contactNumber
+              .add(contact.phones[0].number); // Add the first phone number
+          print(contactNumber);
+        }
+      });
+
+      for (var item in contactNumber) {
+        print(item);
+      }
+      body = {"is_group": false, "contacts": contactNumber};
+      setState(() {});
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: const Text('Contacts permission denied')),
+      );
+    }
+  }
+
   @override
   void initState() {
+    print("Socket Id");
+    print(socket.id);
     // TODO: implement initState
     universalViewBool = true;
     universalCustomBool = true;
 
     setState(() {});
+    _fetchContacts();
   }
 
   @override
