@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
@@ -20,6 +22,7 @@ import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/products.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
@@ -91,45 +94,23 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   bool hasTypedText = false;
   var socket = SocketManager().socket;
-  @override
-  
-Future<void> authorizeTokenChat() async {
- 
-  final url = 'https://messenger.pilotbazar.xyz/api/v1/vendor-management/authorize';
-  final headers = {
-    "Accept":"application/json",
-    'Content-Type': 'application/json',
-    "Accept-Encoding":"application/gzip"
-  };
-  Map<String, dynamic> body= {
-    "userid": "01j9f3d86s4wgnnxjja828dez0",
-    "socket": "${socket.id}",
-    "issued": "F"
-};
+  var socketMethod = SocketMethod();
 
+  String? authorizeTokenChatToken;
 
-  Response response = await http.post(
-    Uri.parse(url),
-    headers: headers,
-    body: jsonEncode(body),
-  );
-  
-  print("Chat Athorize Methode body");
-  print(response.statusCode);
-  print(response.body.toString());
+  List contactNumber = [];
 
-  if (response.statusCode == 200) {
-     print(response.body.toString());
-    print('POST request successful!');
-    print('Response: ${response.body}');
-  } else {
-    print('Error: ${response.statusCode}');
-  }
-}
+  Map? syncContactNumbers;
+  // pirntSocketChatToken()async {
+  //   String token = await socketMethod.authorizeChatToken??'';
+  //  print("Authorize chat token from single vehicle screen ");
+  //  print(token);
+  //   print(socketMethod.authorizeChatToken);
+  // }
 
   initState() {
-    print("Socke id in single Vehicle screen : ${socket.id}");
-    
+   
+
     isRefresh = false;
     page = 1;
     i = 0;
@@ -155,7 +136,8 @@ Future<void> authorizeTokenChat() async {
         setState(() {});
       }
     });
-  
+   //  pirntSocketChatToken();
+
     // setState(() {});
   }
 
@@ -275,7 +257,7 @@ Future<void> authorizeTokenChat() async {
       print(response.statusCode);
       final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
-      print(decodedResponse['data']);
+      // print(decodedResponse['data']);
       for (int i = 0; i < decodedResponse['data'].length; i++) {
         allProductsForSearch.add(Product(
           vehicleName:
@@ -342,20 +324,15 @@ Future<void> authorizeTokenChat() async {
       setState(() {});
     }
     Response? response;
-    if (prefss.getString('token') == null) {
-      response = await get(
-        Uri.parse('${baseUrl}api/clients/vehicles/products?page=$page'),
-      );
-    } else {
-      response = await get(
-        Uri.parse('${baseUrl}api/merchants/vehicles/products?page=$page'),
-        headers: {
-          'Accept': 'application/vnd.api+json',
-          'Content-Type': 'application/vnd.api+json',
-          'Authorization': 'Bearer ${prefss.getString('token')}'
-        },
-      );
-    }
+
+    response = await get(
+      Uri.parse('${baseUrl}api/merchants/vehicles/products?page=$page'),
+      headers: {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+        'Authorization': 'Bearer ${prefss.getString('token')}'
+      },
+    );
 
     //${baseUrl}api/vehicle?page=0
     //https://crud.teamrabbil.com/api/v1/ReadProduct
@@ -453,6 +430,8 @@ Future<void> authorizeTokenChat() async {
   @override
   Future getProduct(int page) async {
     prefss = await SharedPreferences.getInstance();
+    print("Get products token");
+    print(prefss.getString("token"));
     products.clear();
     _getProductinProgress = true;
     if (mounted) {
@@ -461,39 +440,28 @@ Future<void> authorizeTokenChat() async {
 
     Response? response;
 
-    if (prefss.getString('token') == null) {
-      response = await get(
-        Uri.parse("${baseUrl}api/clients/vehicles/products?page=$page"),
-      );
-    } else {
-      response = await get(
-        Uri.parse("${baseUrl}api/merchants/vehicles/products?page=$page"),
-        headers: {
-          'Accept': 'application/vnd.api+json',
-          'Content-Type': 'application/vnd.api+json',
-          'Authorization':
-              'Bearer ${userInfoFromPrefs?.payload?.token}', //prefss.getString('token')
-        },
-      );
-    }
+    response = await get(
+      Uri.parse("${baseUrl}api/merchants/vehicles/products?page=$page"),
+      headers: {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+        'Authorization':
+            'Bearer ${userInfoFromPrefs?.payload?.token}', //prefss.getString('token')
+      },
+    );
 
     final Map<String, dynamic> decodedResponse1 = jsonDecode(response.body);
     final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
     final getproductsList = decodedResponse['data'];
     setState(() {});
- 
 
     for (i; i < getproductsList.length; i++) {
-   
-
       newPrice = (getproductsList[i]['fixed_price'] != null &&
               getproductsList[i]['fixed_price'].toInt() > 0)
           ? (getproductsList[i]['fixed_price'] +
               (getproductsList[i]['additional_price'] ?? 0))
           : int.parse(getproductsList[i]['price'].toString());
       setState(() {});
-
-
 
       products.add(
         Product(
@@ -1216,6 +1184,8 @@ Future<void> authorizeTokenChat() async {
   bool _searchInProgress = false;
   TextEditingController searchController = TextEditingController();
   // Search
+
+  bool isSearchValue = false;
   Future<void> search(String value) async {
     print("I am search Products methodes");
     searchProducts.clear();
@@ -1229,23 +1199,25 @@ Future<void> authorizeTokenChat() async {
     }
     Response? response;
 
-    if (prefss.getString('token') == null) {
-      response = await get(Uri.parse(
-          '${baseUrl}api/clients/vehicles/products/search?search=$value'));
-    } else {
-      response = await get(
-        Uri.parse(
-            '${baseUrl}api/merchants/vehicles/products/search?search=$value'),
-        headers: {
-          'Accept': 'application/vnd.api+json',
-          'Content-Type': 'application/vnd.api+json',
-          'Authorization': 'Bearer ${prefss.getString('token')}'
-        },
-      );
-    }
+    response = await get(
+      Uri.parse(
+          '${baseUrl}api/merchants/vehicles/products/search?search=$value'),
+      headers: {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+        'Authorization': 'Bearer ${prefss.getString('token')}'
+      },
+    );
+
     final Map<String, dynamic> decodedResponse1 = jsonDecode(response.body);
     final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
     final getproductsList = decodedResponse['data'];
+    if (decodedResponse['data'].length > 0) {
+      isSearchValue = true;
+      setState(() {});
+    } else {
+      isSearchValue = false;
+    }
 
     int i = 0;
 
@@ -1438,15 +1410,15 @@ Future<void> authorizeTokenChat() async {
                           "None",
                     );
                   }),
-                  products.length > 0
-                      ? SearchTextFild(
-                          searchController: searchController,
-                          onSubmit: (value) async {
-                            print("onSubmitted: $value");
-                            await search(value);
-                          },
-                        )
-                      : SizedBox(),
+
+                  SearchTextFild(
+                    searchController: searchController,
+                    onSubmit: (value) async {
+                      print("onSubmitted: $value");
+                      await search(value);
+                    },
+                  ),
+
                   // (getIntPreef >= 1)
                   //     ? AskingFixedAndStockList(
                   //         askingPriceFunction: () {
@@ -1507,15 +1479,17 @@ Future<void> authorizeTokenChat() async {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("No Car Available In Your Account"),
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            CustomAlertDialog().showAlertDialog(
-                                                context,
-                                                "Add Car Functionality not Available",
-                                                "OK");
-                                          },
-                                          child: Icon(Icons.add))
+                                      Text("No Car Available "),
+                                      isSearchValue
+                                          ? ElevatedButton(
+                                              onPressed: () {
+                                                CustomAlertDialog().showAlertDialog(
+                                                    context,
+                                                    "Add Car Functionality not Available",
+                                                    "OK");
+                                              },
+                                              child: Icon(Icons.add))
+                                          : SizedBox()
                                     ],
                                   ),
                                 ),

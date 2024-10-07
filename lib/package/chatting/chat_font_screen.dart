@@ -8,7 +8,8 @@ import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
 import 'package:pilot_bazar_admin/package/chatting/chatting_font_person.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
-import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import '../drawer/drawer_bool.dart';
 
 class ChatFontScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
 
   String? socketId;
   var socket = SocketManager().socket;
+  var socketMethod = SocketMethod();
 
   List contacts = [];
   List contactNumber = [];
@@ -63,7 +65,13 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
       );
     }
   }
-
+  pirntSocketChatToken()async {
+    print(socketMethod.authorizeChatToken.toString());
+    String token = await socketMethod.authorizeChatToken??'';
+   print("Authorize chat token from chat Screen ");
+   print(token);
+    print(socketMethod.authorizeChatToken);
+  }
   @override
   void initState() {
     print("Socket Id");
@@ -71,9 +79,10 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
     // TODO: implement initState
     universalViewBool = true;
     universalCustomBool = true;
+    pirntSocketChatToken();
 
     setState(() {});
-    _fetchContacts();
+   
   }
 
   @override

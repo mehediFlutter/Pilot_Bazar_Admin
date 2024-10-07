@@ -19,7 +19,6 @@ class AskingFixedAndStockList extends StatefulWidget {
 }
 
 class _AskingFixedAndStockListState extends State<AskingFixedAndStockList> {
-  @override
   Color fixedPriceColor = Colors.white;
   Color askingPriceColor = Colors.green;
 

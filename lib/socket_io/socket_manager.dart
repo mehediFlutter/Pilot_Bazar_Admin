@@ -1,4 +1,3 @@
-import 'package:pilot_bazar_admin/network_service/network_caller.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -30,9 +29,9 @@ class SocketManager {
     });
 
     socket.onConnect((_) async {
-      callSocketMethode() {
-        socketMethod.authorizeChat();
-      }
+      await socketMethod.authorizeChat();
+      await socketMethod.fetchContacts();
+      await socketMethod.postPhoneNumber();
 
       print('Socket connected: ${socket.id}'); // Print Socket ID on connect
     });

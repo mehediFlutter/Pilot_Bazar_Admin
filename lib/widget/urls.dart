@@ -1,5 +1,6 @@
 String baseUrlWithAPI_EndPoint = "https://click4details.com/api/";
 String baseUrl = "https://click4details.com/";
+String chatBaseUrl = "https://messenger.pilotbazar.xyz";
 //https://click4details.com/
 //https://pilotbazar.com/
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:pdf/widgets.dart';
 import 'package:pilot_bazar_admin/network_service/network_response.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 
@@ -23,13 +24,15 @@ class NetworkCaller {
 
   // Post()
   Future<NetworkResponse> postRequest(
-      String url, Map<String, dynamic> body) async {
+      String url, Map<String, dynamic> body,{Map<String,String>? header}) async {
     try {
       Response response = await post(Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'token': AuthUtility.userInfo.payload!.token.toString()
-          },
+          headers: header,
+          
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'token': AuthUtility.userInfo.payload!.token.toString()
+          // },
           body: jsonEncode(body));
       print(response.statusCode);
       print(response.body.toString());
