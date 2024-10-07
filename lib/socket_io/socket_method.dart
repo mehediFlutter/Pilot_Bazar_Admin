@@ -4,13 +4,19 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SocketMethod {
   String? authorizeChatToken;
-  Map? syncContactNumbers;
+  Map? syncBodyContactNumbers;
+ late SharedPreferences prefss ;
+
 
   Future authorizeChat() async {
+    prefss = await SharedPreferences.getInstance();
+
     final url = '$chatBaseUrl/api/v1/vendor-management/authorize';
     final headers = {
       "Accept": "application/json",
@@ -32,11 +38,17 @@ class SocketMethod {
     if (response.statusCode == 200) {
       final decodedBody = jsonDecode(response.body);
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
+      
+      
+      authorizeChatTokenFromOutSideVariable = decodedBody['token']; 
+     
       print(" From Auth chat ");
       print("Authorize Token From AuthorizeChat Methode $authorizeChatToken");
     } else {
       print('Error: ${response.statusCode}');
     }
+     await prefss.setString("authorizeChatToken",authorizeChatToken.toString());
+     print("saving token $authorizeChatToken");
   }
 
   List contactNumber = [];

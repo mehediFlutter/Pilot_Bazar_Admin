@@ -10,6 +10,8 @@ import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuil
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../drawer/drawer_bool.dart';
 
 class ChatFontScreen extends StatefulWidget {
@@ -25,6 +27,7 @@ class ChatFontScreen extends StatefulWidget {
 
 class _ChatFontScreenState extends State<ChatFontScreen> {
   TextEditingController searchController = TextEditingController();
+  SharedPreferences? prefss;
 
   String? socketId;
   var socket = SocketManager().socket;
@@ -65,24 +68,29 @@ class _ChatFontScreenState extends State<ChatFontScreen> {
       );
     }
   }
-  pirntSocketChatToken()async {
-    print(socketMethod.authorizeChatToken.toString());
-    String token = await socketMethod.authorizeChatToken??'';
-   print("Authorize chat token from chat Screen ");
-   print(token);
-    print(socketMethod.authorizeChatToken);
+
+  pirntSocketChatToken() async {
+     prefss = await SharedPreferences.getInstance();
+    String token = await prefss?.getString('authorizeChatToken')??'';
+    print("Auth Token from chat screen Local");
+    print(token.toString());
+    print("Auth Token from chat screen Variable");
+    print(authorizeChatTokenFromOutSideVariable.toString());
+  String? authToken = await prefss?.getString('token');
+
+
   }
+
   @override
   void initState() {
-    print("Socket Id");
-    print(socket.id);
-    // TODO: implement initState
     universalViewBool = true;
     universalCustomBool = true;
+    print("Socket Id");
+    print(socket.id);
+    print(authorizeChatTokenFromOutSideVariable.toString());
     pirntSocketChatToken();
 
     setState(() {});
-   
   }
 
   @override
