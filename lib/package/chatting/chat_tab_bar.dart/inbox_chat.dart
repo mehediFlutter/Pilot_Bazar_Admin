@@ -9,8 +9,8 @@ import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../widget/search_text_fild.dart';
-import '../drawer/drawer_bool.dart';
+
+import '../../../widget/search_text_fild.dart';
 
 class InboxChatScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,8 +34,6 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   List contacts = [];
   List contactNumber = [];
   Map<String, dynamic>? body;
-  List filteredItems = [];
-
 
   Future<void> _fetchContacts() async {
     // Request permission to read contacts
@@ -91,8 +89,6 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
 
   @override
   void initState() {
-    universalViewBool = true;
-    universalCustomBool = true;
     print("Socket Id");
     print(socket.id);
     print(authorizeChatTokenFromOutSideVariable.toString());
@@ -102,17 +98,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     print(authorizeChatTokenFromOutSideVariable);
 
     pirntSocketChatToken();
-    filteredItems = peopleList??[]; // Initialize filtered list with all items
-    searchController.addListener(filterList); // Add listener to the search controller
     setState(() {});
-  }
-  void filterList() {
-    setState(() {
-      String query = searchController.text.toLowerCase();
-      filteredItems = peopleList!.where((item) {
-        return item.toLowerCase().contains(query);
-      }).toList();
-    });
   }
 
   @override
@@ -120,69 +106,67 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     Size size = MediaQuery.sizeOf(context);
     return ReUsableMotherWidget(
       children: [
-            height10,
+        height10,
         SearchTextFild(
           searchController: searchController,
-          
+          onSubmit: (value) async {
+            print("onSubmitted: $value");
+          },
         ),
         height10,
-     
         Expanded(
-            child: Container(
-              child: ListView.builder(
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: peopleList?.length,
-                 // itemCount: peopleList?.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      onTap: () {
-                        print(peopleList?[index]['avatar']);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChattingDetailsScreen()));
-                      },
-                      leading: Container(
-                          height: 45.05,
-                          width: 40,
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                          child: Image.network(peopleList?[index]['avatar'])),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                peopleList?[index]['name'] ?? 'None',
-                                style: small14StyleW500.copyWith(height: 0),
-                              ),
-                              const Spacer(),
-                              const Text(
-                                "5.20 PM",
-                                style: small12Stylew400,
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                peopleList?[index]['phone'] ?? 'None',
-                                style: small10Style.copyWith(height: 0),
-                              ),
-                              const Spacer(),
-                              Image.asset(
-                                'assets/icons/seenMessage.png',
-                                color: Colors.blue,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-            ))
+            child: ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: peopleList?.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    onTap: () {
+                      print(peopleList?[index]['avatar']);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChattingDetailsScreen()));
+                    },
+                    leading: Container(
+                        height: 45.05,
+                        width: 40,
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Image.network(peopleList?[index]['avatar'])),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              peopleList?[index]['name'] ?? 'None',
+                              style: small14StyleW500.copyWith(height: 0),
+                            ),
+                            const Spacer(),
+                            const Text(
+                              "5.20 PM",
+                              style: small12Stylew400,
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              peopleList?[index]['phone'] ?? 'None',
+                              style: small10Style.copyWith(height: 0),
+                            ),
+                            const Spacer(),
+                            Image.asset(
+                              'assets/icons/seenMessage.png',
+                              color: Colors.blue,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }))
       ],
     );
   }

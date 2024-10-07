@@ -98,7 +98,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
           chatTap: () {
             print("notificaiton tap");
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ChatFontScreen()));
+                MaterialPageRoute(builder: (context) => InboxChatScreen()));
           },
           // drawerTap: () {
           //   Scaffold.of(context).openDrawer();

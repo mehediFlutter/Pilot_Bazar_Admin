@@ -12,11 +12,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_Tab_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 import 'package:pilot_bazar_admin/screens/advance_edit_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
@@ -1400,7 +1402,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChatFontScreen()));
+                                builder: (context) => TabChat()));
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:

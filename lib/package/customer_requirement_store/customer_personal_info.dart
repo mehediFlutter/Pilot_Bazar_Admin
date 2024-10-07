@@ -50,7 +50,7 @@ class _CustomerPersonalInfoState extends State<CustomerPersonalInfo> {
         chatTap: () {
           print("notificaiton tap");
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ChatFontScreen()));
+              MaterialPageRoute(builder: (context) => InboxChatScreen()));
         },
       ),
 

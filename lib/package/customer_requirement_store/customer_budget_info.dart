@@ -76,7 +76,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
         chatTap: () {
           print("notificaiton tap");
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ChatFontScreen()));
+              MaterialPageRoute(builder: (context) => InboxChatScreen()));
         },
       ),
       Align(

@@ -11,8 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SocketMethod {
   String? authorizeChatToken;
   Map? syncBodyContactNumbers;
- late SharedPreferences prefss ;
-
+  late SharedPreferences prefss;
 
   Future authorizeChat() async {
     prefss = await SharedPreferences.getInstance();
@@ -38,17 +37,16 @@ class SocketMethod {
     if (response.statusCode == 200) {
       final decodedBody = jsonDecode(response.body);
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
-      
-      
-      authorizeChatTokenFromOutSideVariable = decodedBody['token']; 
-     
+
+      authorizeChatTokenFromOutSideVariable = decodedBody['token'];
+
       print(" From Auth chat ");
       print("Authorize Token From AuthorizeChat Methode $authorizeChatToken");
     } else {
       print('Error: ${response.statusCode}');
     }
-     await prefss.setString("authorizeChatToken",authorizeChatToken.toString());
-     print("saving token $authorizeChatToken");
+    await prefss.setString("authorizeChatToken", authorizeChatToken.toString());
+    print("saving token $authorizeChatToken");
   }
 
   List contactNumber = [];
@@ -72,9 +70,9 @@ class SocketMethod {
 
   Future<void> postPhoneNumber() async {
     Map<String, dynamic> body = {
-    "is_group": false,
-    "contacts": contactNumber,  // Use your contact list here
-  };
+      "is_group": false,
+      "contacts": contactNumber, // Use your contact list here
+    };
     Response response = await http.post(
       Uri.parse(
         'https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts',
@@ -85,7 +83,6 @@ class SocketMethod {
         "Accept-Encoding": "application/gzip",
         "Authorization": 'Bearer $authorizeChatToken'
       },
-   
       body: jsonEncode(body),
     );
 
@@ -93,4 +90,101 @@ class SocketMethod {
     print("Post PHone number chat token is ");
     print(authorizeChatToken);
   }
+
+  List getChatPeopleList = [];
+  List getGroupChatList = [];
+  Map<String, dynamic>? decodedBody;
+  Map<String, dynamic>? decodeGroupChatdBody;
+  List getChatPeopleListxyz = [];
+
+  Future<List> getChatPeople(String token) async {
+    print("Auth token from get chat people $token");
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    };
+    Response response = await http.get(
+        Uri.parse(
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
+        headers: headers);
+
+    print("Get Chat People Methode");
+    print("status code is");
+    print(response.statusCode);
+
+    decodedBody = jsonDecode(response.body);
+
+    for (var person in decodedBody?['people']) {
+      var contact = await {
+        "name": person["name"],
+        "phone": person["phone"],
+        "avatar": person["avatar"],
+        "id": person["id"],
+      };
+      getChatPeopleList.add(contact);
+    }
+
+    return getChatPeopleList;
+  }
+
+  Future<List> getGroupChat(String token) async {
+    print("Auth token from get chat people $token");
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    };
+    Response response = await http.get(
+        Uri.parse(
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
+        headers: headers);
+
+    print("Get Chat People Methode");
+    print("status code is");
+    print(response.statusCode);
+
+    decodeGroupChatdBody = jsonDecode(response.body);
+    for (var person in decodeGroupChatdBody?['groups']) {
+      var contact = await {
+        "id": person["id"],
+        "room": person["room"],
+        "datetime": person["datetime"],
+        "avatar": person["avatar"],
+      };
+      getGroupChatList.add(contact);
+    }
+
+    return getGroupChatList;
+  }
+  Future<List> createGrop(String token, Map body) async {
+    print("Auth token from create Group $token");
+    print("Body $body");
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    };
+    Response response = await http.post(
+        Uri.parse(
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts/group"),
+        headers: headers,
+        body: jsonEncode(body)
+        );
+
+    print("create Group");
+    print("status code is");
+    print(response.statusCode);
+
+    decodeGroupChatdBody = jsonDecode(response.body);
+
+
+    return getGroupChatList;
+  }
+
+  List get chatList => getChatPeopleList;
+  List get chatGroup => getGroupChatList;
 }
