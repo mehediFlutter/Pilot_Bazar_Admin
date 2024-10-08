@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ChatMethodeClass extends StatelessWidget {
+class ChatBubbl extends StatelessWidget {
   final bool isMe;
   final String message;
-  const ChatMethodeClass({super.key, this.isMe = true, required this.message});
+  const ChatBubbl({super.key, this.isMe = true, required this.message});
 
   @override
   Widget build(BuildContext context) {

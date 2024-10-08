@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/group_chat.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 
@@ -61,11 +61,11 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                 drawer_icon_path: 'assets/icons/beside_message.png',
                 onTapFunction: () {},
                 chatTap: () {
-                  print("notificaiton tap");
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChattingDetailsScreen()));
+                  // print("notificaiton tap");
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => ChattingDetailsScreen()));
                 },
               ),
             ),

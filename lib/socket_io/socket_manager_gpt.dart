@@ -18,7 +18,7 @@ class SocketManager {
   }
 
   void initSocket() async {
-    socket = IO.io('https://websocket.pilotbazar.xyz', <String, dynamic>{
+    socket = IO.io('https://websocket.pilotbazar.xyz/vendor', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
       'forceNew': true,

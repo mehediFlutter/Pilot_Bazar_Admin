@@ -3,14 +3,16 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../../../widget/search_text_fild.dart';
+import '../../drawer/drawer_bool.dart';
 
 class InboxChatScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,6 +36,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   List contacts = [];
   List contactNumber = [];
   Map<String, dynamic>? body;
+  List filteredItems = [];
 
   Future<void> _fetchContacts() async {
     // Request permission to read contacts
@@ -73,7 +76,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     print("Auth Token from chat screen Local");
     print(token.toString());
     print("Auth Token from chat screen Variable");
-    print(authorizeChatTokenFromOutSideVariable.toString());
+    print(messengerAPIToken.toString());
     String? authToken = await prefss?.getString('token');
   }
 
@@ -81,7 +84,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
 
   callgetChatPeople() async {
     peopleList = await socketMethod
-        .getChatPeople(authorizeChatTokenFromOutSideVariable ?? '');
+        .getChatPeople(messengerAPIToken ?? '');
     setState(() {});
     print("chat fromt screenddd");
     print(peopleList.toString());
@@ -89,16 +92,30 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
 
   @override
   void initState() {
+    universalViewBool = true;
+    universalCustomBool = true;
     print("Socket Id");
     print(socket.id);
-    print(authorizeChatTokenFromOutSideVariable.toString());
+    print(messengerAPIToken.toString());
     callgetChatPeople();
 
     print("Token");
-    print(authorizeChatTokenFromOutSideVariable);
+    print(messengerAPIToken);
 
     pirntSocketChatToken();
+    filteredItems = peopleList ?? []; // Initialize filtered list with all items
+    searchController
+        .addListener(filterList); // Add listener to the search controller
     setState(() {});
+  }
+
+  void filterList() {
+    setState(() {
+      String query = searchController.text.toLowerCase();
+      filteredItems = peopleList!.where((item) {
+        return item.toLowerCase().contains(query);
+      }).toList();
+    });
   }
 
   @override
@@ -109,68 +126,82 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
         height10,
         SearchTextFild(
           searchController: searchController,
-          onSubmit: (value) async {
-            print("onSubmitted: $value");
-          },
         ),
         height10,
         Expanded(
-            child: ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: peopleList?.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    onTap: () {
-                      print(peopleList?[index]['avatar']);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChattingDetailsScreen()));
-                    },
-                    leading: Container(
-                        height: 45.05,
-                        width: 40,
-                        decoration: BoxDecoration(shape: BoxShape.circle),
-                        child: Image.network(peopleList?[index]['avatar'])),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+            child: Container(
+          child: ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              itemCount: peopleList?.length,
+              // itemCount: peopleList?.length,
+              itemBuilder: (context, index) {
+                return
+                     ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        onTap: () {
+                          print(peopleList?[index]['avatar']);
+                     
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChattingDetailsScreen(
+                                        manualUserId: '01j9f3d86s4wgnnxjja828dez0',
+                                        userId: peopleList?[index]['id'],
+                                        roomId: peopleList?[index]['room']['room_id'],
+                                        roomName: peopleList?[index]['room']['room_name'],
+                                        name: peopleList?[index]['name'],
+                                        phoneNumber: peopleList?[index]['phone'],
+                                        avatar: peopleList?[index]['avatar'],
+                                       isChatScreen: true,
+                                        )));
+                        },
+                        leading: Container(
+                            height: 45.05,
+                            width: 40,
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child:  Image.network(peopleList?[index]['avatar'])),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              peopleList?[index]['name'] ?? 'None',
-                              style: small14StyleW500.copyWith(height: 0),
+                            Row(
+                              children: [
+                                Text(
+                                  peopleList?[index]['name'] ?? 'None',
+                                  style: small14StyleW500.copyWith(height: 0),
+                                ),
+                                const Spacer(),
+                                const Text(
+                                  "5.20 PM",
+                                  style: small12Stylew400,
+                                )
+                              ],
                             ),
-                            const Spacer(),
-                            const Text(
-                              "5.20 PM",
-                              style: small12Stylew400,
-                            )
+                            Row(
+                              children: [
+                                Text(
+                                  peopleList?[index]['phone'] ?? 'None',
+                                  style: small10Style.copyWith(height: 0),
+                                ),
+                                const Spacer(),
+                                Image.asset(
+                                  'assets/icons/seenMessage.png',
+                                  color: Colors.blue,
+                                )
+                              ],
+                            ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              peopleList?[index]['phone'] ?? 'None',
-                              style: small10Style.copyWith(height: 0),
-                            ),
-                            const Spacer(),
-                            Image.asset(
-                              'assets/icons/seenMessage.png',
-                              color: Colors.blue,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }))
+                      );
+                   // :ChatFrontScreenShimmer(size: size,);
+              }),
+        ))
       ],
     );
   }
 
+  
   inboxOrGroup(String text, Function() onTap) {
     return Container(
       child: InkWell(

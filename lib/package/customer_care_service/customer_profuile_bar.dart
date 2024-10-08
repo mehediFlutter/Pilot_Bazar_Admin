@@ -8,6 +8,8 @@ class CustomerProfileBar extends StatefulWidget {
   final String? drawer_icon_path;
   final String? merchantName;
   final String? companyName;
+  final String? chatAvater;
+  final bool? isChatAvater;
   final Function()? onTapFunction;
   final Function()? chatTap;
   final Function()? drawerTap;
@@ -20,7 +22,7 @@ class CustomerProfileBar extends StatefulWidget {
     this.drawer_icon_path,
     this.drawerTap,
     this.merchantName,
-    this.companyName,
+    this.companyName, this.chatAvater, this.isChatAvater = false,
   });
 
   @override
@@ -40,6 +42,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
           borderRadius: BorderRadious10,
         ),
         child: Image.network(
+          
           (widget.profileImagePath.isNotEmpty)
               ? "https://click4details.com/storage/merchants/${widget.profileImagePath}"
               : errorPerson,

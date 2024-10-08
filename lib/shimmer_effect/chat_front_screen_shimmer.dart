@@ -2,60 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ChatFrontScreenShimmer extends StatelessWidget {
-  const ChatFrontScreenShimmer({super.key});
+  final Size size;
+  const ChatFrontScreenShimmer({super.key, required this.size});
 
   @override
+
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
-    return ListTile(
-      leading: Shimmer.fromColors(
-        baseColor: const Color.fromARGB(255, 105, 94, 94).withOpacity(0.25),
-        highlightColor: const Color.fromARGB(255, 61, 52, 52).withOpacity(0.5),
-        period: Duration(seconds: 1),
-        direction: ShimmerDirection.ltr,
-        child: Container(
-          height: 45.05,
-          width: 40,
-          decoration: BoxDecoration(color: const Color.fromARGB(255, 82, 49, 49), shape: BoxShape.circle),
-        ),
-      ),
+    return  ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: shimmerContainer(size, 45.05, 50.0, true),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              shimmerMethod(size, 45, double.infinity),
-              const Spacer(),
-               shimmerMethod(size, 20, double.infinity),
-            ],
-          ),
-          Row(
-            children: [
-              shimmerMethod(size, 45, double.infinity),
-              const Spacer(),
-              Image.asset(
-                'assets/icons/seenMessage.png',
-                color: Colors.blue,
-              )
-            ],
-          ),
-        ],
+        children: [shimmerContainer(size, 33.0, size.width / 1.2, false)],
       ),
     );
   }
-
-  Shimmer shimmerMethod(Size  size , double hight,width) {
+    Shimmer shimmerContainer(Size size, double height, width, isShapeCircular) {
     return Shimmer.fromColors(
-              baseColor: Colors.grey.withOpacity(0.25),
-              highlightColor: Colors.grey.withOpacity(0.5),
-              period: Duration(seconds: 1),
-              direction: ShimmerDirection.ltr,
-              child: Container(
-                height: 45.05,
-                width: double.infinity,
-                decoration:
-                    BoxDecoration(color: Colors.grey),
-              ),
-            );
+      baseColor: Colors.grey.withOpacity(0.25),
+      highlightColor: Colors.grey.withOpacity(0.5),
+      period: Duration(seconds: 1),
+      direction: ShimmerDirection.ltr,
+      child: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+            color: Colors.grey,
+            shape: isShapeCircular ? BoxShape.circle : BoxShape.rectangle,
+          borderRadius: isShapeCircular ? null : BorderRadius.circular(10),
+            ),
+      ),
+    );
   }
 }

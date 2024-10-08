@@ -4,8 +4,9 @@ import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_details.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
 import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
@@ -43,7 +44,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     print("Auth Token from chat screen Local");
     print(token.toString());
     print("Auth Token from chat screen Variable");
-    print(authorizeChatTokenFromOutSideVariable.toString());
+    print(messengerAPIToken.toString());
     String? authToken = await prefss?.getString('token');
   }
 
@@ -53,11 +54,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   callgetChatPeople() async {
     print("Groups  ");
     groupList = await socketMethod
-        .getGroupChat(authorizeChatTokenFromOutSideVariable ?? '');
+        .getGroup(messengerAPIToken ?? '');
     print(groupList);
 
     peopleList = await socketMethod
-        .getChatPeople(authorizeChatTokenFromOutSideVariable ?? '');
+        .getChatPeople(messengerAPIToken ?? '');
     setState(() {});
   }
 
@@ -67,11 +68,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   void initState() {
     print("Socket Id");
     print(socket.id);
-    print(authorizeChatTokenFromOutSideVariable.toString());
+    print(messengerAPIToken.toString());
     callgetChatPeople();
 
     print("Token");
-    print(authorizeChatTokenFromOutSideVariable);
+    print(messengerAPIToken);
 
     pirntSocketChatToken();
     setState(() {});
@@ -98,16 +99,24 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   child: ListView.builder(
                       primary: false,
                       shrinkWrap: true,
-                      itemCount: groupList?.length,
+                      itemCount: groupList?.length??15,
                       itemBuilder: (context, index) {
-                        return ListTile(
+                        return groupList?.length==0? ListTile(
                           contentPadding: EdgeInsets.zero,
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ChattingDetailsScreen()));
+                                        ChattingDetailsScreen(
+                                          manualUserId: '',
+                                          userId: '',
+                                          roomId: '',
+                                          roomName: '',
+                                          name: '',
+                                          phoneNumber: '',
+                                          avatar: '',
+                                        )));
                           },
                           leading: Container(
                               height: 45.05,
@@ -147,7 +156,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                               ),
                             ],
                           ),
-                        );
+                        ):ChatFrontScreenShimmer(size: size,);
                       })),
             ],
           ),
@@ -156,7 +165,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           backgroundColor: const Color.fromARGB(255, 66, 66, 66),
           onPressed: () async {
             allPerson = await socketMethod
-                .getChatPeople(authorizeChatTokenFromOutSideVariable ?? '');
+                .getChatPeople(messengerAPIToken ?? '');
             setState(() {});
             final result = await showModalBottomSheet(
               useSafeArea: true,
@@ -245,7 +254,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             "title": null,
                             "users": groupUserList
                           };
-                          socketMethod.createGrop(authorizeChatTokenFromOutSideVariable??'',body);
+                          socketMethod.createGrop(messengerAPIToken??'',body);
                         
                       },
                       child: Icon(Icons.add),

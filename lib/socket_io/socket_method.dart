@@ -16,7 +16,7 @@ class SocketMethod {
   Future authorizeChat() async {
     prefss = await SharedPreferences.getInstance();
 
-    final url = '$chatBaseUrl/api/v1/vendor-management/authorize';
+    final url = '$chatBaseUrl-management/authorize';
     final headers = {
       "Accept": "application/json",
       'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ class SocketMethod {
       final decodedBody = jsonDecode(response.body);
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
 
-      authorizeChatTokenFromOutSideVariable = decodedBody['token'];
+      messengerAPIToken = decodedBody['token'];
 
       print(" From Auth chat ");
       print("Authorize Token From AuthorizeChat Methode $authorizeChatToken");
@@ -75,7 +75,7 @@ class SocketMethod {
     };
     Response response = await http.post(
       Uri.parse(
-        'https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts',
+        '$chatBaseUrl-management/contacts',
       ),
       headers: {
         "Accept": "application/json",
@@ -93,27 +93,36 @@ class SocketMethod {
 
   List getChatPeopleList = [];
   List getGroupChatList = [];
+  List getChats = [];
+  List decodedGetChatBody =[];
   Map<String, dynamic>? decodedBody;
   Map<String, dynamic>? decodeGroupChatdBody;
   List getChatPeopleListxyz = [];
-
-  Future<List> getChatPeople(String token) async {
-    print("Auth token from get chat people $token");
-    Map<String, String> headers = {
+  Map<String, String> headers(String token) {
+    return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
       'Authorization': 'Bearer $token'
     };
+  }
+
+  Future<List> getChatPeople(String token) async {
+    print("Get Chat People list");
+    print(token);
+
     Response response = await http.get(
         Uri.parse(
             "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
-        headers: headers);
-
-    print("Get Chat People Methode");
-    print("status code is");
-    print(response.statusCode);
-
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'application/gzip',
+          'Authorization': 'Bearer $token'
+        });
+  print("Status code Get Chat People list");
+  print(response.statusCode);
+  print(response.body);
     decodedBody = jsonDecode(response.body);
 
     for (var person in decodedBody?['people']) {
@@ -122,14 +131,21 @@ class SocketMethod {
         "phone": person["phone"],
         "avatar": person["avatar"],
         "id": person["id"],
+        "room": {
+          "room_id": person['room']['id'],
+          "room_name": person['room']['name'],
+        }
       };
+
+
       getChatPeopleList.add(contact);
+      print(getChatPeopleList);
     }
 
     return getChatPeopleList;
   }
 
-  Future<List> getGroupChat(String token) async {
+  Future<List> getGroup(String token) async {
     print("Auth token from get chat people $token");
     Map<String, String> headers = {
       'Accept': 'application/json',
@@ -141,10 +157,6 @@ class SocketMethod {
         Uri.parse(
             "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
         headers: headers);
-
-    print("Get Chat People Methode");
-    print("status code is");
-    print(response.statusCode);
 
     decodeGroupChatdBody = jsonDecode(response.body);
     for (var person in decodeGroupChatdBody?['groups']) {
@@ -159,6 +171,7 @@ class SocketMethod {
 
     return getGroupChatList;
   }
+
   Future<List> createGrop(String token, Map body) async {
     print("Auth token from create Group $token");
     print("Body $body");
@@ -172,8 +185,7 @@ class SocketMethod {
         Uri.parse(
             "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts/group"),
         headers: headers,
-        body: jsonEncode(body)
-        );
+        body: jsonEncode(body));
 
     print("create Group");
     print("status code is");
@@ -181,10 +193,58 @@ class SocketMethod {
 
     decodeGroupChatdBody = jsonDecode(response.body);
 
-
     return getGroupChatList;
+  }
+
+  Future<void> sendMessageMethod(
+      String token, roomId, userIdManual, userId, messageFromTextFild) async {
+    print(token);
+    print(roomId);
+    print(userIdManual);
+    print("Send message methode");
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    };
+
+    Map<String, String> body = {
+      "room_id": roomId,
+      "user_id": userId,
+      "bracket": "T",
+      "content": messageFromTextFild
+    };
+    Response response = await post(
+        Uri.parse("$chatBaseUrl-management/messages"),
+        headers: headers,
+        body: jsonEncode(body));
+
+    print("Body");
+    print(body);
+    final decodedBody = jsonDecode(response.body);
+    print(decodedBody);
+  }
+
+  getMessageMethod(String token, roomId) async {
+    Response response = await http.get(
+        Uri.parse("$chatBaseUrl-management/messages?roomID=$roomId"),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'application/gzip',
+          'Authorization': 'Bearer $token',
+        });
+    print("get messages status code");
+    print(response.statusCode);
+    print(response.body);
+     decodedGetChatBody = jsonDecode(response.body);
+    print(decodedGetChatBody);
+    return decodedGetChatBody;
   }
 
   List get chatList => getChatPeopleList;
   List get chatGroup => getGroupChatList;
+  List get getDecodedGetChatBody => decodedGetChatBody;
+  // List get chats => getChat;
 }

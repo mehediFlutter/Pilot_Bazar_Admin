@@ -3,7 +3,7 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/splash_screen/splash_screen.dart';
 import 'package:pilot_bazar_admin/theme/theme.dart';
-import 'package:pilot_bazar_admin/mode_provider.dart';
+import 'package:pilot_bazar_admin/provider/mode_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

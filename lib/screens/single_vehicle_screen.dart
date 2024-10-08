@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_font_screen.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_Tab_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';

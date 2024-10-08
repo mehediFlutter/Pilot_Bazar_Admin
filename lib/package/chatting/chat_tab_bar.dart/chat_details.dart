@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
 
 class ChattingDetailsScreen extends StatefulWidget {
+  final String userId;
+  final String roomName;
+  final String roomId;
+  final String manualUserId;
+  final String name;
+  final String phoneNumber;
+  final String avatar;
+  final bool isChatScreen;
 
-  const ChattingDetailsScreen({super.key});
+  const ChattingDetailsScreen(
+      {super.key,
+      required this.userId,
+      required this.roomName,
+      required this.roomId,
+      required this.manualUserId,
+      required this.name,
+      required this.phoneNumber,
+      required this.avatar,
+       this.isChatScreen=false});
 
   @override
   State<ChattingDetailsScreen> createState() => _ChattingDetailsScreenState();
@@ -16,13 +37,26 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   TextEditingController sendTextController = TextEditingController();
   FocusNode focusNode = FocusNode();
   var socket = SocketManager().socket;
-
+  var socketMethod = SocketMethod();
+  List getChats = [];
   void sendMessage() {
     if (sendTextController.text.isNotEmpty) {
       String message = sendTextController.text;
       socket.emit('send_message', {'status': false, 'message': message});
       sendTextController.clear();
     }
+  }
+
+  String getCurrentDateTime() {
+    DateTime now = DateTime.now();
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+  }
+
+  getChatMethode() async {
+    getChats = await socketMethod.getMessageMethod(
+        messengerAPIToken ?? '', widget.roomId);
+    setState(() {});
+    print(getChats.toString());
   }
 
   List chatList = [
@@ -43,6 +77,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       message: "Hello again ",
     ),
   ];
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +89,8 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     socket.on('me', (data) {
       print('Received GoldenDuck event: $data');
     });
+
+    getChatMethode();
   }
 
   @override
@@ -83,13 +120,15 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               profileImagePath: 'assets/images/small_profile.png',
               message_icon_path: 'assets/icons/message_notification.png',
               drawer_icon_path: 'assets/icons/beside_message.png',
+              isChatAvater: true,
+              chatAvater: widget.avatar,
               onTapFunction: () {},
               chatTap: () {
-                print("notificaiton tap");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChattingDetailsScreen()));
+                // print("notificaiton tap");
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => ChattingDetailsScreen()));
               },
             ),
             height10,
@@ -116,36 +155,43 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               controller: scrollController,
               //   primary: false,
               shrinkWrap: true,
-              itemCount: chatList.length,
+              itemCount: getChats.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(chatList[index]
-                      .message), // Fix: accessing the 'message' property
-                );
+                return ChatBubbl(
+                    message: getChats[index]
+                        ['content']); // Fix: accessing the 'message' property
               },
             ),
           ]),
           floatingActionButton: Row(
             children: [
               Expanded(
-                child: TextField(
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  controller: sendTextController,
-                  onSubmitted: (value) {
-                    sendMessage(); // Send the message when the user submits
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: SearchTextFild(searchController: sendTextController),
                 ),
               ),
               IconButton(
                 onPressed: () {
-                  sendMessage();
+                  socketMethod.sendMessageMethod(
+                    messengerAPIToken ?? '',
+                    widget.roomId,
+                    widget.manualUserId,
+                    widget.userId,
+                    sendTextController.text,
+                  );
+
+                  // sendMessage();
                   if (sendTextController.text.isNotEmpty) {
-                    chatList.add(
-                      ChatBubbl(
-                        isMe: true, // Assuming you're adding your own message
-                        message: sendTextController.text,
-                      ),
-                    );
+                    getChats.add({
+                      "id": widget.roomId,
+                      "userID": widget.userId,
+                      "bracket": 'T',
+                      "content": sendTextController.text,
+                      "isSending": true,
+                      "component": "text",
+                      "datetime": getCurrentDateTime
+                    });
 
                     setState(() {});
 
@@ -162,13 +208,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   Widget _buildUserInput() {
     return Row(
       children: [
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(border: OutlineInputBorder()),
-            focusNode: focusNode,
-            controller: sendTextController,
-          ),
-        ),
+        Expanded(child: SearchTextFild(searchController: sendTextController)),
         IconButton(
           onPressed: () {
             if (sendTextController.text.isNotEmpty) {
