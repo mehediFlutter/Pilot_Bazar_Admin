@@ -1,30 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_Tab_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 import 'package:pilot_bazar_admin/screens/advance_edit_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
-import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/products.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
@@ -111,8 +108,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   // }
 
   initState() {
-   
-
     isRefresh = false;
     page = 1;
     i = 0;
@@ -138,7 +133,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         setState(() {});
       }
     });
-   //  pirntSocketChatToken();
+    //  pirntSocketChatToken();
 
     // setState(() {});
   }
@@ -1399,10 +1394,13 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       message_icon_path:
                           'assets/icons/message_notification.png',
                       chatTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TabChat()));
+                        messengerAPIToken != null
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TabChat()))
+                            : CustomAlertDialog().showAlertDialog(context,
+                                "Server is not Availeble  Try Again", 'Ok');
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:

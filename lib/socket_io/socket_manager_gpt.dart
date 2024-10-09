@@ -1,4 +1,4 @@
-import 'package:pilot_bazar_admin/network_service/network_caller.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -7,6 +7,7 @@ class SocketManager {
   SocketMethod socketMethod = SocketMethod();
 
   late IO.Socket socket;
+  late ChatEventHandler chatEventHandler; // Declare ChatEventHandler
 
   factory SocketManager() {
     return _instance;
@@ -25,8 +26,19 @@ class SocketManager {
       'reconnectionAttempts': 5,
       'debug': true, // Enable debug logging
     });
-    socket.on('me', (data) async {
-      print('Received message: $data'); // Debug print
+    chatEventHandler = ChatEventHandler(socket);
+
+    socket.on('msgChat', (data) {
+      // Extract room_name and room_id from the incoming data
+      final roomName =
+          data['room_name']; // Assuming 'room_name' comes from the data
+      final roomId = data['room_id']; // Assuming 'room_id' comes from the data
+
+      // Log the received data (optional)
+      print('Message received: $data');
+
+      // Emit 'sentEvent' with the dynamically extracted room_name and room_id
+      socket.emit('sentEvent', {'room_name': roomName, 'room_id': roomId});
     });
 
     socket.onConnect((_) async {
@@ -34,7 +46,7 @@ class SocketManager {
         socketMethod.authorizeChat();
       }
 
-      print('Socket connected: ${socket.id}'); // Print Socket ID on connect
+      // Print Socket ID on connect
     });
 
     socket.onConnectError((error) {
@@ -47,6 +59,15 @@ class SocketManager {
 
     print('Attempting to connect...'); // Debug print
     socket.connect();
+  }
+
+  sendMessage(String message, String roomName, String roomId) {
+    if (message.isNotEmpty) {
+      socket.emit('msgChat',
+          {'message': message, 'room_name': roomName, 'room_id': roomId});
+    } else {
+      print('Message is empty. Cannot send.');
+    }
   }
 
   // Getter to access the socket ID

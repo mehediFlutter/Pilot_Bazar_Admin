@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
-import 'package:pilot_bazar_admin/package/customer_requirement_store/customer_personal_info.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer_bool.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
-import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
-import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
-import 'package:pilot_bazar_admin/provider/mode_provider.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyDrawer extends StatefulWidget {

@@ -94,7 +94,7 @@ class SocketMethod {
   List getChatPeopleList = [];
   List getGroupChatList = [];
   List getChats = [];
-  List decodedGetChatBody =[];
+  List decodedGetChatBody = [];
   Map<String, dynamic>? decodedBody;
   Map<String, dynamic>? decodeGroupChatdBody;
   List getChatPeopleListxyz = [];
@@ -108,9 +108,6 @@ class SocketMethod {
   }
 
   Future<List> getChatPeople(String token) async {
-    print("Get Chat People list");
-    print(token);
-
     Response response = await http.get(
         Uri.parse(
             "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
@@ -120,9 +117,7 @@ class SocketMethod {
           'Accept-Encoding': 'application/gzip',
           'Authorization': 'Bearer $token'
         });
-  print("Status code Get Chat People list");
-  print(response.statusCode);
-  print(response.body);
+
     decodedBody = jsonDecode(response.body);
 
     for (var person in decodedBody?['people']) {
@@ -137,16 +132,13 @@ class SocketMethod {
         }
       };
 
-
       getChatPeopleList.add(contact);
-      print(getChatPeopleList);
     }
 
     return getChatPeopleList;
   }
 
   Future<List> getGroup(String token) async {
-    print("Auth token from get chat people $token");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -159,14 +151,23 @@ class SocketMethod {
         headers: headers);
 
     decodeGroupChatdBody = jsonDecode(response.body);
-    for (var person in decodeGroupChatdBody?['groups']) {
-      var contact = await {
-        "id": person["id"],
-        "room": person["room"],
-        "datetime": person["datetime"],
-        "avatar": person["avatar"],
+
+    for (var groups in decodeGroupChatdBody?['groups']) {
+      var group = await {
+        "id": groups["id"],
+        "room": groups["room"],
+        "message": groups["message"],
+
+        "datetime": groups["datetime"],
+        //  "avatar": groups["avatar"],
+        "groups": {
+          "id": groups['users'][0]['id'],
+          "name": groups['users'][0]['name'],
+          "avatar": groups['users'][0]['avatar'],
+          "status": groups['users'][0]['status'],
+        }
       };
-      getGroupChatList.add(contact);
+      getGroupChatList.add(group);
     }
 
     return getGroupChatList;
@@ -187,9 +188,10 @@ class SocketMethod {
         headers: headers,
         body: jsonEncode(body));
 
-    print("create Group");
     print("status code is");
     print(response.statusCode);
+    print("create Group");
+    print(response.body);
 
     decodeGroupChatdBody = jsonDecode(response.body);
 
@@ -238,7 +240,7 @@ class SocketMethod {
     print("get messages status code");
     print(response.statusCode);
     print(response.body);
-     decodedGetChatBody = jsonDecode(response.body);
+    decodedGetChatBody = jsonDecode(response.body);
     print(decodedGetChatBody);
     return decodedGetChatBody;
   }

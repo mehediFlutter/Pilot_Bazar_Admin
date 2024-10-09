@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
@@ -27,23 +30,26 @@ class ChattingDetailsScreen extends StatefulWidget {
       required this.name,
       required this.phoneNumber,
       required this.avatar,
-       this.isChatScreen=false});
+      this.isChatScreen = false});
 
   @override
   State<ChattingDetailsScreen> createState() => _ChattingDetailsScreenState();
 }
 
 class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
-  TextEditingController sendTextController = TextEditingController();
-  FocusNode focusNode = FocusNode();
+  TextEditingController sendMessageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  FocusNode myFocusNode = FocusNode();
+  // final SocketManager socketManager = SocketManager();
+
   var socket = SocketManager().socket;
   var socketMethod = SocketMethod();
   List getChats = [];
   void sendMessage() {
-    if (sendTextController.text.isNotEmpty) {
-      String message = sendTextController.text;
+    if (sendMessageController.text.isNotEmpty) {
+      String message = sendMessageController.text;
       socket.emit('send_message', {'status': false, 'message': message});
-      sendTextController.clear();
+      sendMessageController.clear();
     }
   }
 
@@ -77,34 +83,58 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       message: "Hello again ",
     ),
   ];
+  void scrollDown() {
+    {
+      scrollController.animateTo(scrollController.position.maxScrollExtent,
+          duration: const Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+    }
+  }
+
+  void _sendMessage() {
+    String message = sendMessageController.text;
+    if (message.isNotEmpty) {
+      SocketManager()
+          .chatEventHandler
+          .sendMessage(message, widget.roomName, widget.roomId);
+      sendMessageController.clear(); // Clear the input after sending
+    }
+
+    sendMessageController.clear(); // Clear the input after sending
+  }
+    
+    
 
   @override
   void initState() {
-    super.initState();
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
+    getChatMethode();
+    
+    setState(() {});
+     socket.on('loadEvent', (data) {
+      print(data);
+      final res = jsonDecode(data);
+      print(res['uuid']);
+     getChats =  socketMethod.getMessageMethod(
+        messengerAPIToken ?? "",
+        res['uuid'],
+       
+      );
+    });
+
+    myFocusNode.addListener(() {
+      if (myFocusNode.hasFocus) {
+        //  cause a delay so that keyboard has time to show up
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
-    socket.on('me', (data) {
-      print('Received GoldenDuck event: $data');
-    });
-
-    getChatMethode();
+    Future.delayed(Duration(milliseconds: 500), () => scrollDown());
   }
 
   @override
   void dispose() {
-    focusNode.dispose();
-    sendTextController.dispose();
-    // TODO: implement dispose
-    super.dispose();
-  }
+    myFocusNode.dispose();
 
-  ScrollController scrollController = ScrollController();
-  void scrollDown() {
-    scrollController.animateTo(scrollController.position.maxScrollExtent,
-        duration: const Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+    sendMessageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,16 +142,20 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     Size size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
-          bottomNavigationBar: Row(
-            children: [SizedBox(width: 10), Expanded(child: TextField())],
-          ),
-          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            CustomerProfileBar(
+        // bottomNavigationBar: Row(
+        //   children: [SizedBox(width: 10), Expanded(child: TextField())],
+        // ),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
               message_icon_path: 'assets/icons/message_notification.png',
               drawer_icon_path: 'assets/icons/beside_message.png',
-              isChatAvater: true,
+              isChatAvater: widget.isChatScreen,
               chatAvater: widget.avatar,
+              merchantName: widget.name,
+              companyName: widget.phoneNumber,
               onTapFunction: () {},
               chatTap: () {
                 // print("notificaiton tap");
@@ -131,44 +165,82 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 //         builder: (context) => ChattingDetailsScreen()));
               },
             ),
-            height10,
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Spacer(),
-                Icon(
-                  Icons.phone_callback,
-                  color: Colors.blue,
-                  size: 20,
-                ),
-                width10,
-                Icon(
-                  Icons.video_call,
-                  color: Colors.blue,
-                  size: 20,
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
-            ListView.builder(
+          ),
+          height10,
+          Expanded(
+            child: ListView.builder(
               controller: scrollController,
-              //   primary: false,
               shrinkWrap: true,
-              itemCount: getChats.length,
+              itemCount: getChats.length + 1,
               itemBuilder: (context, index) {
+                if (index == getChats.length) {
+                  // This is the last item (extra one) for the SizedBox
+                  return SizedBox(height: 30);
+                }
                 return ChatBubbl(
                     message: getChats[index]
                         ['content']); // Fix: accessing the 'message' property
               },
             ),
-          ]),
-          floatingActionButton: Row(
+          ),
+          // SendMessageTextFild(
+          //   sendMessageController: sendMessageController,
+          //   myFocusNode: myFocusNode,
+          //   sendMessageButton: IconButton(
+          //     onPressed: () {
+          //       socketMethod.sendMessageMethod(
+          //         messengerAPIToken ?? '',
+          //         widget.roomId,
+          //         widget.manualUserId,
+          //         widget.userId,
+          //         sendMessageController.text,
+          //       );
+
+          //       // sendMessage();
+          //       if (sendMessageController.text.isNotEmpty) {
+          //         getChats.add({
+          //           "id": widget.roomId,
+          //           "userID": widget.userId,
+          //           "bracket": 'T',
+          //           "content": sendMessageController.text,
+          //           "isSending": true,
+          //           "component": "text",
+          //           "datetime": getCurrentDateTime
+          //         });
+
+          //         setState(() {});
+
+          //         sendMessageController.clear();
+          //       }
+          //       scrollDown();
+          //     },
+          //     icon: Image.asset('assets/icons/semd_message.png'),
+          //   ),
+          // ),
+          Row(
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: SearchTextFild(searchController: sendTextController),
+                  padding: const EdgeInsets.only(left: 25),
+                  child: TextField(
+                    controller: sendMessageController,
+                    focusNode: myFocusNode,
+                    decoration: InputDecoration(
+                      hintText: 'Aa...',
+                      hintStyle: TextStyle(color: Color(0xFF666666)),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: searchBarBorderColor),
+                          borderRadius: BorderRadius.circular(30)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: searchBarBorderColor),
+                          borderRadius: BorderRadius.circular(30)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: searchBarBorderColor),
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                  ),
                 ),
               ),
               IconButton(
@@ -178,16 +250,16 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                     widget.roomId,
                     widget.manualUserId,
                     widget.userId,
-                    sendTextController.text,
+                    sendMessageController.text,
                   );
 
                   // sendMessage();
-                  if (sendTextController.text.isNotEmpty) {
+                  if (sendMessageController.text.isNotEmpty) {
                     getChats.add({
                       "id": widget.roomId,
                       "userID": widget.userId,
                       "bracket": 'T',
-                      "content": sendTextController.text,
+                      "content": sendMessageController.text,
                       "isSending": true,
                       "component": "text",
                       "datetime": getCurrentDateTime
@@ -195,33 +267,40 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
 
                     setState(() {});
 
-                    sendTextController.clear();
+                    _sendMessage();
+
+                    sendMessageController.clear();
                   }
+                  scrollDown();
                 },
-                icon: Icon(Icons.send),
+                icon: Image.asset('assets/icons/semd_message.png'),
               )
             ],
-          )),
+          ),
+          height20,
+        ]),
+      ),
     );
   }
 
   Widget _buildUserInput() {
     return Row(
       children: [
-        Expanded(child: SearchTextFild(searchController: sendTextController)),
+        Expanded(
+            child: SearchTextFild(searchController: sendMessageController)),
         IconButton(
           onPressed: () {
-            if (sendTextController.text.isNotEmpty) {
+            if (sendMessageController.text.isNotEmpty) {
               chatList.add(
                 ChatBubbl(
                   isMe: true, // Assuming you're adding your own message
-                  message: sendTextController.text,
+                  message: sendMessageController.text,
                 ),
               );
 
               setState(() {});
 
-              sendTextController.clear();
+              sendMessageController.clear();
             }
           },
           icon: Icon(Icons.send),

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
-import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../widget/search_text_fild.dart';
 import '../../drawer/drawer_bool.dart';
 
@@ -38,38 +34,6 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   Map<String, dynamic>? body;
   List filteredItems = [];
 
-  Future<void> _fetchContacts() async {
-    // Request permission to read contacts
-    var status = await Permission.contacts.request();
-
-    if (status.isGranted) {
-      // Fetch all contacts
-      contacts = await FlutterContacts.getContacts(withProperties: true);
-      setState(() {});
-      // setState(() {
-      //   contacts = contacts; // Update the contacts list
-      // });
-
-      contacts.forEach((contact) {
-        if (contact.phones.isNotEmpty) {
-          contactNumber
-              .add(contact.phones[0].number); // Add the first phone number
-          print(contactNumber);
-        }
-      });
-
-      for (var item in contactNumber) {
-        print(item);
-      }
-      body = {"is_group": false, "contacts": contactNumber};
-      setState(() {});
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: const Text('Contacts permission denied')),
-      );
-    }
-  }
-
   pirntSocketChatToken() async {
     prefss = await SharedPreferences.getInstance();
     String token = await prefss?.getString('authorizeChatToken') ?? '';
@@ -83,30 +47,22 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   List? peopleList;
 
   callgetChatPeople() async {
-    peopleList = await socketMethod
-        .getChatPeople(messengerAPIToken ?? '');
+    peopleList = await socketMethod.getChatPeople(messengerAPIToken ?? '');
     setState(() {});
-    print("chat fromt screenddd");
-    print(peopleList.toString());
   }
 
   @override
   void initState() {
+    super.initState();
     universalViewBool = true;
     universalCustomBool = true;
     print("Socket Id");
     print(socket.id);
-    print(messengerAPIToken.toString());
     callgetChatPeople();
-
-    print("Token");
-    print(messengerAPIToken);
-
     pirntSocketChatToken();
-    filteredItems = peopleList ?? []; // Initialize filtered list with all items
-    searchController
-        .addListener(filterList); // Add listener to the search controller
-    setState(() {});
+    
+    
+  
   }
 
   void filterList() {
@@ -121,87 +77,103 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return ReUsableMotherWidget(
-      children: [
-        height10,
-        SearchTextFild(
-          searchController: searchController,
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            height10,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: SearchTextFild(
+                searchController: searchController,
+              ),
+            ),
+            height10,
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView.builder(
+                  primary: false,
+                  shrinkWrap: true,
+                  itemCount: peopleList?.length ?? 15,
+                  // itemCount: peopleList?.length,
+                  itemBuilder: (context, index) {
+                    return peopleList != null
+                        ? ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            onTap: () {
+                              print(peopleList?[index]['avatar']);
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChattingDetailsScreen(
+                                            manualUserId:
+                                                '01j9f3d86s4wgnnxjja828dez0',
+                                            userId: peopleList?[index]['id'],
+                                            roomId: peopleList?[index]['room']
+                                                ['room_id'],
+                                            roomName: peopleList?[index]['room']
+                                                ['room_name'],
+                                            name: peopleList?[index]['name'],
+                                            phoneNumber: peopleList?[index]
+                                                ['phone'],
+                                            avatar: peopleList?[index]
+                                                ['avatar'],
+                                            isChatScreen: true,
+                                          )));
+                            },
+                            leading: Container(
+                                height: 45.05,
+                                width: 40,
+                                decoration:
+                                    BoxDecoration(shape: BoxShape.circle),
+                                child: Image.network(
+                                    peopleList?[index]['avatar'])),
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      peopleList?[index]['name'] ?? 'None',
+                                      style:
+                                          small14StyleW500.copyWith(height: 0),
+                                    ),
+                                    const Spacer(),
+                                    const Text(
+                                      "5.20 PM",
+                                      style: small12Stylew400,
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      peopleList?[index]['phone'] ?? 'None',
+                                      style: small10Style.copyWith(height: 0),
+                                    ),
+                                    const Spacer(),
+                                    Image.asset(
+                                      'assets/icons/seenMessage.png',
+                                      color: Colors.blue,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        : ChatFrontScreenShimmer(size: size);
+                    // :ChatFrontScreenShimmer(size: size,);
+                  }),
+            ))
+          ],
         ),
-        height10,
-        Expanded(
-            child: Container(
-          child: ListView.builder(
-              primary: false,
-              shrinkWrap: true,
-              itemCount: peopleList?.length,
-              // itemCount: peopleList?.length,
-              itemBuilder: (context, index) {
-                return
-                     ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        onTap: () {
-                          print(peopleList?[index]['avatar']);
-                     
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChattingDetailsScreen(
-                                        manualUserId: '01j9f3d86s4wgnnxjja828dez0',
-                                        userId: peopleList?[index]['id'],
-                                        roomId: peopleList?[index]['room']['room_id'],
-                                        roomName: peopleList?[index]['room']['room_name'],
-                                        name: peopleList?[index]['name'],
-                                        phoneNumber: peopleList?[index]['phone'],
-                                        avatar: peopleList?[index]['avatar'],
-                                       isChatScreen: true,
-                                        )));
-                        },
-                        leading: Container(
-                            height: 45.05,
-                            width: 40,
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                            child:  Image.network(peopleList?[index]['avatar'])),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  peopleList?[index]['name'] ?? 'None',
-                                  style: small14StyleW500.copyWith(height: 0),
-                                ),
-                                const Spacer(),
-                                const Text(
-                                  "5.20 PM",
-                                  style: small12Stylew400,
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  peopleList?[index]['phone'] ?? 'None',
-                                  style: small10Style.copyWith(height: 0),
-                                ),
-                                const Spacer(),
-                                Image.asset(
-                                  'assets/icons/seenMessage.png',
-                                  color: Colors.blue,
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                   // :ChatFrontScreenShimmer(size: size,);
-              }),
-        ))
-      ],
+      ),
     );
   }
 
-  
   inboxOrGroup(String text, Function() onTap) {
     return Container(
       child: InkWell(

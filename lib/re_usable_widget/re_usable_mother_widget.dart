@@ -3,7 +3,7 @@ import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
 
 class ReUsableMotherWidget extends StatelessWidget {
   final List<Widget> children;
-  // final Drawer? drawer;
+  final bool isDrawer;
   final MainAxisAlignment? mainAxis;
   final CrossAxisAlignment? crossAxis;
   final bool isSingleChildScrollView;
@@ -14,8 +14,8 @@ class ReUsableMotherWidget extends StatelessWidget {
     this.isSingleChildScrollView = false,
     this.mainAxis,
     this.crossAxis,
-    this.isFloatingActionButton = false,
-    //  this.drawer,
+    this.isFloatingActionButton = false, 
+    this.isDrawer =false,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class ReUsableMotherWidget extends StatelessWidget {
     //  Widget drawer = Drawer();
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(),
+        drawer: isDrawer? MyDrawer():SizedBox(),
         floatingActionButton: isFloatingActionButton
             ? Row(
                 children: children,

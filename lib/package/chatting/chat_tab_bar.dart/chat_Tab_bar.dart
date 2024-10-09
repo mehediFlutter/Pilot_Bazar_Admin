@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/group_chat.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import '../../../screens/auth/auth_utility.dart';
 
 class TabChat extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class TabChat extends StatefulWidget {
 
 class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  LoginModel? userInfoFromPrefs;
 
   inboxOrGroup(String text) {
     return Container(
@@ -29,15 +31,24 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
     );
   }
 
+  void printUserInfo() async {
+    userInfoFromPrefs = await AuthUtility.getUserInfo();
+
+    print(
+        "User info (from prefs): ${userInfoFromPrefs?.payload?.merchant?.name.toString()}, ${userInfoFromPrefs?.payload?.merchant?.mobile.toString()}");
+  }
+
   @override
   void initState() {
-    super.initState();
+    printUserInfo();
+    print(userInfoFromPrefs?.payload?.merchant?.merchantInfo?.image?.name);
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
         // Forces the widget to rebuild when the tab changes
       });
     });
+    super.initState();
   }
 
   @override
@@ -56,9 +67,16 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: CustomerProfileBar(
-                profileImagePath: 'assets/images/small_profile.png',
+                profileImagePath: userInfoFromPrefs
+                        ?.payload?.merchant?.merchantInfo?.image?.name ??
+                    '',
                 message_icon_path: 'assets/icons/message_notification.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
+                merchantName:
+                    userInfoFromPrefs?.payload?.merchant?.name ?? 'None',
+                companyName: userInfoFromPrefs
+                        ?.payload?.merchant?.merchantInfo?.companyName ??
+                    "None",
                 onTapFunction: () {},
                 chatTap: () {
                   // print("notificaiton tap");
@@ -75,13 +93,9 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
               dividerColor: Colors.transparent,
               labelColor: Colors.blue,
               unselectedLabelColor: Colors.black,
-              tabs:  [
-                Tab(
-                  child: inboxOrGroup('Inbox')
-                ),
-                Tab(
-                  child: inboxOrGroup("Group")
-                ),
+              tabs: [
+                Tab(child: inboxOrGroup('Inbox')),
+                Tab(child: inboxOrGroup("Group")),
               ],
             ),
             Expanded(

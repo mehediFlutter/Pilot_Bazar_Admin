@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:http/http.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
-import 'package:pilot_bazar_admin/re_usable_widget/re_usable_mother_widget.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/send_message_text_fild.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
@@ -32,11 +29,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   String? socketId;
   var socket = SocketManager().socket;
   var socketMethod = SocketMethod();
+  FocusNode myFocusNode = FocusNode();
 
   List contacts = [];
   List contactNumber = [];
   Map<String, dynamic>? body;
   List allPerson = SocketMethod().chatList;
+  bool isSelectForCreateGroup = false;
+  bool isSelected = false;
 
   pirntSocketChatToken() async {
     prefss = await SharedPreferences.getInstance();
@@ -45,46 +45,55 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     print(token.toString());
     print("Auth Token from chat screen Variable");
     print(messengerAPIToken.toString());
+    print("From Socket Socket Id");
+    print(socket.id);
     String? authToken = await prefss?.getString('token');
   }
 
-  List? peopleList;
   List? groupList;
-
   callgetChatPeople() async {
-    print("Groups  ");
-    groupList = await socketMethod
-        .getGroup(messengerAPIToken ?? '');
-    print(groupList);
+    groupList?.clear();
 
-    peopleList = await socketMethod
-        .getChatPeople(messengerAPIToken ?? '');
+    groupList = await socketMethod.getGroup(messengerAPIToken ?? '');
     setState(() {});
+    print("group length");
+    print(groupList?.length);
   }
 
   List groupUserList = [];
 
   @override
   void initState() {
-    print("Socket Id");
-    print(socket.id);
-    print(messengerAPIToken.toString());
-    callgetChatPeople();
+    super.initState();
 
-    print("Token");
-    print(messengerAPIToken);
+    callgetChatPeople();
 
     pirntSocketChatToken();
     setState(() {});
+    myFocusNode.addListener(() {
+      if (myFocusNode.hasFocus) {
+        isKeyboardVisible = true;
+      }
+    });
   }
 
+  void dispose() {
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
+  bool isKeyboardVisible = false;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    isKeyboardVisible = keyboardHeight > 0;
+    setState(() {});
     return SafeArea(
       child: Scaffold(
         body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               height10,
@@ -99,81 +108,79 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   child: ListView.builder(
                       primary: false,
                       shrinkWrap: true,
-                      itemCount: groupList?.length??15,
+                      itemCount: groupList?.length,
                       itemBuilder: (context, index) {
-                        return groupList?.length==0? ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChattingDetailsScreen(
-                                          manualUserId: '',
-                                          userId: '',
-                                          roomId: '',
-                                          roomName: '',
-                                          name: '',
-                                          phoneNumber: '',
-                                          avatar: '',
-                                        )));
-                          },
-                          leading: Container(
-                              height: 45.05,
-                              width: 40,
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              child: Image.network(
-                                groupList?[index]['avatar'],
-                              )),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    groupList?[index]['room'] ?? 'None',
-                                    style: small14StyleW500.copyWith(height: 0),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    groupList?[index]['datetime'] ?? 'None',
-                                    style: small12Stylew400,
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    peopleList?[index]['phone'] ?? 'None',
-                                    style: small10Style.copyWith(height: 0),
-                                  ),
-                                  const Spacer(),
-                                  Image.asset(
-                                    'assets/icons/seenMessage.png',
-                                    color: Colors.blue,
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ):ChatFrontScreenShimmer(size: size,);
+                        return groupList?.length != null
+                            ? ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChattingDetailsScreen(
+                                                manualUserId: '',
+                                                userId: '',
+                                                roomId: '',
+                                                roomName: '',
+                                                name: '',
+                                                phoneNumber: '',
+                                                avatar: '',
+                                              )));
+                                },
+                                leading: Container(
+                                    height: 45.05,
+                                    width: 40,
+                                    decoration:
+                                        BoxDecoration(shape: BoxShape.circle),
+                                    child: Image.network(
+                                        "https://kjh.ksdr1.net/wp-content/uploads/sites/7/2017/08/nopicture_man.jpg"
+                                        // groupList?[index]['avatar'],
+                                        )),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          groupList?[index]['room'] ?? 'None',
+                                          style: small14StyleW500.copyWith(
+                                              height: 0),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          groupList?[index]['datetime'] ??
+                                              'None',
+                                          style: small12Stylew400,
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ChatFrontScreenShimmer(size: size);
                       })),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color.fromARGB(255, 66, 66, 66),
           onPressed: () async {
-            allPerson = await socketMethod
-                .getChatPeople(messengerAPIToken ?? '');
+            //  isKeyboardVisible = true
+            allPerson.clear();
+            groupUserList.clear();
+            allPerson =
+                await socketMethod.getChatPeople(messengerAPIToken ?? '');
             setState(() {});
             final result = await showModalBottomSheet(
               useSafeArea: true,
               context: context,
-              isScrollControlled:
-                  true, // Allows the bottom sheet to be full screen
+              isScrollControlled: true,
               builder: (BuildContext context) {
-                return _buildBottomSheet(context);
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  child: _buildBottomSheet(context),
+                );
               },
             );
           },
@@ -185,88 +192,108 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
   Widget _buildBottomSheet(BuildContext context) {
     return DraggableScrollableSheet(
-      expand:
-          false, // Allows the user to drag and expand the sheet to full screen
+      expand: false,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            ),
-          ),
-          child: SingleChildScrollView(
-              primary: false,
-              controller: scrollController,
-              child: Stack(
-                children: [
-                  ListView.builder(
+        return StatefulBuilder(builder: (context, setState) {
+          return Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                child: SingleChildScrollView(
                     primary: false,
-                    shrinkWrap: true,
-                    itemCount: allPerson.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        onTap: () {
-                          print(allPerson[index]['avatar']);
-                          groupUserList.add(allPerson[index]['id']);
-                          setState(() {});
-                        },
-                        leading: Container(
-                            height: 45.05,
-                            width: 40,
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                            child: Image.network(allPerson[index]['avatar'])),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    controller: scrollController,
+                    child: Column(
+                      children: [
+                        height20,
+                        height10,
+                        Stack(
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  allPerson[index]['name'] ?? 'None',
-                                  style: small14StyleW500.copyWith(height: 0),
-                                ),
-                                const Spacer(),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  peopleList?[index]['phone'] ?? 'None',
-                                  style: small10Style.copyWith(height: 0),
-                                ),
-                                const Spacer(),
-                              ],
+                            ListView.separated(
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: allPerson.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: groupUserList
+                                              .contains(allPerson[index]['id'])
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    onTap: () {
+                                      String personId = allPerson[index]
+                                          ['id']; // Get the person ID
+
+                                      if (groupUserList.contains(personId)) {
+                                        groupUserList.remove(personId);
+                                        setState(() {});
+                                        ;
+                                      } else {
+                                        // If not selected, add the person to the group
+                                        groupUserList.add(personId);
+                                        setState(() {});
+                                        ;
+                                      }
+                                    },
+                                    leading: Container(
+                                        height: 45.05,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle),
+                                        child: Image.network(
+                                            allPerson[index]['avatar'])),
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              allPerson[index]['name'] ??
+                                                  'None',
+                                              style: small14StyleW500.copyWith(
+                                                  height: 0),
+                                            ),
+                                            const Spacer(),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return height10;
+                              },
                             ),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 20.0,
-                    right: 20.0,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        
-                          Map body = {
-                            "title": null,
-                            "users": groupUserList
-                          };
-                          socketMethod.createGrop(messengerAPIToken??'',body);
-                        
-                      },
-                      child: Icon(Icons.add),
-                      backgroundColor: Colors.blue,
-                    ),
-                  ),
-                ],
-              )),
-        );
+                      ],
+                    )),
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                Map body = {"title": null, "users": groupUserList};
+                socketMethod.createGrop(messengerAPIToken ?? '', body);
+                await callgetChatPeople();
+
+                setState(() {});
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.add),
+            ),
+          );
+        });
       },
     );
   }
+
+  int count = 0;
 
   inboxOrGroup(String text, Function() onTap) {
     return Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/const/color.dart';
 
 class ChatBubbl extends StatelessWidget {
   final bool isMe;
@@ -24,14 +25,18 @@ class ChatBubbl extends StatelessWidget {
                     isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 children: [
                   isMe
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: TextButton(
-                            onPressed: () {
-                              return print("three dots is pressed");
-                            },
-                            child: Text("...",
-                                style: TextStyle(color: Colors.black)),
+                      ? TextButton(
+                          onPressed: () {
+                            return print("three dots is pressed");
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("...",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold)),
+                            ],
                           ),
                         )
                       : Padding(
@@ -41,9 +46,10 @@ class ChatBubbl extends StatelessWidget {
                   Flexible(
                     child: IntrinsicWidth(
                       child: Container(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
+                          border: Border.all(color: searchBarBorderColor),
+                          color: const Color.fromARGB(255, 188, 204, 188),
                           borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(10),
                               topRight: const Radius.circular(10),
@@ -71,25 +77,31 @@ class ChatBubbl extends StatelessWidget {
                   ),
                   isMe
                       ? SizedBox()
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: TextButton(
-                            onPressed: () {
-                              return print("three dots is pressed");
-                            },
-                            child: Text("...",
-                                style: TextStyle(color: Colors.black)),
+                      : TextButton(
+                          onPressed: () {
+                            return print("three dots is pressed");
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("...",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  )),
+                              Text('.')
+                            ],
                           ),
                         ),
                 ],
               ),
-              Padding(
-                padding: isMe ? EdgeInsets.zero : EdgeInsets.only(left: 80),
-                child: Text(
-                  "3.00 PM",
-                  style: TextStyle(color: Colors.black, fontSize: 10),
-                ),
-              ),
+              // Padding(
+              //   padding: isMe ? EdgeInsets.zero : EdgeInsets.only(left: 80),
+              //   child: Text(
+              //     "3.00 PM",
+              //     style: TextStyle(color: Colors.black, fontSize: 10),
+              //   ),
+              // ),
             ],
           ),
         ),
