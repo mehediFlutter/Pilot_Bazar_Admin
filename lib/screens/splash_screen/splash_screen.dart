@@ -6,6 +6,7 @@ import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -24,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   var isDeviceConnected = false;
   var isAlertSet = false;
   var userInfo;
+  var socketMethod = SocketMethod();
 
   loadUserInfo() async {
     LoginModel user = await AuthUtility.getUserInfo();
@@ -31,6 +33,13 @@ class _SplashScreenState extends State<SplashScreen> {
     setState(() {});
     saveToken(userInfo['payload']['token'].toString());
     AuthToken().getToken();
+  }
+
+  loadMessageAuthToken() async {
+    await socketMethod.authorizeChat();
+    await socketMethod.fetchContacts();
+    await socketMethod.postPhoneNumber();
+  
   }
 
   // Save Token here
@@ -44,14 +53,13 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token') ?? '';
   }
-  var socket = SocketManager().socket;
+
   @override
   void initState() {
     super.initState();
     loadUserInfo();
+    loadMessageAuthToken();
     navigateToLoginOrHome();
-    print("Splash Screen socket id ");
-    print(socket.id);
   }
 
   int selectedIndex = 0;
@@ -64,7 +72,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Future<void> navigateToLoginOrHome() async {
     setState(() {});
-    print("Is login");
 
     Future.delayed(const Duration(seconds: 1)).then(
       (_) => Navigator.pushAndRemoveUntil(
@@ -79,7 +86,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> navigateToLoginOrBottomNavBaseScreen() async {
     setState(() {});
-    print("Is login");
 
     Future.delayed(const Duration(seconds: 1)).then(
       (_) => Navigator.pushAndRemoveUntil(

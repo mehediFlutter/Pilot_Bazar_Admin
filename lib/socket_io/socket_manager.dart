@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketManager {
@@ -16,48 +15,49 @@ class SocketManager {
   }
 
   SocketManager._internal() {
-    print("From Socket Manager GPT");
     initSocket();
   }
 
   void initSocket() async {
-    socket = IO.io('https://websocket.pilotbazar.xyz/vendor', <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-      'forceNew': true,
-      'reconnectionAttempts': 5,
-      'debug': true, // Enable debug logging
-    });
+    socket = IO.io(
+        'https://websocket.pilotbazar.xyz/vendor?token=$messengerAPIToken',
+        <String, dynamic>{
+          'transports': ['websocket'],
+          'autoConnect': false,
+          'forceNew': true,
+          'reconnectionAttempts': 5,
+          'debug': true, // Enable debug logging
+        });
+
+    print('$chatBaseUrl?token=$messengerAPIToken');
 
     chatEventHandler = ChatEventHandler(socket);
 
-    socket.on('msgChat', (data) {
-      // Extract room_name and room_id from the incoming data
-      final roomName =
-          data['room_name']; // Assuming 'room_name' comes from the data
-      final roomId = data['room_id']; // Assuming 'room_id' comes from the data
+    // socket.on('msgChat', (data) {
+    //   final roomName = data['room_name'];
+    //   final roomId = data['room_id'];
 
-      // Log the received data (optional)
-      print('Message received: $data');
+    //   print('Message received: $data');
 
-      // Emit 'sentEvent' with the dynamically extracted room_name and room_id
-      socket.emit('sentEvent', {'room_name': roomName, 'room_id': roomId});
-    });
-
-    // socket.on('me', (data) async {
-    //   print('Received message: $data'); // Debug print
+    //   socket.emit('sentEvent', {'room_name': roomName, 'room_id': roomId});
     // });
 
     socket.onConnect((_) async {
-      await socketMethod.authorizeChat();
-      await socketMethod.fetchContacts();
-      await socketMethod.postPhoneNumber();
-
-      socket.on('join', (data) => {print(data)});
+      print("Inside of on connect");
 
       print('Socket connected: ${socket.id}');
-
-      // Print Socket ID on connect
+    });
+    socket.on('joined',  (data) async => {print(data)});
+    socket.on('leaved', (data) async => {print(data)});
+    socket.on('myself', (data) async {
+      print(data);
+    });
+    print('Socket connected: ${socket.id}');
+    socket.on('isSentChat', (data) async {
+      print(data);
+    });
+    socket.on('reloadChat', (data) async {
+      print(data);
     });
 
     // socket.on('loadEvent', (data) {
@@ -81,7 +81,4 @@ class SocketManager {
     print('Attempting to connect...'); // Debug print
     socket.connect();
   }
-
-  // Getter to access the socket ID
-  // String get socketId => socket.id; // You can access the socket ID
 }

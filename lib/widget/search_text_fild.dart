@@ -4,13 +4,17 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 
 class SearchTextFild extends StatelessWidget {
   final TextEditingController searchController;
+  final String? hintText;
+  final bool isSearch;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmit;
   const SearchTextFild(
       {super.key,
       required this.searchController,
       this.onChanged,
-      this.onSubmit});
+      this.onSubmit,
+      this.hintText,
+      this.isSearch = true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +38,18 @@ class SearchTextFild extends StatelessWidget {
             contentPadding: const EdgeInsets.only(
               top: 8,
             ),
-            hintText: "Search",
+            hintText: hintText,
             hintStyle: Theme.of(context).textTheme.bodySmall,
-            prefixIcon: const Padding(
-              padding: EdgeInsets.only(top: 4),
-              child: Icon(
-                Icons.search,
-                color: Colors.black,
-                size: 15,
-              ),
-            )),
+            prefixIcon: isSearch
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 4),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.black,
+                      size: 15,
+                    ),
+                  )
+                : width10),
       ),
     );
     ;

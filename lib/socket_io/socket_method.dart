@@ -24,7 +24,7 @@ class SocketMethod {
     };
     Map<String, dynamic> body = {
       "userid": "01j9f3d86s4wgnnxjja828dez0",
-      "socket": "${SocketManager().socket.id}",
+      // "socket": "${SocketManager().socket.id}",
       "issued": "F"
     };
 
@@ -36,17 +36,25 @@ class SocketMethod {
 
     if (response.statusCode == 200) {
       final decodedBody = jsonDecode(response.body);
+      messengerAPIToken = await decodedBody['token'];
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
 
       messengerAPIToken = decodedBody['token'];
-
-      print(" From Auth chat ");
-      print("Authorize Token From AuthorizeChat Methode $authorizeChatToken");
     } else {
-      print('Error: ${response.statusCode}');
+      Response response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      final decodedBody = jsonDecode(response.body);
+      messengerAPIToken = await decodedBody['token'];
+      authorizeChatToken = await decodedBody['token'];
     }
     await prefss.setString("authorizeChatToken", authorizeChatToken.toString());
-    print("saving token $authorizeChatToken");
+
+    // if (messengerAPIToken != null) {
+    //   await SocketManager();
+    // }
   }
 
   List contactNumber = [];
@@ -63,15 +71,14 @@ class SocketMethod {
               .add(contact.phones[0].number); // Add the first phone number
         }
       });
-
-      print(contactNumber);
     }
   }
 
   Future<void> postPhoneNumber() async {
     Map<String, dynamic> body = {
-      "is_group": false,
-      "contacts": contactNumber, // Use your contact list here
+      "group": false,
+      "title": null,
+      "users": contactNumber, // Use your contact list here
     };
     Response response = await http.post(
       Uri.parse(
@@ -85,19 +92,15 @@ class SocketMethod {
       },
       body: jsonEncode(body),
     );
-
-    print(response.body);
-    print("Post PHone number chat token is ");
-    print(authorizeChatToken);
   }
 
   List getChatPeopleList = [];
   List getGroupChatList = [];
-  List getChats = [];
+  List onlinePeopleList = [];
   List decodedGetChatBody = [];
   Map<String, dynamic>? decodedBody;
   Map<String, dynamic>? decodeGroupChatdBody;
-  List getChatPeopleListxyz = [];
+  Map<String, dynamic>? decodeActiveChatBody;
   Map<String, String> headers(String token) {
     return {
       'Accept': 'application/json',
@@ -107,29 +110,39 @@ class SocketMethod {
     };
   }
 
-  Future<List> getChatPeople(String token) async {
-    Response response = await http.get(
-        Uri.parse(
-            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'application/gzip',
-          'Authorization': 'Bearer $token'
-        });
+  getChatPeople(String token) async {
+    getChatPeopleList.clear();
+    Response response =
+        await http.get(Uri.parse("$chatBaseUrl-management/contacts"), headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    });
 
     decodedBody = jsonDecode(response.body);
 
     for (var person in decodedBody?['people']) {
       var contact = await {
-        "name": person["name"],
-        "phone": person["phone"],
-        "avatar": person["avatar"],
-        "id": person["id"],
+        "user": {
+          "id": person["user"]["id"],
+          "name": person["user"]["name"],
+          "online": person["user"]["online"],
+          "image": person["user"]["image"],
+        },
         "room": {
           "room_id": person['room']['id'],
           "room_name": person['room']['name'],
-        }
+        },
+        "chat": {
+          "bracket": person['chat']['bracket'],
+          "content": person['chat']['content'],
+        },
+        "time": {
+          "string": person['time']['string'],
+          "elapse": person['time']['elapse'],
+          "format": person['time']['format'],
+        },
       };
 
       getChatPeopleList.add(contact);
@@ -155,17 +168,20 @@ class SocketMethod {
     for (var groups in decodeGroupChatdBody?['groups']) {
       var group = await {
         "id": groups["id"],
-        "room": groups["room"],
-        "message": groups["message"],
+        "image": groups['image'],
 
-        "datetime": groups["datetime"],
-        //  "avatar": groups["avatar"],
-        "groups": {
-          "id": groups['users'][0]['id'],
-          "name": groups['users'][0]['name'],
-          "avatar": groups['users'][0]['avatar'],
-          "status": groups['users'][0]['status'],
-        }
+        "room": {"id": groups["room"]['id'], "name": groups["room"]['name']},
+
+        "chat": {
+          "bracket": groups['chat']['bracket'],
+          "content": groups['chat']['content'],
+        },
+        "time": {
+          "string": groups['time']['string'],
+          "elapse": groups['time']['elapse'],
+          "format": groups['time']['format'],
+        },
+        // "user": groups['user'],
       };
       getGroupChatList.add(group);
     }
@@ -173,9 +189,30 @@ class SocketMethod {
     return getGroupChatList;
   }
 
+  getOnlineChatPeopole(String token) async {
+    onlinePeopleList.clear();
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    };
+    Response response = await http
+        .get(Uri.parse("${chatBaseUrl}-management/contacts"), headers: headers);
+
+    decodeActiveChatBody = jsonDecode(response.body);
+    for (var online in decodeActiveChatBody?['online']) {
+      var onlineIndex = await {
+        "id": online["id"],
+        "name": online["name"],
+        "image": online["image"],
+      };
+      onlinePeopleList.add(onlineIndex);
+    }
+    return onlinePeopleList;
+  }
+
   Future<List> createGrop(String token, Map body) async {
-    print("Auth token from create Group $token");
-    print("Body $body");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -188,10 +225,7 @@ class SocketMethod {
         headers: headers,
         body: jsonEncode(body));
 
-    print("status code is");
-    print(response.statusCode);
-    print("create Group");
-    print(response.body);
+    if (response.statusCode == 200) {}
 
     decodeGroupChatdBody = jsonDecode(response.body);
 
@@ -199,19 +233,15 @@ class SocketMethod {
   }
 
   Future<void> sendMessageMethod(
-      String token, roomId, userIdManual, userId, messageFromTextFild) async {
-    print(token);
-    print(roomId);
-    print(userIdManual);
-    print("Send message methode");
+      String roomId, userId, messageFromTextFild) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $messengerAPIToken'
     };
 
-    Map<String, String> body = {
+    Map body = {
       "room_id": roomId,
       "user_id": userId,
       "bracket": "T",
@@ -222,31 +252,31 @@ class SocketMethod {
         headers: headers,
         body: jsonEncode(body));
 
-    print("Body");
-    print(body);
     final decodedBody = jsonDecode(response.body);
-    print(decodedBody);
   }
 
   getMessageMethod(String token, roomId) async {
+    ///v1/vendor-management/conversations
+    /////$chatBaseUrl-management/conversations/$roomId/messages
     Response response = await http.get(
-        Uri.parse("$chatBaseUrl-management/messages?roomID=$roomId"),
+        Uri.parse(
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/conversations/$roomId/messages"),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Accept-Encoding': 'application/gzip',
           'Authorization': 'Bearer $token',
         });
-    print("get messages status code");
-    print(response.statusCode);
-    print(response.body);
-    decodedGetChatBody = jsonDecode(response.body);
-    print(decodedGetChatBody);
+
+    final decodedGetChatBody = jsonDecode(response.body);
+    
+    print("Decoded Message body length: ${decodedGetChatBody} : Body is: $decodedGetChatBody");
+    for (var messge in decodedGetChatBody) {}
     return decodedGetChatBody;
   }
 
   List get chatList => getChatPeopleList;
   List get chatGroup => getGroupChatList;
   List get getDecodedGetChatBody => decodedGetChatBody;
-  // List get chats => getChat;
+  List get getOnlinePeopleList => onlinePeopleList;
 }

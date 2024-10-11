@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/send_message_text_fild.dart';
+import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../widget/search_text_fild.dart';
@@ -24,6 +25,7 @@ class GroupChatScreen extends StatefulWidget {
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
   TextEditingController searchController = TextEditingController();
+  TextEditingController groupNameController = TextEditingController();
   SharedPreferences? prefss;
 
   String? socketId;
@@ -41,23 +43,31 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   pirntSocketChatToken() async {
     prefss = await SharedPreferences.getInstance();
     String token = await prefss?.getString('authorizeChatToken') ?? '';
-    print("Auth Token from chat screen Local");
-    print(token.toString());
-    print("Auth Token from chat screen Variable");
-    print(messengerAPIToken.toString());
-    print("From Socket Socket Id");
-    print(socket.id);
+
     String? authToken = await prefss?.getString('token');
   }
 
   List? groupList;
-  callgetChatPeople() async {
-    groupList?.clear();
+  // List? filteredGoupList;
 
+  // void _filteredGroupList() {
+  //   String query = searchController.text;
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       filteredGoupList = groupList;
+  //     } else {
+  //       filteredGoupList = groupList
+  //           ?.where((group) => group['room'].toLowerCase().contains(query))
+  //           .toList();
+  //     }
+  //   });
+  // }
+
+  getGroupsPeople() async {
+    groupList?.clear();
     groupList = await socketMethod.getGroup(messengerAPIToken ?? '');
     setState(() {});
-    print("group length");
-    print(groupList?.length);
+
   }
 
   List groupUserList = [];
@@ -66,7 +76,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   void initState() {
     super.initState();
 
-    callgetChatPeople();
+    getGroupsPeople();
 
     pirntSocketChatToken();
     setState(() {});
@@ -75,6 +85,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         isKeyboardVisible = true;
       }
     });
+    // searchController.addListener(_filteredGroupList);
   }
 
   void dispose() {
@@ -86,9 +97,12 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   bool isKeyboardVisible = false;
   @override
   Widget build(BuildContext context) {
+    // if (filteredGoupList == null) {
+    //   filteredGoupList = groupList;
+    // }
+    setState(() {});
     Size size = MediaQuery.sizeOf(context);
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    isKeyboardVisible = keyboardHeight > 0;
+
     setState(() {});
     return SafeArea(
       child: Scaffold(
@@ -99,9 +113,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               height10,
               SearchTextFild(
                 searchController: searchController,
-                onSubmit: (value) async {
-                  print("onSubmitted: $value");
-                },
+                hintText: 'Search',
               ),
               height10,
               Expanded(
@@ -124,8 +136,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                                 roomId: '',
                                                 roomName: '',
                                                 name: '',
-                                                phoneNumber: '',
-                                                avatar: '',
+                                                image: '',
                                               )));
                                 },
                                 leading: Container(
@@ -134,22 +145,21 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                     decoration:
                                         BoxDecoration(shape: BoxShape.circle),
                                     child: Image.network(
-                                        "https://kjh.ksdr1.net/wp-content/uploads/sites/7/2017/08/nopicture_man.jpg"
-                                        // groupList?[index]['avatar'],
-                                        )),
+                                        groupList?[index]['image'])),
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
                                         Text(
-                                          groupList?[index]['room'] ?? 'None',
+                                          groupList?[index]['room']['name'] ??
+                                              'None',
                                           style: small14StyleW500.copyWith(
                                               height: 0),
                                         ),
                                         const Spacer(),
                                         Text(
-                                          groupList?[index]['datetime'] ??
+                                          groupList?[index]['time']['format'] ??
                                               'None',
                                           style: small12Stylew400,
                                         )
@@ -191,6 +201,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Widget _buildBottomSheet(BuildContext context) {
+    List peopleList = Provider.of<SocketMethodeProvider>(context)
+        .getinboxChatListFromProvider;
+
+//    Provider.of<SocketMethodeProvider>(context)
+    //  .getGroup(messengerAPIToken ?? '');
     return DraggableScrollableSheet(
       expand: false,
       builder: (context, scrollController) {
@@ -205,27 +220,32 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     child: Column(
                       children: [
                         height20,
+                        SearchTextFild(
+                          searchController: groupNameController,
+                          hintText: "Group Name",
+                          isSearch: false,
+                        ),
                         height10,
                         Stack(
                           children: [
                             ListView.separated(
                               primary: false,
                               shrinkWrap: true,
-                              itemCount: allPerson.length,
+                              itemCount: peopleList.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
-                                      color: groupUserList
-                                              .contains(allPerson[index]['id'])
+                                      color: groupUserList.contains(
+                                              peopleList[index]['user']['id'])
                                           ? Colors.green
                                           : Colors.grey,
                                       borderRadius: BorderRadius.circular(10)),
                                   child: ListTile(
                                     contentPadding: EdgeInsets.zero,
                                     onTap: () {
-                                      String personId = allPerson[index]
-                                          ['id']; // Get the person ID
+                                      String personId = peopleList[index]
+                                          ['user']['id']; // Get the person ID
 
                                       if (groupUserList.contains(personId)) {
                                         groupUserList.remove(personId);
@@ -243,8 +263,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         width: 40,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle),
-                                        child: Image.network(
-                                            allPerson[index]['avatar'])),
+                                        child: Image.network(peopleList[index]
+                                            ['user']['image'])),
                                     title: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -252,7 +272,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         Row(
                                           children: [
                                             Text(
-                                              allPerson[index]['name'] ??
+                                              peopleList[index]['user']
+                                                      ['name'] ??
                                                   'None',
                                               style: small14StyleW500.copyWith(
                                                   height: 0),
@@ -278,12 +299,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                Map body = {"title": null, "users": groupUserList};
-                socketMethod.createGrop(messengerAPIToken ?? '', body);
-                await callgetChatPeople();
-
-                setState(() {});
+                Map body = {
+                  "title": groupNameController.text,
+                  "users": groupUserList
+                };
+                await socketMethod.createGrop(messengerAPIToken ?? '', body);
                 Navigator.pop(context);
+                await getGroupsPeople();
               },
               child: Icon(Icons.add),
             ),

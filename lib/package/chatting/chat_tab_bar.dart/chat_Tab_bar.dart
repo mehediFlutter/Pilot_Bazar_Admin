@@ -3,8 +3,14 @@ import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/group_chat.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/shimmer_effect/chat_circle_shimmer.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:provider/provider.dart';
 import '../../../screens/auth/auth_utility.dart';
+import '../../../socket_io/socket_manager.dart';
 
 class TabChat extends StatefulWidget {
   @override
@@ -14,6 +20,8 @@ class TabChat extends StatefulWidget {
 class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   LoginModel? userInfoFromPrefs;
+  var socketMethod = SocketMethod();
+  var socket = SocketManager();
 
   inboxOrGroup(String text) {
     return Container(
@@ -33,22 +41,33 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
+    setState(() {});
+   
+  }
 
-    print(
-        "User info (from prefs): ${userInfoFromPrefs?.payload?.merchant?.name.toString()}, ${userInfoFromPrefs?.payload?.merchant?.mobile.toString()}");
+  List chatPeopleListProvider = [];
+  List? activeList;
+
+  callActivePeople() async {
+    activeList?.clear();
+    activeList =
+        await socketMethod.getOnlineChatPeopole(messengerAPIToken ?? '');
+
+    setState(() {});
   }
 
   @override
   void initState() {
     printUserInfo();
-    print(userInfoFromPrefs?.payload?.merchant?.merchantInfo?.image?.name);
+  
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      setState(() {
-        // Forces the widget to rebuild when the tab changes
-      });
+      setState(() {});
     });
-    super.initState();
+    callActivePeople();
+    final provider = Provider.of<SocketMethodeProvider>(context, listen: false);
+    provider.getInbox(messengerAPIToken ?? '');
+    SocketManager();
   }
 
   @override
@@ -59,10 +78,11 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -97,6 +117,58 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                 Tab(child: inboxOrGroup('Inbox')),
                 Tab(child: inboxOrGroup("Group")),
               ],
+            ),
+            SizedBox(
+              height: 80,
+              child: ListView.builder(
+                itemCount: activeList?.length ?? 0,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                 
+                  return activeList != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(
+                              8.0), // Adjust the padding as needed
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                      height: 45,
+                                      width: 45,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Image.network(
+                                          activeList?[index]['image'])),
+                                  Positioned(
+                                      height: 75,
+                                      left: 30,
+                                      child: Container(
+                                        height: 12,
+                                        width: 12,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.green,
+                                        ),
+                                      )),
+                                ],
+                              ),
+                              Text(
+                                (activeList?[index]?['name'] != null &&
+                                        activeList?[index]['name'].length > 5)
+                                    ? '${activeList?[index]['name'].substring(0, 5)}...'
+                                    : activeList?[index]?['name'] ?? '',
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
+                          ),
+                        )
+                      : Center(
+                          child: circularChat(),
+                        );
+                },
+              ),
             ),
             Expanded(
               child: TabBarView(

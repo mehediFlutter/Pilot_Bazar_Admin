@@ -19,7 +19,7 @@ import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigatio
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
-import 'package:pilot_bazar_admin/socket_io/socket_manager_gpt.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
@@ -78,9 +78,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   LoginModel? userInfoFromPrefs;
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
-
-    print(
-        "User info (from prefs): ${userInfoFromPrefs?.payload?.merchant?.name.toString()}, ${userInfoFromPrefs?.payload?.merchant?.mobile.toString()}");
   }
 
   void _listenToScroolMoments() {
@@ -120,7 +117,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
-        print(hasTypedText);
         hasTypedText = true;
       }
       if (searchController.text.isEmpty && hasTypedText) {
@@ -135,7 +131,27 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     });
     //  pirntSocketChatToken();
 
-    // setState(() {});
+    callSocketManager();
+
+    // socket.on('joined', (data) => {print(data)});
+    // socket.on('leaved', (data) => {print(data)});
+
+    // socket.on('myself ', (data) async {
+    //   print(data);
+    // });
+
+    // print('Socket connected: ${socket.id}');
+    // socket.on('isSentChat ', (data) {
+    //   print(data);
+    // });
+
+    // socket.on('reloadChat ', (data) {
+    //   print(data);
+    // });
+  }
+
+  callSocketManager() async {
+    await SocketManager();
   }
 
   @override
@@ -148,9 +164,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     try {
       _isDeviceConnected = await InternetConnectionChecker().hasConnection;
       _showAlertDialogIfNeeded();
-    } catch (e) {
-      print("Error checking connectivity: $e");
-    }
+    } catch (e) {}
   }
 
   // void _listenForChanges() {
@@ -235,10 +249,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   initializePreffsBool() async {
     await getPreffs();
-    setState(() {
-      print("get Int Preef");
-      print(getIntPreef);
-    });
+    setState(() {});
   }
 
   static List allProductsForSearch = [];
@@ -251,7 +262,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
       Response response = await get(Uri.parse("${baseUrl}api/vehicle?page=$f"));
       //${baseUrl}api/vehicle?page=0
       //https://crud.teamrabbil.com/api/v1/ReadProduct
-      print(response.statusCode);
       final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
       // print(decodedResponse['data']);
@@ -312,9 +322,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   static int x = 0;
 
   getNewProduct(int page) async {
-    print("I am new products methode");
-    print("Page");
-    print(page);
     _getNewProductinProgress = true;
     // searchProductsIsEmpty = false;
     if (mounted) {
@@ -333,7 +340,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
     //${baseUrl}api/vehicle?page=0
     //https://crud.teamrabbil.com/api/v1/ReadProduct
-    print(response!.statusCode);
     final Map<String, dynamic> decodedResponse1 = jsonDecode(response.body);
     final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
     if (decodedResponse['data'].isEmpty) {
@@ -407,9 +413,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
       x = j + 1;
     }
-    for (var item in products) {
-      print(item.newPrice.toString());
-    }
+    for (var item in products) {}
     _getNewProductinProgress = false;
     if (mounted) {
       setState(() {});
@@ -427,8 +431,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   @override
   Future getProduct(int page) async {
     prefss = await SharedPreferences.getInstance();
-    print("Get products token");
-    print(prefss.getString("token"));
     products.clear();
     _getProductinProgress = true;
     if (mounted) {
@@ -553,8 +555,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         });
     //${baseUrl}api/vehicle?page=0
     //https://crud.teamrabbil.com/api/v1/ReadProduct
-    print("Get Details methodes");
-    print(response.statusCode);
     final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
     List<dynamic> vehicleFeatures = decodedResponse['payload'];
 
@@ -570,12 +570,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
       setState(() {});
     }
     for (int y = 0; y < unicTitle.length; y++) {
-      print(
-        unicTitle[y],
-      );
-      print(
-        details[y],
-      );
+      // print(
+      //   unicTitle[y],
+      // );
+      // print(
+      //   details[y],
+      // );
     }
   }
 
@@ -638,11 +638,9 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     if (mounted) {
       setState(() {});
     }
-    print("get Link start bool ${imageInProgress}");
 
     prefss = await SharedPreferences.getInstance();
 
-    print("This is get Link methode");
     prefss = await SharedPreferences.getInstance();
     Response? response1;
     if (prefss.getString('token') == null) {
@@ -660,12 +658,10 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     }
     final Map<String, dynamic> decodedResponse1 = jsonDecode(response1.body);
     detailsLink = decodedResponse1['message'];
-    print(detailsLink);
     imageInProgress = false;
     if (mounted) {
       setState(() {});
     }
-    print("get details end bool ${imageInProgress}");
   }
 
   static List showImageList = [];
@@ -696,7 +692,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
               'Authorization': 'Bearer ${prefss.getString('token')}'
             });
       }
-      print(response1.statusCode);
       final Map<String, dynamic> decodedResponse1 = jsonDecode(response1!.body);
 
       for (int b = 0; b < decodedResponse1['payload']['gallery'].length; b++) {
@@ -704,10 +699,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         ImageLinkList.add(ImageLink);
       }
 
-      print("From List Image Links are");
-      for (int c = 0; c < ImageLinkList.length; c++) {
-        print(ImageLinkList[c]);
-      }
+      for (int c = 0; c < ImageLinkList.length; c++) {}
 
       for (int y = 0; y < ImageLinkList.length; y++) {
         final uri =
@@ -715,7 +707,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         final response = await http.get(uri);
         final imageBytes = response.bodyBytes;
         //  print("Body bite");
-        print(response);
         final tempDirectory = await getTemporaryDirectory();
 
         final tempFile = await File('${tempDirectory.path}/sharedImage$y.jpg')
@@ -739,12 +730,8 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         if (mounted) {
           setState(() {});
         }
-      } else {
-        print("No images to share.");
-      }
-    } catch (error) {
-      print("Error: $error");
-    }
+      } else {}
+    } catch (error) {}
   }
 
   Future<void> shareDetailsWithOneImage(
@@ -1370,9 +1357,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    scrollController.addListener(() {
-      print(scrollController.offset);
-    });
+    scrollController.addListener(() {});
 
     Size size = MediaQuery.of(context).size;
 
@@ -1394,13 +1379,13 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       message_icon_path:
                           'assets/icons/message_notification.png',
                       chatTap: () {
-                        messengerAPIToken != null
+                        print(socket.id);
+                        socket.id != null
                             ? Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => TabChat()))
-                            : CustomAlertDialog().showAlertDialog(context,
-                                "Server is not Availeble  Try Again", 'Ok');
+                            : showAlertDialogServer(context);
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:
@@ -1509,6 +1494,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     );
   }
 
+  showAlertDialogServer(BuildContext context) async {
+    await SocketManager();
+    CustomAlertDialog()
+        .showAlertDialog(context, "Server is not Availeble  Try Again", 'Ok');
+  }
+
   Center loading() {
     return const Center(
       child: SpinKitFadingCircle(
@@ -1530,10 +1521,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
           children: [
             GestureDetector(
               onTap: () async {
-                // print(products[x].index);
-                print("This is my on tap functioin for details");
-                print("Image name");
-                print(products[x].imageName);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -1869,11 +1856,8 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
       'Content-Type': 'application/vnd.api+json',
       'Authorization': 'Bearer ${prefss.getString('token')}'
     });
-    print(response.statusCode);
-    print(products[index].id);
 
     if (response.statusCode == 200) {
-      print("Succesfully Sold");
       SnackbarUtils.showSnackbar(context, 'Successfully update to Sold');
       await Navigator.pushAndRemoveUntil(
           context,

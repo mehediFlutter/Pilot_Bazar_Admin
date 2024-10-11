@@ -24,8 +24,6 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
     setState(() {});
-    print(userInfo);
-    print(userInfo['payload']['merchant']['name'].toString());
   }
 
   @override
@@ -51,7 +49,6 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     setState(() {});
     if (preffs.containsKey('notifier')) {
  
-      print(preffs.containsKey('notifier'));
       widget.notifier.value = (preffs.getString('notifier') == 'ThemeMode.dark')
           ? ThemeMode.light
           : ThemeMode.dark;
@@ -64,8 +61,6 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     return ValueListenableBuilder(
       valueListenable: widget.notifier,
       builder: (_, mode, __) {
-        print('theme');
-        print(widget.notifier.value);
 
         return MaterialApp(
           themeMode: Provider.of<ModeProvider>(context).lightModeEnable

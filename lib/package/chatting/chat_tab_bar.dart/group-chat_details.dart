@@ -1,45 +1,44 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
-import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
-import 'package:pilot_bazar_admin/widget/urls.dart';
-import 'package:provider/provider.dart';
 
-class ChattingDetailsScreen extends StatefulWidget {
+class GroupChattingDetailsScreen extends StatefulWidget {
   final String userId;
   final String roomName;
   final String roomId;
   final String manualUserId;
   final String name;
-  final String image;
+  final String phoneNumber;
+  final String avatar;
   final bool isChatScreen;
 
-  const ChattingDetailsScreen(
+  const GroupChattingDetailsScreen(
       {super.key,
       required this.userId,
       required this.roomName,
       required this.roomId,
       required this.manualUserId,
       required this.name,
-      required this.image,
+      required this.phoneNumber,
+      required this.avatar,
       this.isChatScreen = false});
 
   @override
-  State<ChattingDetailsScreen> createState() => _ChattingDetailsScreenState();
+  State<GroupChattingDetailsScreen> createState() =>
+      _GroupChattingDetailsScreenState();
 }
 
-class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
+class _GroupChattingDetailsScreenState
+    extends State<GroupChattingDetailsScreen> {
   TextEditingController sendMessageController = TextEditingController();
   ScrollController scrollController = ScrollController();
   FocusNode myFocusNode = FocusNode();
@@ -48,6 +47,13 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   var socket = SocketManager().socket;
   var socketMethod = SocketMethod();
   List getChats = [];
+  void sendMessage() {
+    if (sendMessageController.text.isNotEmpty) {
+      String message = sendMessageController.text;
+      socket.emit('send_message', {'status': false, 'message': message});
+      sendMessageController.clear();
+    }
+  }
 
   String getCurrentDateTime() {
     DateTime now = DateTime.now();
@@ -58,12 +64,25 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     getChats = await socketMethod.getMessageMethod(
         messengerAPIToken ?? '', widget.roomId);
     setState(() {});
+    print(getChats.toString());
   }
 
   List chatList = [
     ChatBubbl(
       isMe: false,
       message: "Hello ",
+    ),
+    ChatBubbl(
+      isMe: false,
+      message: "Hello again ",
+    ),
+    ChatBubbl(
+      isMe: false,
+      message: "Hello again ",
+    ),
+    ChatBubbl(
+      isMe: false,
+      message: "Hello again ",
     ),
   ];
   void scrollDown() {
@@ -76,74 +95,29 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   // void _sendMessage() {
   //   String message = sendMessageController.text;
   //   if (message.isNotEmpty) {
-  //     SocketManager().chatEventHandler.sendMessage(
-  //           widget.roomName,
-  //           widget.roomId,
-  //           widget.userId,
-  //           message,
-  //         );
+  //     SocketManager()
+  //         .chatEventHandler
+  //         .sendMessage(message, widget.roomName, widget.roomId);
   //     sendMessageController.clear(); // Clear the input after sending
   //   }
 
   //   sendMessageController.clear(); // Clear the input after sending
   // }
 
-  var decodedSendMessageBody;
-
-  Future<void> sendMessageMethod(
-      String roomId, userId, messageFromTextFild) async {
-    Map<String, String> headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $messengerAPIToken'
-    };
-
-    Map body = {
-      "room_id": roomId,
-      "user_id": userId,
-      "bracket": "T",
-      "content": messageFromTextFild
-    };
-    Response response = await post(
-        Uri.parse("$chatBaseUrl-management/messages"),
-        headers: headers,
-        body: jsonEncode(body));
-
-    decodedSendMessageBody = jsonDecode(response.body);
-    setState(() {});
-    print("Body");
-    print(decodedSendMessageBody);
-    getChats.add(decodedSendMessageBody);
-  }
-
   @override
   void initState() {
-    // print("room id");
     getChatMethode();
 
     setState(() {});
-    socket.on('joined',  (data) async => {print(data)});
-    socket.on('leaved', (data) async => {print(data)});
-    socket.on('myself', (data) async {
-      print(data);
-    });
-    socket.on('isSentChat', (data) async {
-      print(data);
-    });
-    socket.on('reloadChat', (data) async {
-      print(data);
-    });
-
-//     socket.on('loadEvent', (data) {
-//       print(data);
-// //      final res = jsonDecode(data);
-//       //  print(res['uuid']);
-//       // getChats = socketMethod.getMessageMethod(
-//       //   messengerAPIToken ?? "",
-//       //   res['uuid'],
-//       // );
-//     });
+    // socket.on('loadEvent', (data) {
+    //   print(data);
+    //   final res = jsonDecode(data);
+    //   print(res['uuid']);
+    //   getChats = socketMethod.getMessageMethod(
+    //     messengerAPIToken ?? "",
+    //     res['uuid'],
+    //   );
+    // });
 
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
@@ -178,9 +152,9 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               message_icon_path: 'assets/icons/message_notification.png',
               drawer_icon_path: 'assets/icons/beside_message.png',
               isChatAvater: widget.isChatScreen,
-              chatAvater: widget.image,
+              chatAvater: widget.avatar,
               merchantName: widget.name,
-              companyName: '',
+              companyName: widget.phoneNumber,
               onTapFunction: () {},
               chatTap: () {
                 // print("notificaiton tap");
@@ -192,6 +166,10 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
             ),
           ),
           height10,
+          Text(
+            widget.name,
+            style: TextStyle(fontSize: 30),
+          ),
           Expanded(
             child: ListView.builder(
               controller: scrollController,
@@ -201,13 +179,44 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 if (index == getChats.length) {
                   return SizedBox(height: 30);
                 }
-                return ChatBubbl(
-                    message: getChats[index]['chat']['content'],
-                    isMe: getChats[index]['side'] == 'R' ? true : false);
-                // Fix: accessing the 'message' property
+                return ChatBubbl(message: getChats[index]['content']);
               },
             ),
           ),
+          // SendMessageTextFild(
+          //   sendMessageController: sendMessageController,
+          //   myFocusNode: myFocusNode,
+          //   sendMessageButton: IconButton(
+          //     onPressed: () {
+          //       socketMethod.sendMessageMethod(
+          //         messengerAPIToken ?? '',
+          //         widget.roomId,
+          //         widget.manualUserId,
+          //         widget.userId,
+          //         sendMessageController.text,
+          //       );
+
+          //       // sendMessage();
+          //       if (sendMessageController.text.isNotEmpty) {
+          //         getChats.add({
+          //           "id": widget.roomId,
+          //           "userID": widget.userId,
+          //           "bracket": 'T',
+          //           "content": sendMessageController.text,
+          //           "isSending": true,
+          //           "component": "text",
+          //           "datetime": getCurrentDateTime
+          //         });
+
+          //         setState(() {});
+
+          //         sendMessageController.clear();
+          //       }
+          //       scrollDown();
+          //     },
+          //     icon: Image.asset('assets/icons/semd_message.png'),
+          //   ),
+          // ),
           Row(
             children: [
               Expanded(
@@ -236,22 +245,31 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  ChatEventHandler(socket).sendMessage(widget.roomName,
-                      widget.roomId, widget.userId, sendMessageController.text);
+                  // socketMethod.sendMessageMethod(
+                  //   messengerAPIToken ?? '',
+                  //   widget.roomId,
+                  //   widget.manualUserId,
+                  //   widget.userId,
+                  //   sendMessageController.text,
+                  // );
 
-                  // setState(() {});
-                  chatList.add(
-                    ChatBubbl(
-                      isMe: true,
-                      message: sendMessageController.text,
-                    ),
-                  );
-                  setState(() {});
-                  sendMessageController.clear();
-                  setState(() {});
-
+                  // sendMessage();
                   if (sendMessageController.text.isNotEmpty) {
-                    scrollDown();
+                    getChats.add({
+                      "id": widget.roomId,
+                      "userID": widget.userId,
+                      "bracket": 'T',
+                      "content": sendMessageController.text,
+                      "isSending": true,
+                      "component": "text",
+                      "datetime": getCurrentDateTime
+                    });
+
+                    setState(() {});
+
+                  //  _sendMessage();
+
+                    sendMessageController.clear();
                   }
                   scrollDown();
                 },
@@ -265,33 +283,31 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     );
   }
 
-  // Widget _buildUserInput() {
-  //   return Row(
-  //     children: [
-  //       Expanded(
-  //           child: SearchTextFild(searchController: sendMessageController)),
-  //       IconButton(
-  //         onPressed: () {
-  //           if (sendMessageController.text.isNotEmpty) {
-  //             chatList.add(
-  //               ChatBubbl(
-  //                 isMe: true, // Assuming you're adding your own message
-  //                 message: sendMessageController.text,
-  //               ),
-  //             );
+  Widget _buildUserInput() {
+    return Row(
+      children: [
+        Expanded(
+            child: SearchTextFild(searchController: sendMessageController)),
+        IconButton(
+          onPressed: () {
+            if (sendMessageController.text.isNotEmpty) {
+              chatList.add(
+                ChatBubbl(
+                  isMe: true, // Assuming you're adding your own message
+                  message: sendMessageController.text,
+                ),
+              );
 
-  //             setState(() {});
+              setState(() {});
 
-  //             sendMessageController.clear();
-  //           }
-  //           Provider.of<SocketMethodeProvider>(context, listen: true)
-  //               .getInbox(messengerAPIToken ?? '');
-  //         },
-  //         icon: Icon(Icons.send),
-  //       )
-  //     ],
-  //   );
-  // }
+              sendMessageController.clear();
+            }
+          },
+          icon: Icon(Icons.send),
+        )
+      ],
+    );
+  }
 
   chatImage(String imagePath) {
     return Container(

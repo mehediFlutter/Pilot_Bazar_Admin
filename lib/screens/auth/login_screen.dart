@@ -63,20 +63,15 @@ class _LoginScreenState extends State<LoginScreen> {
           'Content-Type': 'application/vnd.api+json'
         },
         body: jsonEncode(body));
-    print(response.statusCode);
     Map decodedBody = jsonDecode(response.body.toString());
-    print(decodedBody['message']);
 
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
-      print(decodedBody['message']);
 
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
-      print(model.toJson()['payload']['merchant']['name']);
       token = model.toJson()['payload']['token'];
-      print(token);
       await prefss.setString('token', token ?? '');
       loginInProgress = false;
       if (mounted) {
@@ -87,6 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false);
     } else {
+      loginInProgress = false;
+      setState(() {});
       CustomAlertDialog().showAlertDialog(
         context,
         decodedBody['message'] + ' Please Try Again'.toString(),
@@ -195,8 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               }
 
-                              print(phoneNumberController.text);
-                              print(passwordController.text);
                               await login();
                             },
                             child: const Text(

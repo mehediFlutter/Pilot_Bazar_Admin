@@ -46,6 +46,11 @@ const TextStyle small14StyleW600 = TextStyle(
     fontFamily: 'Inter',
     color: Colors.black,
     fontWeight: FontWeight.w600);
+const TextStyle small16StyleW600 = TextStyle(
+    fontSize: 16,
+    fontFamily: 'Inter',
+    color: Colors.black,
+    fontWeight: FontWeight.w600);
 
 const TextStyle loginRegistrationHintTextStyle = TextStyle(
   fontSize: 14,

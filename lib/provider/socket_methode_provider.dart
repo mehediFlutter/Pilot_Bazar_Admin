@@ -11,13 +11,58 @@ class SocketMethodeProvider extends ChangeNotifier {
   int _count = 0;
   int get count => _count;
   bool themeModeValue = true;
-  
-  Map<String, dynamic>? decodedBody;
-  List _getChatPeopleList = [];
-  List get getChatPeopleList => _getChatPeopleList;
 
-  Future<List> getChatPeopleAndGroup(String token) async {
-    print("Auth token from get chat people and group $token");
+  Map<String, dynamic>? decodedBody;
+  List _inboxChatList = [];
+  List _groupChatList = [];
+  List get getinboxChatListFromProvider => _inboxChatList;
+  List get getGroupChatListFromProvider => _groupChatList;
+
+   getInbox(String token) async {
+    _inboxChatList.clear();
+    Response response =
+        await http.get(Uri.parse("$chatBaseUrl-management/contacts"), headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'application/gzip',
+      'Authorization': 'Bearer $token'
+    });
+
+    decodedBody = jsonDecode(response.body);
+
+    for (var person in decodedBody?['people']) {
+      var contact = await {
+        "user": {
+          "id": person["user"]["id"],
+          "name": person["user"]["name"],
+          "online": person["user"]["online"],
+          "image": person["user"]["image"],
+        },
+        "room": {
+          "room_id": person['room']['id'],
+          "room_name": person['room']['name'],
+        },
+        "chat": {
+          "bracket": person['chat']['bracket'],
+          "content": person['chat']['content'],
+        },
+        "time": {
+          "string": person['time']['string'],
+          "elapse": person['time']['elapse'],
+          "format": person['time']['format'],
+        },
+      };
+
+      _inboxChatList.add(contact);
+    }
+
+    notifyListeners();
+
+    return _inboxChatList;
+  }
+
+  Future<List> getGroup(String token) async {
+    _groupChatList.clear();
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -26,41 +71,32 @@ class SocketMethodeProvider extends ChangeNotifier {
     };
     Response response = await http.get(
         Uri.parse(
-            "$chatBaseUrl-management/contacts"),
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
         headers: headers);
 
-    print("Get Chat People Methode");
-    print("status code is");
-    print(response.statusCode);
+    Map? decodeGroupChatdBody = jsonDecode(response.body);
 
-    decodedBody = jsonDecode(response.body);
-    _getChatPeopleList.clear();
+    for (var groups in decodeGroupChatdBody?['groups']) {
+      var group = await {
+        "id": groups["id"],
+        "room": groups["room"],
+        "message": groups["message"],
 
-    for (var person in decodedBody?['people']) {
-      var contact = await {
-        "name": person["name"],
-        "phone": person["phone"],
-        "avatar": person["avatar"],
-        "id": person["id"],
+        "datetime": groups["datetime"],
+        //  "avatar": groups["avatar"],
+        "groups": {
+          "id": groups['users'][0]['id'],
+          "name": groups['users'][0]['name'],
+          "avatar": groups['users'][0]['avatar'],
+          "status": groups['users'][0]['status'],
+        }
       };
-      _getChatPeopleList.add(contact);
+      _groupChatList.add(group);
     }
-    for (var groups in decodedBody?['groups']) {
-      var groupsIndex = {
-        "id":groups['id'],
-        "room":groups['room'],
-        "datetime":groups['datetime'],
-        "avatar": groups["avatar"],
+    notifyListeners();
 
-
-      };
-      _getChatPeopleList.add(groupsIndex);
-    }
-   
-
-    return _getChatPeopleList;
+    return _groupChatList;
   }
-
 
   SocketMethodeProvider() {
     _loadPreferences();
@@ -71,6 +107,4 @@ class SocketMethodeProvider extends ChangeNotifier {
     themeModeValue = prefs.getBool('themeBool') ?? true;
     notifyListeners();
   }
-
-
 }

@@ -2,15 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/network_service/network_caller.dart';
 import 'package:pilot_bazar_admin/network_service/network_response.dart';
-import 'package:pilot_bazar_admin/package/customer_care_service/customer_over_view.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
-import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
-import 'package:pilot_bazar_admin/screens/auth/otp_verification.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
@@ -41,6 +37,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   Future registration() async {
     isRegistrationInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
     Map<String, dynamic> body = {
       "name": nameController.text,
       "company_name": companyNameController.text,
@@ -58,6 +57,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           body: jsonEncode(body));
       print(response.statusCode);
       print(response.body);
+
+      // if (passwordController.text != confirmPasswordController.text) {
+      //   isRegistrationInProgress = false;
+      //   print("error");
+      //   CustomAlertDialog().showAlertDialog(
+      //       context, "Password does not match try again", "OK");
+      //   return;
+      // }
       Map decodedBody = jsonDecode(response.body.toString());
       if (response.statusCode == 200) {
         newlyRegistraterdWithLogin();
@@ -69,6 +76,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         );
       }
     } else {
+      isRegistrationInProgress = false;
+      if (mounted) {
+        setState(() {});
+      }
       print("error");
       CustomAlertDialog()
           .showAlertDialog(context, "Please Provide Correct Information", "OK");
@@ -90,7 +101,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     });
     print("response . body is");
     print(response.body);
-    // Map? decodedBody = jsonDecode(response.body.toString());
+
     if (response.isSuccess) {
       LoginModel model = LoginModel.fromJson(response.body!);
       await AuthUtility.saveUserInfo(model);
@@ -106,6 +117,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
           (route) => false);
     } else {
+      isRegistrationInProgress = true;
+      setState(() {});
       CustomAlertDialog().showAlertDialog(
         context,
         "Something wrong" + ' Please Try Again'.toString(),
@@ -222,7 +235,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           await registration();
                         },
                         child: isRegistrationInProgress
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ))
                             : const Text(
                                 "Register",
                                 style: TextStyle(

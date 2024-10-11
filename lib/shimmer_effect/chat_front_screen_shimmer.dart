@@ -35,3 +35,5 @@ class ChatFrontScreenShimmer extends StatelessWidget {
     );
   }
 }
+
+

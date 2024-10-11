@@ -1,3 +1,4 @@
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatEventHandler {
@@ -9,25 +10,32 @@ class ChatEventHandler {
   }
 
   void _initializeListeners() {
-    socket.on('msgChat', (data) {
-      final roomName = data['room_name'];
-      final roomId = data['room_id'];
-
-      // Log the received data (optional)
-      print('Message received: $data');
-
-      // Emit 'sentEvent' with the dynamically extracted room_name and room_id
-      socket.emit('sentEvent', {'room_name': roomName, 'room_id': roomId});
-
+    socket.on('reloadChat ', (data) {
       print(data);
     });
   }
 
-  // Method to send a chat message
-  void sendMessage(String message, String roomName, String roomId) {
+  sendMessage(
+    String roomName,
+    roomId,
+    userId,
+    messageFromTextFild,
+  ) {
     print("send message in handler");
-    socket.emit('sendMessage',
-        {'message': message, 'room_name': roomName, 'room_id': roomId});
-    print('Message sent: $message to room: $roomName with roomId: $roomId');
+    var currentIndex = {
+      "room": {
+        "id": roomId,
+        "name": roomName,
+      },
+      "bracket": "T",
+      "content": messageFromTextFild
+    };
+    socket.emit('createChat', currentIndex);
+    print(currentIndex);
+
+    socket.on('isSentChat ', (data) {
+      print("Is SentChat $data");
+    });
+    print("From send message");
   }
 }

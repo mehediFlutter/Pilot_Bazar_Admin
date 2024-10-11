@@ -349,11 +349,12 @@ class _MyDrawerState extends State<MyDrawer> {
                           'Yes',
                           'No', () async {
                         await AuthUtility.clearUserInfo();
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    TabBarViewLoginAndRegistration()));
+                                    TabBarViewLoginAndRegistration()),
+                            (route) => false);
                         await loadUserInfo();
                       });
                       isLogOutBool = !isLogOutBool;
