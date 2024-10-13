@@ -89,7 +89,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   bool hasTypedText = false;
-  var socket = SocketManager().socket;
+ late var socket =  SocketManager().socket;
   var socketMethod = SocketMethod();
 
   String? authorizeTokenChatToken;
@@ -151,7 +151,14 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   callSocketManager() async {
-    await SocketManager();
+    await SocketMethod().authorizeChat();
+
+    await SocketMethod().authorizeChat();
+    while (messengerAPIToken == null) {
+      await Future.delayed(Duration(milliseconds: 100));
+    }
+
+    await socketMethod.authorizeChat();
   }
 
   @override
@@ -1378,7 +1385,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                           '',
                       message_icon_path:
                           'assets/icons/message_notification.png',
-                      chatTap: () {
+                      chatTap: () async {
+                       
+                      
+                  
+                    
+                        setState(() {});
                         print(socket.id);
                         socket.id != null
                             ? Navigator.push(
@@ -1495,7 +1507,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   showAlertDialogServer(BuildContext context) async {
-    await SocketManager();
+  
     CustomAlertDialog()
         .showAlertDialog(context, "Server is not Availeble  Try Again", 'Ok');
   }

@@ -31,11 +31,11 @@ class ChatEventHandler {
       "content": messageFromTextFild
     };
     socket.emit('createChat', currentIndex);
-    print(currentIndex);
+  //  print(currentIndex);
 
-    socket.on('isSentChat ', (data) {
-      print("Is SentChat $data");
-    });
+    // socket.on('isSentChat ', (data) {
+    //   print("Is SentChat $data");
+    // });
     print("From send message");
   }
 }

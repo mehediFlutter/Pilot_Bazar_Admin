@@ -2,9 +2,11 @@ import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_h
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketManager {
+  //   SharedPreferences? prefss;
   static final SocketManager _instance = SocketManager._internal();
   SocketMethod socketMethod = SocketMethod();
   late ChatEventHandler chatEventHandler;
@@ -19,8 +21,14 @@ class SocketManager {
   }
 
   void initSocket() async {
+    if(messengerAPIToken==null){
+      await SocketMethod().authorizeChat();
+    }
+   
+   //   prefss = await SharedPreferences.getInstance();
+    //   print('token from catch ${prefss?.getString('authorizeChatToken')}');
     socket = IO.io(
-        'https://websocket.pilotbazar.xyz/vendor?token=$messengerAPIToken',
+        'https://websocket.pilotbazar.xyz/vendor?token=${messengerAPIToken}',
         <String, dynamic>{
           'transports': ['websocket'],
           'autoConnect': false,
@@ -43,20 +51,26 @@ class SocketManager {
     // });
 
     socket.onConnect((_) async {
-      print("Inside of on connect");
+      
+
 
       print('Socket connected: ${socket.id}');
+      SocketMethod().fetchContacts();
+      SocketMethod().postPhoneNumber();
     });
     socket.on('joined',  (data) async => {print(data)});
     socket.on('leaved', (data) async => {print(data)});
     socket.on('myself', (data) async {
+      print("My self socket");
       print(data);
     });
     print('Socket connected: ${socket.id}');
-    socket.on('isSentChat', (data) async {
-      print(data);
-    });
+    // socket.on('isSentChat', (data) async {
+    //   print("is send chat socket");
+    //   print(data);
+    // });
     socket.on('reloadChat', (data) async {
+          print("reload chat socket");
       print(data);
     });
 

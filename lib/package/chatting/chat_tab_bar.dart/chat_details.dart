@@ -6,15 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
-import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
-import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
-import 'package:provider/provider.dart';
 
 class ChattingDetailsScreen extends StatefulWidget {
   final String userId;
@@ -73,20 +69,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     }
   }
 
-  // void _sendMessage() {
-  //   String message = sendMessageController.text;
-  //   if (message.isNotEmpty) {
-  //     SocketManager().chatEventHandler.sendMessage(
-  //           widget.roomName,
-  //           widget.roomId,
-  //           widget.userId,
-  //           message,
-  //         );
-  //     sendMessageController.clear(); // Clear the input after sending
-  //   }
 
-  //   sendMessageController.clear(); // Clear the input after sending
-  // }
 
   var decodedSendMessageBody;
 
@@ -117,33 +100,59 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     getChats.add(decodedSendMessageBody);
   }
 
+  sendMessage(String roomName, String roomId, String userId,
+      String messageFromTextField) {
+    print("Socket message");
+
+    var currentIndex = {
+      "room": {
+        "id": roomId,
+        "name": roomName,
+      },
+      "bracket": "T",
+      "content": messageFromTextField
+    };
+
+    socket.emit('createChat', currentIndex); // Emit the message
+    print(currentIndex);
+    print("Socket message 2");
+  }
+
   @override
   void initState() {
     // print("room id");
     getChatMethode();
 
     setState(() {});
-    socket.on('joined',  (data) async => {print(data)});
+
+    socket.on('joined', (data) async => {print(data)});
     socket.on('leaved', (data) async => {print(data)});
+
     socket.on('myself', (data) async {
       print(data);
     });
     socket.on('isSentChat', (data) async {
-      print(data);
-    });
-    socket.on('reloadChat', (data) async {
-      print(data);
+      print(data); // Print the map data for debugging
+
+      await Future(() {
+        if (data != null && data.isNotEmpty) {
+          getChats.add(data);
+        }
+        ; // Add the data to getChats
+      });
+
+      sendMessageController.clear(); // Clear the input field
+
+      setState(() {}); // Update the UI
     });
 
-//     socket.on('loadEvent', (data) {
-//       print(data);
-// //      final res = jsonDecode(data);
-//       //  print(res['uuid']);
-//       // getChats = socketMethod.getMessageMethod(
-//       //   messengerAPIToken ?? "",
-//       //   res['uuid'],
-//       // );
-//     });
+    socket.on('reloadChat', (data) async {
+      print(data);
+      await Future(() {
+        getChats.add(data); // Add the data to getChats
+      });
+      setState(() {});
+    });
 
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
@@ -156,9 +165,11 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
 
   @override
   void dispose() {
+    socket.off('isSentChat');
     myFocusNode.dispose();
 
     sendMessageController.dispose();
+    socket.dispose();
     super.dispose();
   }
 
@@ -236,24 +247,19 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  ChatEventHandler(socket).sendMessage(widget.roomName,
-                      widget.roomId, widget.userId, sendMessageController.text);
-
-                  // setState(() {});
-                  chatList.add(
-                    ChatBubbl(
-                      isMe: true,
-                      message: sendMessageController.text,
-                    ),
-                  );
-                  setState(() {});
-                  sendMessageController.clear();
-                  setState(() {});
-
                   if (sendMessageController.text.isNotEmpty) {
-                    scrollDown();
+                    sendMessage(
+                      widget.roomName,
+                      widget.roomId,
+                      widget.userId,
+                      sendMessageController.text,
+                    );
+                    sendMessageController.clear();
                   }
-                  scrollDown();
+
+                  
+
+                  scrollDown(); // Ensure scrolling after message sending
                 },
                 icon: Image.asset('assets/icons/semd_message.png'),
               )

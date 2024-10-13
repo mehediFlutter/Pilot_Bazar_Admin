@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/splash_screen/splash_screen.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
+import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/theme/theme.dart';
 import 'package:pilot_bazar_admin/provider/mode_provider.dart';
 import 'package:provider/provider.dart';
@@ -24,15 +26,22 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
     setState(() {});
+    await SocketMethod().authorizeChat();
   }
 
   @override
   void initState() {
-    super.initState();
+   authChatTokenMethode();
+    
     initSharedPrefs();
     loadUserInfo();
   }
 
+  authChatTokenMethode() async{
+    await SocketMethod().authorizeChat();
+    await SocketManager();
+  }
+  
   @override
   void dispose() {
     super.dispose();
@@ -48,7 +57,6 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     preffs = await SharedPreferences.getInstance();
     setState(() {});
     if (preffs.containsKey('notifier')) {
- 
       widget.notifier.value = (preffs.getString('notifier') == 'ThemeMode.dark')
           ? ThemeMode.light
           : ThemeMode.dark;
@@ -61,7 +69,6 @@ class _PilotBazarAdminState extends State<PilotBazarAdmin> {
     return ValueListenableBuilder(
       valueListenable: widget.notifier,
       builder: (_, mode, __) {
-
         return MaterialApp(
           themeMode: Provider.of<ModeProvider>(context).lightModeEnable
               ? ThemeMode.light

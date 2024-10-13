@@ -6,7 +6,6 @@ import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
-import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../widget/search_text_fild.dart';

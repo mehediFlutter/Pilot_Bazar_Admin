@@ -7,6 +7,7 @@ import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -39,6 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await socketMethod.authorizeChat();
     await socketMethod.fetchContacts();
     await socketMethod.postPhoneNumber();
+
   
   }
 
