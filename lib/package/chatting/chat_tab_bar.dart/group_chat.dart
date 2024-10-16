@@ -65,7 +65,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
   getGroupsPeople() async {
     groupList?.clear();
-    groupList = await socketMethod.getGroup(messengerAPIToken ?? '','groups');
+    groupList = await socketMethod.getGroup('groups');
     setState(() {});
 
   }
@@ -176,11 +176,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             //  isKeyboardVisible = true
+            print("Elevated button is pressed");
             allPerson.clear();
             groupUserList.clear();
             allPerson =
-                await socketMethod.getChatPeople(messengerAPIToken ?? '');
+                await socketMethod.getChatPeople(messengerAPIToken ?? '','people');
             setState(() {});
+            print('All person Length ${allPerson.length}');
+            print('All person List ${allPerson}');
             final result = await showModalBottomSheet(
               useSafeArea: true,
               context: context,

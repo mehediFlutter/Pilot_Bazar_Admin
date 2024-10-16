@@ -1,52 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class MyTextFromFild extends StatefulWidget {
+class TextFieldForName extends StatefulWidget {
   final TextEditingController myController;
-  final String hintText;
   final String validatorText;
-  final TextInputType keyboardType;
-  final bool obscureText;
-  final Widget icon;
+  final String hintText;
   final Widget prefixIcon;
 
-  const MyTextFromFild({
+
+  const TextFieldForName({
     super.key,
-    required this.hintText,
     required this.validatorText,
     required this.myController,
-    required this.keyboardType,
-    this.obscureText = false,
-    this.icon = const SizedBox(),
-    this.prefixIcon = const SizedBox(),
+    this.prefixIcon = const SizedBox(), required this.hintText,
   });
 
   @override
-  State<MyTextFromFild> createState() => _MyTextFromFildState();
+  State<TextFieldForName> createState() => _TextFieldForNameState();
 }
 
-class _MyTextFromFildState extends State<MyTextFromFild> {
+class _TextFieldForNameState extends State<TextFieldForName> {
   bool isError = false;
-  var maskFormatter = new MaskTextInputFormatter(
-      mask: '+88# ####-######',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      inputFormatters: [maskFormatter],
-      keyboardType: widget.keyboardType,
+      controller:widget.myController,
+      keyboardType: TextInputType.text,
       style: const TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
-      controller: widget.myController,
       cursorColor: const Color(0xFFA6A6A6),
       cursorWidth: 1,
-      obscureText: widget.obscureText,
       decoration: InputDecoration(
+        
         contentPadding: EdgeInsets.only(top: 15),
         hintText: widget.hintText,
         hintStyle:
             const TextStyle(color: Color(0xFF444444), fontSize: 18, height: 0),
-        suffixIcon: widget.icon,
         prefixIcon: widget.prefixIcon,
         focusedBorder: const UnderlineInputBorder(
           borderSide: const BorderSide(color: Color(0xFFA6A6A6), width: 2.0),
@@ -59,6 +47,7 @@ class _MyTextFromFildState extends State<MyTextFromFild> {
           borderSide: BorderSide(color: Color(0xFFA6A6A6)),
         ),
       ),
+     
       validator: (value) {
         if (value?.isEmpty ?? true) {
           isError = true;
@@ -73,5 +62,3 @@ class _MyTextFromFildState extends State<MyTextFromFild> {
     );
   }
 }
-
-

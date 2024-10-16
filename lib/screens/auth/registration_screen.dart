@@ -7,6 +7,7 @@ import 'package:pilot_bazar_admin/network_service/network_caller.dart';
 import 'package:pilot_bazar_admin/network_service/network_response.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
@@ -14,6 +15,8 @@ import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widget/login_registration_textFild.dart';
+import '../../widget/text_filds/name_text_fild.dart';
+import '../../widget/text_filds/text_filds_for_password.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -42,29 +45,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
     Map<String, dynamic> body = {
       "name": nameController.text,
-      "company_name": companyNameController.text,
-      "mobile": phoneNumberController.text,
+      "phone": phoneNumberController.text,
+      // "company_name": companyNameController.text,
+
       "password": passwordController.text,
       "password_confirmation": confirmPasswordController.text,
     };
     if (passwordController.text == confirmPasswordController.text) {
       Response response = await post(
-          Uri.parse('${baseUrlWithAPI_EndPoint}merchant/auth/register'),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
-          },
+          Uri.parse('$APP_APISERVER_URL/api/merchant/auth/register'),
+          headers: globalHeader,
           body: jsonEncode(body));
+      print("Registration");
       print(response.statusCode);
       print(response.body);
 
-      // if (passwordController.text != confirmPasswordController.text) {
-      //   isRegistrationInProgress = false;
-      //   print("error");
-      //   CustomAlertDialog().showAlertDialog(
-      //       context, "Password does not match try again", "OK");
-      //   return;
-      // }
       Map decodedBody = jsonDecode(response.body.toString());
       if (response.statusCode == 200) {
         newlyRegistraterdWithLogin();
@@ -91,15 +86,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   String? token;
+  String? authUserID;
 
   newlyRegistraterdWithLogin() async {
     SharedPreferences prefss = await SharedPreferences.getInstance();
     NetworkResponse response = await NetworkCaller().newlyRegisterLogin(
-        '${baseUrlWithAPI_EndPoint}merchant/auth/login', <String, dynamic>{
-      "mobile": phoneNumberController.text,
+        '$APP_APISERVER_URL/api/merchant/auth/login', <String, dynamic>{
+      "phone": phoneNumberController.text,
       "password": passwordController.text,
     });
-    print("response . body is");
+    print("Newly registered with login");
     print(response.body);
 
     if (response.isSuccess) {
@@ -107,10 +103,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       await AuthUtility.saveUserInfo(model);
       print("Registred login body");
 
-      print(model.toJson()['payload']['merchant']['name'].toString());
+      print(model.toJson()['payload']['user']['name'].toString());
       token = model.toJson()['payload']['token'];
-      print(token);
+      authUserID = model.toJson()['payload']['user']['id'];
       await prefss.setString('token', token ?? '');
+      await prefss.setString('authUserID', authUserID ?? '');
+      print(token);
+
       await AuthToken().saveToken(model.toJson()['payload']['token']);
       Navigator.pushAndRemoveUntil(
           context,
@@ -150,37 +149,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 height10,
-                //    const Text("Registration"),
-                MyTextFromFild(
+
+                TextFieldForName(
+                  hintText: 'Enter Name',
+                  validatorText: 'Enter Name',
                   myController: nameController,
-                  hintText: "Enter Name",
-                  validatorText: "Please Emter Name",
-                  keyboardType: TextInputType.text,
                   prefixIcon: Image.asset('assets/icons/person_icon.png'),
                 ),
+
                 height10,
                 MyTextFromFild(
                   myController: phoneNumberController,
                   hintText: "Enter Phone Number",
-                  validatorText: "Please Enter Phone Number",
+                  validatorText: "Enter Phone Number",
                   prefixIcon: Image.asset('assets/icons/phone_icon.png'),
                   keyboardType: TextInputType.number,
                 ),
                 height10,
-                MyTextFromFild(
+
+                TextFieldForName(
+                  hintText: 'Company Name',
+                  validatorText: 'Enter Company Name',
                   myController: companyNameController,
-                  hintText: "Company Name",
-                  validatorText: "Please Company Name",
                   prefixIcon: Image.asset('assets/icons/company_icon.png'),
-                  keyboardType: TextInputType.text,
                 ),
+
                 height10,
-                MyTextFromFild(
+                TextFieldForPassword(
                   myController: passwordController,
-                  hintText: "Password",
-                  validatorText: "Please Enter Password",
+                  hintText: 'Password',
+                  validatorText: 'Enter Password',
                   prefixIcon: Image.asset('assets/icons/password_icon.png'),
-                  keyboardType: TextInputType.text,
                   obscureText: !passwordVisible,
                   icon: IconButton(
                       icon: Icon(
@@ -196,12 +195,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       }),
                 ),
                 height10,
-                MyTextFromFild(
+                TextFieldForPassword(
                   myController: confirmPasswordController,
-                  hintText: "Confirm Password",
-                  validatorText: "Please Confirm Password",
+                  hintText: 'Confirm Password',
+                  validatorText: 'Enter Password',
                   prefixIcon: Image.asset('assets/icons/password_icon.png'),
-                  keyboardType: TextInputType.text,
                   obscureText: !confirmPasswordVisible,
                   icon: IconButton(
                       icon: Icon(
@@ -228,6 +226,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                         ),
                         onPressed: () async {
+                          print("Name ${nameController.text}");
+                          print("Phone number ${phoneNumberController.text}");
+                          print("Company Name ${companyNameController.text}");
+                          print("Password  ${passwordController.text}");
+                          print(
+                              "Confirm password ${confirmPasswordController.text}");
                           if (!formKey.currentState!.validate()) {
                             return null;
                           }

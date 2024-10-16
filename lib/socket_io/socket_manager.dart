@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketManager {
@@ -29,7 +27,7 @@ class SocketManager {
     //   prefss = await SharedPreferences.getInstance();
     //   print('token from catch ${prefss?.getString('authorizeChatToken')}');
     socket = IO.io(
-        'https://websocket.pilotbazar.xyz/vendor?token=${messengerAPIToken}',
+        '$APP_WEBSOCKET_URL?token=${messengerAPIToken}',
         <String, dynamic>{
           'transports': ['websocket'],
           'autoConnect': false,
@@ -38,7 +36,7 @@ class SocketManager {
           'debug': true, // Enable debug logging
         });
 
-    print('$chatBaseUrl?token=$messengerAPIToken');
+    print('$APP_WEBSOCKET_URL?token=$messengerAPIToken');
 
     chatEventHandler = ChatEventHandler(socket);
 

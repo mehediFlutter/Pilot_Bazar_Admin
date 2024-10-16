@@ -43,6 +43,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
+    print("User Name is  ${userInfoFromPrefs?.payload?.user?.name??''}");
     setState(() {});
   }
 
@@ -55,8 +56,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
         messengerAPIToken ?? '', 'online');
 
     setState(() {});
-    print("active list length ${activeList?.length}");
-    print("active list ${activeList}");
+
   }
 
   @override
@@ -71,7 +71,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
     callOnlinePeople();
 
     final provider = Provider.of<SocketMethodeProvider>(context, listen: false);
-    provider.getInbox(messengerAPIToken ?? '', 'people');
+    provider.getInbox('people');
 
     SocketManager();
     socket.on(
@@ -125,15 +125,16 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: CustomerProfileBar(
-                profileImagePath: userInfoFromPrefs
-                        ?.payload?.merchant?.merchantInfo?.image?.name ??
+                profileImagePath: 
+                // userInfoFromPrefs
+                //         ?.payload?.merchant?.merchantInfo?.image?.name ??
                     '',
                 message_icon_path: 'assets/icons/sync.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
                 merchantName:
-                    userInfoFromPrefs?.payload?.merchant?.name ?? 'None',
+                    userInfoFromPrefs?.payload?.user?.name ?? 'None',
                 companyName: userInfoFromPrefs
-                        ?.payload?.merchant?.merchantInfo?.companyName ??
+                        ?.payload?.user?.phone ??
                     "None",
                 onTapFunction: () {},
                 chatTap: () async {

@@ -6,9 +6,9 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
+import 'package:pilot_bazar_admin/widget/text_filds/text_filds_for_password.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart';
-
 import '../../widget/login_registration_textFild.dart';
 import '../../widget/urls.dart';
 
@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late bool passwordVisible;
   late SharedPreferences prefss;
   String? token;
+  String? authUserID;
   var merchantId;
   var merchantName;
   var mobileNumber;
@@ -46,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool loginInProgress = false;
 
+
   Future login() async {
     loginInProgress = true;
     if (mounted) {
@@ -53,17 +55,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     prefss = await SharedPreferences.getInstance();
     Map<String, dynamic> body = {
-      "mobile": phoneNumberController.text,
+      "phone": phoneNumberController.text,
       "password": passwordController.text, //01407054411
     };
     Response response = await post(
-        Uri.parse('${baseUrlWithAPI_EndPoint}merchant/auth/login'),
-        headers: {
-          'Accept': 'application/vnd.api+json',
-          'Content-Type': 'application/vnd.api+json'
-        },
+        Uri.parse('${APP_APISERVER_URL}/api/merchant/auth/login'),
+        headers: globalHeader,
         body: jsonEncode(body));
+
     Map decodedBody = jsonDecode(response.body.toString());
+    print("Login Body is : $decodedBody");
 
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
@@ -72,7 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
       token = model.toJson()['payload']['token'];
+      authUserID = model.toJson()['payload']['user']['id'];
       await prefss.setString('token', token ?? '');
+      await prefss.setString('authUserID', authUserID ?? '');
       loginInProgress = false;
       if (mounted) {
         setState(() {});
@@ -120,23 +123,24 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 height20,
+              
 
                 MyTextFromFild(
                   myController: phoneNumberController,
-                  hintText: "Phonr Number",
-                  validatorText: "Please Emter Phone number",
+                  hintText: "Phone Number",
+                  validatorText: "Enter Phone number",
                   prefixIcon: Image.asset('assets/icons/phone_icon.png'),
                   keyboardType: TextInputType.number,
                 ),
                 height10,
-                MyTextFromFild(
+                
+                TextFieldForPassword(
                   myController: passwordController,
-                  hintText: "Password",
-                  validatorText: "Please Enter Password",
-                  prefixIcon: Image.asset('assets/icons/password_icon.png'),
-                  keyboardType: TextInputType.text,
-                  obscureText: !passwordVisible,
-                  icon: IconButton(
+                  hintText: 'Password',
+                  validatorText: 'Enter Password',
+                   prefixIcon: Image.asset('assets/icons/password_icon.png'),
+                   obscureText: !passwordVisible,
+                   icon: IconButton(
                       icon: Icon(
                         passwordVisible
                             ? Icons.visibility
@@ -148,27 +152,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           passwordVisible = !passwordVisible;
                         });
                       }),
+
                 ),
+
+
+               
 
                 height10,
 
-                // TextFormField(
-                //   controller: demoController,
-                //   decoration: InputDecoration(
-                //     contentPadding: EdgeInsets.only(top: 15),
-                //     hintText: "Hint text",
-                //     prefixIcon: Image.asset('assets/icons/password_icon.png'),
-                //   ),
-                //   validator: (value) {
-                //     if (value?.isEmpty ?? true) {
-                //       setState(() {});
-
-                //       return "Enter Value";
-                //     }
-
-                //     return null;
-                //   },
-                // ),
+              
                 height30,
                 SizedBox(
                     width: double.infinity,
@@ -188,6 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             //  style: Theme.of(context).elevatedButtonTheme.style,
                             onPressed: () async {
+                              print("Phone number ${phoneNumberController.text}");
+                              print("Password ${passwordController.text}");
                               if (!formKey.currentState!.validate()) {
                                 return null;
                               }
@@ -238,3 +232,13 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 }
+
+Map<String, String> globalHeader = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json'
+};
+
+Map<String, String> uploadHeader = {
+  'Accept': 'application/json',
+  'Content-Type': 'multipart/form-data',
+};

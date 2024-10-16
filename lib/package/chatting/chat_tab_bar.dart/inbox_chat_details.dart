@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pilot_bazar_admin/DAO/send_chat_message.dart';
-import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/send_message_text_fild.dart';
+import 'package:pilot_bazar_admin/package/chatting/select_send_documents/documents_and_icon_image_pick.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
@@ -46,6 +49,14 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   var socket = SocketManager().socket;
   var socketMethod = SocketMethod();
   List getChats = [];
+
+  XFile? selectedImage;
+
+  void handleImageSelected(XFile? image) {
+    setState(() {
+      selectedImage = image;
+    });
+  }
 
   String getCurrentDateTime() {
     DateTime now = DateTime.now();
@@ -112,7 +123,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
 
     print("from DAO");
     print(sendMessageDAO.toObject());
-     socket.emit('createChat', sendMessageDAO.toObject());
+    socket.emit('createChat', sendMessageDAO.toObject());
   }
 
   @override
@@ -124,18 +135,6 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     socket.on(
         'joined',
         (data) async => {
-              // find out user current screen
-              // if current == chat screen then http(online) do not call.
-              //    if {safin auto} is online or offline status ebong current chat screen er user name
-              //
-
-              // [x] - if current == contact screen http(online) call hobe.
-              // [x] - add button = image(phot and gallery),camera, video, document, audio
-              // [x] - when add any kind of above things then open a bottom sheet to confirm send from user
-
-              // and behind the seen when open bottom sheet then call the http upload api. to store attachment
-              // delete or send
-
               print(data),
               if (socket.id == null)
                 {
@@ -171,10 +170,17 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     });
 
     socket.on('reloadChat', (data) async {
+      var message = data;
       print("reload chat");
+
+      message['side'] = 'L';
+      print("From reload chat data");
       print(data);
+      print("From reload chat message");
+      print(message);
+
       await Future(() {
-        getChats.add(data); // Add the data to getChats
+        getChats.add(message); // Add the data to getChats
       });
       setState(() {});
     });
@@ -210,8 +216,8 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-              message_icon_path: 'assets/icons/message_notification.png',
-              drawer_icon_path: 'assets/icons/beside_message.png',
+              message_icon_path: '$iconsPath/message_notification.png',
+              drawer_icon_path: '$iconsPath/beside_message.png',
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.image,
               merchantName: widget.name,
@@ -238,55 +244,44 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 }
                 return ChatBubbl.ChatBubble(
                     message: getChats[index]['chat']['content'],
-                    isMe: getChats[index]['side'] == 'R' ? true : false
-                    // isMe: getChats[index]['side'] == 'R' ? true : false
-                    );
+                    //    isMe: getChats[index]['side'] == 'R' ? true : false
+                    isMe: getChats[index]['side'] == 'R' ? true : false);
                 // Fix: accessing the 'message' property
               },
             ),
           ),
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25),
-                  child: TextField(
-                    controller: sendMessageController,
-                    focusNode: myFocusNode,
-                    decoration: InputDecoration(
-                      hintText: 'Aa...',
-                      hintStyle: TextStyle(color: Color(0xFF666666)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: searchBarBorderColor),
-                          borderRadius: BorderRadius.circular(30)),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: searchBarBorderColor),
-                          borderRadius: BorderRadius.circular(30)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: searchBarBorderColor),
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                  ),
-                ),
+             
+              Row(
+                children: [
+                  DocumentsAddIcon(onImageSelected: handleImageSelected),
+                  SendMessageTextFild(
+                      sendMessageController: sendMessageController,
+                      myFocusNode: myFocusNode),
+                       if (selectedImage != null) ...[
+                const SizedBox(height: 20),
+                Image.file(File(selectedImage!.path),
+                    width: 20, height: 20),
+              ],
+                  IconButton(
+                    onPressed: () {
+                      if (sendMessageController.text.isNotEmpty) {
+                        sendMessage(
+                          widget.roomName,
+                          widget.roomId,
+                          widget.userId,
+                          sendMessageController.text,
+                        );
+                        sendMessageController.clear();
+                      }
+              
+                      scrollDown(); // Ensure scrolling after message sending
+                    },
+                    icon: Image.asset('$iconsPath/semd_message.png'),
+                  )
+                ],
               ),
-              IconButton(
-                onPressed: () {
-                  if (sendMessageController.text.isNotEmpty) {
-                    sendMessage(
-                      widget.roomName,
-                      widget.roomId,
-                      widget.userId,
-                      sendMessageController.text,
-                    );
-                    sendMessageController.clear();
-                  }
-
-                  scrollDown(); // Ensure scrolling after message sending
-                },
-                icon: Image.asset('assets/icons/semd_message.png'),
-              )
             ],
           ),
           height20,
@@ -294,34 +289,6 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       ),
     );
   }
-
-  // Widget _buildUserInput() {
-  //   return Row(
-  //     children: [
-  //       Expanded(
-  //           child: SearchTextFild(searchController: sendMessageController)),
-  //       IconButton(
-  //         onPressed: () {
-  //           if (sendMessageController.text.isNotEmpty) {
-  //             chatList.add(
-  //               ChatBubbl(
-  //                 isMe: true, // Assuming you're adding your own message
-  //                 message: sendMessageController.text,
-  //               ),
-  //             );
-
-  //             setState(() {});
-
-  //             sendMessageController.clear();
-  //           }
-  //           Provider.of<SocketMethodeProvider>(context, listen: true)
-  //               .getInbox(messengerAPIToken ?? '');
-  //         },
-  //         icon: Icon(Icons.send),
-  //       )
-  //     ],
-  //   );
-  // }
 
   chatImage(String imagePath) {
     return Container(

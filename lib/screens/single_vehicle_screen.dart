@@ -78,6 +78,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   LoginModel? userInfoFromPrefs;
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
+    print("user name is  : ${userInfoFromPrefs?.payload?.user?.name}");
   }
 
   void _listenToScroolMoments() {
@@ -89,7 +90,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   bool hasTypedText = false;
- late var socket =  SocketManager().socket;
+  late var socket = SocketManager().socket;
   var socketMethod = SocketMethod();
 
   String? authorizeTokenChatToken;
@@ -132,16 +133,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     //  pirntSocketChatToken();
 
     callSocketManager();
-
   }
 
   callSocketManager() async {
-
     await SocketMethod().authorizeChat();
-  
 
-
-    while (messengerAPIToken == null || socket.id==null) {
+    while (messengerAPIToken == null || socket.id == null) {
       await Future.delayed(Duration(seconds: 2));
     }
 
@@ -1368,16 +1365,13 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                 children: [
                   Builder(builder: (context) {
                     return CustomerProfileBar(
-                      profileImagePath: userInfoFromPrefs
-                              ?.payload?.merchant?.merchantInfo?.image?.name ??
+                      profileImagePath:
+                          // userInfoFromPrefs
+                          //         ?.payload?.merchant?.merchantInfo?.image?.name ??
                           '',
                       message_icon_path:
                           'assets/icons/message_notification.png',
                       chatTap: () async {
-                       
-                      
-                  
-                    
                         setState(() {});
                         print(socket.id);
                         socket.id != null
@@ -1389,10 +1383,9 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName:
-                          userInfoFromPrefs?.payload?.merchant?.name ?? 'None',
-                      companyName: userInfoFromPrefs
-                              ?.payload?.merchant?.merchantInfo?.companyName ??
-                          "None",
+                          userInfoFromPrefs?.payload?.user?.name ?? 'None',
+                      companyName:
+                          userInfoFromPrefs?.payload?.user?.phone ?? "None",
                     );
                   }),
 
@@ -1495,7 +1488,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   }
 
   showAlertDialogServer(BuildContext context) async {
-  
     CustomAlertDialog()
         .showAlertDialog(context, "Server is not Availeble  Try Again", 'Ok');
   }

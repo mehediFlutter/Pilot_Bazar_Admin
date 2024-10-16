@@ -2,6 +2,24 @@ https://websocket.pilotbazar.xyz/
 
 
 {
-    "mobile": "8801969944400", //01407054411
+    "mobile": "+880 1969-944400", //01407054411
     "password": "12345678"
 }
+
++880 1740-648932 - Fair Automobiles 
++880 1985-664675 - S.A.C Corporation
++880 1799-061394 - Wheel Deals
++880 1738-383300 - Safin Auto
+
+
+              // find out user current screen
+              // if current == chat screen then http(online) do not call.
+              //    if {safin auto} is online or offline status ebong current chat screen er user name
+              //
+
+              // [x] - if current == contact screen http(online) call hobe.
+              // [x] - add button = image(phot and gallery),camera, video, document, audio
+              // [x] - when add any kind of above things then open a bottom sheet to confirm send from user
+
+              // and behind the seen when open bottom sheet then call the http upload api. to store attachment
+              // delete or send

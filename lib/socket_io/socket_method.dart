@@ -3,8 +3,9 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pilot_bazar_admin/DTO/contact_people.dart';
 import 'package:pilot_bazar_admin/DTO/online_people.dart';
+import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,11 +14,16 @@ class SocketMethod {
   String? authorizeChatToken;
   Map? syncBodyContactNumbers;
   late SharedPreferences prefss;
-
+  // loadUserInfo() async {
+  //   LoginModel user = await AuthUtility.getUserInfo();
+  //   userInfo = user.toJson();
+  // }
   Future authorizeChat() async {
     prefss = await SharedPreferences.getInstance();
+    LoginModel user = await AuthUtility.getUserInfo();
+    print("authUserID ${user.payload?.user?.id}");
 
-    final url = '$chatBaseUrl-management/authorize';
+    final url = '$APP_MESSENGER_URL/authorize';
     final headers = {
       "Accept": "application/json",
       'Content-Type': 'application/json',
@@ -26,8 +32,7 @@ class SocketMethod {
     // S.A.C automobil 01j9f3d86s4wgnnxjja828dez0
     // pilot bazar 01j9f3d858nrejs1zdz0z2kx5h
     Map<String, dynamic> body = {
-      "userid": "01j9f3d858nrejs1zdz0z2kx5h",
-      // "socket": "${SocketManager().socket.id}",
+      "userid": user.payload?.user?.id,
       "issued": "F"
     };
 
@@ -44,6 +49,7 @@ class SocketMethod {
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
 
       messengerAPIToken = decodedBody['token'];
+      print(messengerAPIToken);
     } else {
       Response response = await http.post(
         Uri.parse(url),
@@ -87,7 +93,7 @@ class SocketMethod {
     };
     Response response = await http.post(
       Uri.parse(
-        '$chatBaseUrl-management/contacts',
+        '$APP_MESSENGER_URL/contacts',
       ),
       headers: {
         "Accept": "application/json",
@@ -95,7 +101,10 @@ class SocketMethod {
         "Accept-Encoding": "application/gzip",
         "Authorization": 'Bearer $messengerAPIToken'
       },
+      body: jsonEncode(body)
     );
+    print(" postPHone number body");
+    print(response.body);
   }
 
   List getChatPeopleList = [];
@@ -114,19 +123,23 @@ class SocketMethod {
     };
   }
 
-  getChatPeople(String token) async {
+  getChatPeople(String token, xAppContact) async {
+    print("get chat people methode");
     getChatPeopleList.clear();
     Response response =
-        await http.get(Uri.parse("$chatBaseUrl-management/contacts"), headers: {
+        await http.get(Uri.parse("$APP_MESSENGER_URL/contacts"), headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $messengerAPIToken',
+      'x-app-contact': xAppContact
     });
 
     decodedBody = jsonDecode(response.body);
+    print("people decoded body");
+    print(decodedBody);
 
-    for (var person in decodedBody?['people']) {
+   if (decodedBody != null) { for (var person in decodedBody!.values) {
       var contact = await {
         "user": {
           "id": person["user"]["id"],
@@ -150,17 +163,17 @@ class SocketMethod {
       };
 
       getChatPeopleList.add(contact);
-    }
+    }}
 
     return getChatPeopleList;
   }
 
-  Future<List> getGroup(String token, xAppContact) async {
+  Future<List> getGroup(String xAppContact) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token',
+      'Authorization': 'Bearer $messengerAPIToken',
       'x-app-contact': '$xAppContact'
     };
     Response response = await http
@@ -272,7 +285,9 @@ class SocketMethod {
 
     print(
         "Decoded Message body length: ${decodedGetChatBody} : Body is: $decodedGetChatBody");
-    for (var messge in decodedGetChatBody) {}
+    // for (var messge in decodedGetChatBody['chat']) {
+    //   print(messge);
+    // }
     return decodedGetChatBody;
   }
 
