@@ -56,9 +56,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           Uri.parse('$APP_APISERVER_URL/api/merchant/auth/register'),
           headers: globalHeader,
           body: jsonEncode(body));
-      print("Registration");
-      print(response.statusCode);
-      print(response.body);
+
 
       Map decodedBody = jsonDecode(response.body.toString());
       if (response.statusCode == 200) {
@@ -95,20 +93,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       "phone": phoneNumberController.text,
       "password": passwordController.text,
     });
-    print("Newly registered with login");
-    print(response.body);
 
     if (response.isSuccess) {
       LoginModel model = LoginModel.fromJson(response.body!);
       await AuthUtility.saveUserInfo(model);
-      print("Registred login body");
 
-      print(model.toJson()['payload']['user']['name'].toString());
       token = model.toJson()['payload']['token'];
       authUserID = model.toJson()['payload']['user']['id'];
       await prefss.setString('token', token ?? '');
       await prefss.setString('authUserID', authUserID ?? '');
-      print(token);
+
 
       await AuthToken().saveToken(model.toJson()['payload']['token']);
       Navigator.pushAndRemoveUntil(
