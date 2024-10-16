@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/DTO/contact_people.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat_details.dart';
 import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
@@ -41,10 +42,8 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     String? authToken = await prefss?.getString('token');
   }
 
-
-
-  List? peopleList;
-  List? filteredPeopleList;
+  List<ContactPeopleDTO>? peopleList;
+  List<ContactPeopleDTO>? filteredPeopleList;
   @override
   void initState() {
     universalViewBool = true;
@@ -52,7 +51,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     pirntSocketChatToken();
 
     setState(() {});
-    searchController.addListener(_filterPeopleList);
+  //  searchController.addListener(_filterPeopleList);
   }
 
   void _filterPeopleList() async {
@@ -63,7 +62,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
             peopleList; // Show full list if search query is empty
       } else {
         filteredPeopleList = peopleList
-            ?.where((person) => person['user']['name']
+            ?.where((person) => person.user!.name!
                 .toLowerCase()
                 .contains(query)) // Search by name
             .toList();
@@ -85,11 +84,10 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     setState(() {});
     Size size = MediaQuery.sizeOf(context);
 
-    if (filteredPeopleList == null) {
-      filteredPeopleList = peopleList;
-    }
+    // if (filteredPeopleList == null) {
+    //   filteredPeopleList = peopleList;
+    // }
     setState(() {});
-   
 
     return SafeArea(
       child: Scaffold(
@@ -108,14 +106,13 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: (filteredPeopleList == null || filteredPeopleList!.isEmpty
+              child: (peopleList == null || peopleList!.isEmpty
                   // filteredPeopleList?[1]['user']?['id'] == null
                   )
                   ? Center(
                       child: ListView.builder(
                         itemCount: 10,
                         itemBuilder: (context, index) {
-                        
                           return ChatFrontScreenShimmer(size: size);
                         },
                       ),
@@ -123,7 +120,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                   : ListView.builder(
                       primary: false,
                       shrinkWrap: true,
-                      itemCount: filteredPeopleList?.length ?? 0,
+                      itemCount: peopleList?.length ?? 0,
                       itemBuilder: (context, index) {
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
@@ -134,16 +131,16 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                                     builder: (context) => ChattingDetailsScreen(
                                           manualUserId:
                                               '01j9f3d86s4wgnnxjja828dez0',
-                                          userId: filteredPeopleList?[index]
-                                              ['user']['id'],
-                                          roomId: filteredPeopleList?[index]
-                                              ['room']['room_id'],
-                                          roomName: filteredPeopleList?[index]
-                                              ['room']['room_name'],
-                                          name: filteredPeopleList?[index]
-                                              ['user']['name'],
-                                          image: filteredPeopleList?[index]
-                                              ['user']['image'],
+                                          userId:
+                                              peopleList?[index].user?.id ?? '',
+                                          roomId: peopleList?[index].id ?? '',
+                                          roomName:
+                                              peopleList?[index].name ?? '',
+                                          name: peopleList?[index].user?.name ??
+                                              '',
+                                          image:
+                                              peopleList?[index].user?.image ??
+                                                  '',
                                           isChatScreen: true,
                                         ))).then((result) {
                               if (result == true) {
@@ -159,11 +156,13 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                                 children: [
                                   Stack(
                                     children: [
-                                      Image.network(filteredPeopleList?[index]
-                                          ['user']['image']),
-                                      ((filteredPeopleList?.length == null) &&
-                                              (filteredPeopleList?[index]
-                                                  ?['user']?['online']))
+                                      Image.network(
+                                          peopleList?[index].user?.image ?? ''),
+                                      ((peopleList?.length == null) &&
+                                              (peopleList?[index]
+                                                      .user
+                                                      ?.online ??
+                                                  false))
                                           ? Positioned(
                                               height: 70,
                                               left: 32,
@@ -189,13 +188,10 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                          filteredPeopleList?[index]['user']
-                                              ['name'],
+                                      Text(peopleList?[index].user?.name ?? '',
                                           style: small16StyleW600),
                                       Text(
-                                        filteredPeopleList?[index]['chat']
-                                                ['content'] ??
+                                        peopleList?[index].chat?.content ??
                                             'conversation not started yet',
                                         style: TextStyle(fontSize: 12),
                                       ),
@@ -211,9 +207,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    (filteredPeopleList?[index]?['user']
-                                                ?['online'] ??
-                                            false)
+                                    (peopleList?[index].user?.online ?? false)
                                         ? "Active"
                                         : '',
                                     style: small10Style.copyWith(height: 0),

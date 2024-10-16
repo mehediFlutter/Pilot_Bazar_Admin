@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/DTO/online_people.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_inbox.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/group_chat.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
@@ -46,41 +47,32 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
   }
 
   List chatPeopleListProvider = [];
-  List? activeList;
+  List<OnlinePeopleDTO>? activeList;
 
-  callActivePeople() async {
+  callOnlinePeople() async {
     activeList?.clear();
-    activeList =
-        await socketMethod.getOnlineChatPeopole(messengerAPIToken ?? '');
+    activeList = await socketMethod.getOnlineChatPeople(
+        messengerAPIToken ?? '', 'online');
 
     setState(() {});
+    print("active list length ${activeList?.length}");
+    print("active list ${activeList}");
   }
-
-  // final snackBar = SnackBar(
-  //   content: const Text('Yay! A SnackBar!'),
-  //   action: SnackBarAction(
-  //     label: 'Undo',
-  //     onPressed: () {
-  //       // Some code to undo the change.
-  //     },
-  //   ),
-  // );
 
   @override
   void initState() {
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(content: Text('This is a SnackBar!'),)
-
-    // );
     printUserInfo();
 
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {});
     });
-    callActivePeople();
+
+    callOnlinePeople();
+
     final provider = Provider.of<SocketMethodeProvider>(context, listen: false);
-    provider.getInbox(messengerAPIToken ?? '');
+    provider.getInbox(messengerAPIToken ?? '', 'people');
+
     SocketManager();
     socket.on(
         'joined',
@@ -102,6 +94,10 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
       print('Socket disconnected'); // Debug print
     });
+    socket.onConnect((_) async {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Back to online")));
+    });
   }
 
   SnackBar joinOrLeaveSnackbar(data) {
@@ -122,13 +118,6 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Hi baby")));
-          },
-          child: Icon(Icons.add),
-        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -139,7 +128,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                 profileImagePath: userInfoFromPrefs
                         ?.payload?.merchant?.merchantInfo?.image?.name ??
                     '',
-                message_icon_path: 'assets/icons/message_notification.png',
+                message_icon_path: 'assets/icons/sync.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
                 merchantName:
                     userInfoFromPrefs?.payload?.merchant?.name ?? 'None',
@@ -147,12 +136,9 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                         ?.payload?.merchant?.merchantInfo?.companyName ??
                     "None",
                 onTapFunction: () {},
-                chatTap: () {
-                  // print("notificaiton tap");
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => ChattingDetailsScreen()));
+                chatTap: () async {
+                  await socketMethod.fetchContacts();
+                  await socketMethod.postPhoneNumber();
                 },
               ),
             ),
@@ -188,7 +174,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                                         shape: BoxShape.circle,
                                       ),
                                       child: Image.network(
-                                          activeList?[index]['image'])),
+                                          activeList?[index].image ?? '')),
                                   Positioned(
                                       height: 75,
                                       left: 30,
@@ -203,10 +189,11 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                                 ],
                               ),
                               Text(
-                                (activeList?[index]?['name'] != null &&
-                                        activeList?[index]['name'].length > 5)
-                                    ? '${activeList?[index]['name'].substring(0, 5)}...'
-                                    : activeList?[index]?['name'] ?? '',
+                                (activeList?[index].name != null &&
+                                        (activeList?[index].name?.length ?? 0) >
+                                            5)
+                                    ? '${activeList?[index].name?.substring(0, 5)}...'
+                                    : activeList?[index]?.name ?? '',
                                 style: TextStyle(fontSize: 12),
                               )
                             ],

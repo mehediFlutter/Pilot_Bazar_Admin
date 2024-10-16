@@ -68,19 +68,19 @@ class _GroupChattingDetailsScreenState
   }
 
   List chatList = [
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
@@ -179,7 +179,7 @@ class _GroupChattingDetailsScreenState
                 if (index == getChats.length) {
                   return SizedBox(height: 30);
                 }
-                return ChatBubbl(message: getChats[index]['content']);
+                return ChatBubbl.ChatBubble(message: getChats[index]['content']);
               },
             ),
           ),
@@ -292,7 +292,7 @@ class _GroupChattingDetailsScreenState
           onPressed: () {
             if (sendMessageController.text.isNotEmpty) {
               chatList.add(
-                ChatBubbl(
+                ChatBubbl.ChatBubble(
                   isMe: true, // Assuming you're adding your own message
                   message: sendMessageController.text,
                 ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_enen_handler.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
@@ -21,11 +22,11 @@ class SocketManager {
   }
 
   void initSocket() async {
-    if(messengerAPIToken==null){
+    if (messengerAPIToken == null) {
       await SocketMethod().authorizeChat();
     }
-   
-   //   prefss = await SharedPreferences.getInstance();
+
+    //   prefss = await SharedPreferences.getInstance();
     //   print('token from catch ${prefss?.getString('authorizeChatToken')}');
     socket = IO.io(
         'https://websocket.pilotbazar.xyz/vendor?token=${messengerAPIToken}',
@@ -51,26 +52,19 @@ class SocketManager {
     // });
 
     socket.onConnect((_) async {
-      
-
-
       print('Socket connected: ${socket.id}');
-      SocketMethod().fetchContacts();
-      SocketMethod().postPhoneNumber();
+     
     });
-    socket.on('joined',  (data) async => {print(data)});
+    socket.on('joined', (data) async => {print(data)});
     socket.on('leaved', (data) async => {print(data)});
     socket.on('myself', (data) async {
       print("My self socket");
       print(data);
     });
-    print('Socket connected: ${socket.id}');
-    // socket.on('isSentChat', (data) async {
-    //   print("is send chat socket");
-    //   print(data);
-    // });
+
+
     socket.on('reloadChat', (data) async {
-          print("reload chat socket");
+      print("reload chat socket");
       print(data);
     });
 

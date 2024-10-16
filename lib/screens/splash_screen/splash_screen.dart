@@ -40,11 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
     await socketMethod.authorizeChat();
     await socketMethod.fetchContacts();
     await socketMethod.postPhoneNumber();
-
-  
   }
 
-  // Save Token here
   saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);

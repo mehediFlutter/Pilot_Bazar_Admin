@@ -3,6 +3,8 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pilot_bazar_admin/DTO/contact_people.dart';
+import 'package:pilot_bazar_admin/DTO/online_people.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +40,7 @@ class SocketMethod {
     if (response.statusCode == 200) {
       final decodedBody = jsonDecode(response.body);
       messengerAPIToken = await decodedBody['token'];
-      
+
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
 
       messengerAPIToken = decodedBody['token'];
@@ -64,20 +66,21 @@ class SocketMethod {
     var status = await Permission.contacts.request();
 
     if (status.isGranted) {
-      // Fetch all contacts
       List contacts = await FlutterContacts.getContacts(withProperties: true);
 
-      contacts.forEach((contact) {
+      for (var contact in contacts) {
         if (contact.phones.isNotEmpty) {
-          contactNumber
-              .add(contact.phones[0].number); // Add the first phone number
+          for (var phone in contact.phones) {
+            contactNumber.add(phone.number);
+          }
         }
-      });
+      }
+      print("Phone number fro fetch contact${contactNumber}");
     }
   }
 
   Future<void> postPhoneNumber() async {
-    Map<String, dynamic> body = {
+    Map<String, dynamic> body = await {
       "group": false,
       "title": null,
       "users": contactNumber, // Use your contact list here
@@ -90,15 +93,14 @@ class SocketMethod {
         "Accept": "application/json",
         "Content-Type": "application/json",
         "Accept-Encoding": "application/gzip",
-        "Authorization": 'Bearer $authorizeChatToken'
+        "Authorization": 'Bearer $messengerAPIToken'
       },
-      body: jsonEncode(body),
     );
   }
 
   List getChatPeopleList = [];
   List getGroupChatList = [];
-  List onlinePeopleList = [];
+  List<OnlinePeopleDTO> onlinePeopleList = [];
   List decodedGetChatBody = [];
   Map<String, dynamic>? decodedBody;
   Map<String, dynamic>? decodeGroupChatdBody;
@@ -153,17 +155,16 @@ class SocketMethod {
     return getChatPeopleList;
   }
 
-  Future<List> getGroup(String token) async {
+  Future<List> getGroup(String token, xAppContact) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $token',
+      'x-app-contact': '$xAppContact'
     };
-    Response response = await http.get(
-        Uri.parse(
-            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
-        headers: headers);
+    Response response = await http
+        .get(Uri.parse("$chatBaseUrl-management/contacts"), headers: headers);
 
     decodeGroupChatdBody = jsonDecode(response.body);
 
@@ -191,26 +192,25 @@ class SocketMethod {
     return getGroupChatList;
   }
 
-  getOnlineChatPeopole(String token) async {
+  getOnlineChatPeople(String token, xAppContact) async {
+    print("get online people methode");
     onlinePeopleList.clear();
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $token',
+      'x-app-contact': '$xAppContact'
     };
     Response response = await http
         .get(Uri.parse("${chatBaseUrl}-management/contacts"), headers: headers);
 
-    decodeActiveChatBody = jsonDecode(response.body);
-    for (var online in decodeActiveChatBody?['online']) {
-      var onlineIndex = await {
-        "id": online["id"],
-        "name": online["name"],
-        "image": online["image"],
-      };
-      onlinePeopleList.add(onlineIndex);
+    final decodeActiveChatBody = jsonDecode(response.body);
+
+    for (var each in decodeActiveChatBody) {
+      onlinePeopleList.add(OnlinePeopleDTO.fromObject(each));
     }
+
     return onlinePeopleList;
   }
 
@@ -258,11 +258,8 @@ class SocketMethod {
   }
 
   getMessageMethod(String token, roomId) async {
-    ///v1/vendor-management/conversations
-    /////$chatBaseUrl-management/conversations/$roomId/messages
     Response response = await http.get(
-        Uri.parse(
-            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/conversations/$roomId/messages"),
+        Uri.parse("$chatBaseUrl-management/contacts/$roomId/messages"),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -271,8 +268,10 @@ class SocketMethod {
         });
 
     final decodedGetChatBody = jsonDecode(response.body);
-    
-    print("Decoded Message body length: ${decodedGetChatBody} : Body is: $decodedGetChatBody");
+    print(decodedGetChatBody);
+
+    print(
+        "Decoded Message body length: ${decodedGetChatBody} : Body is: $decodedGetChatBody");
     for (var messge in decodedGetChatBody) {}
     return decodedGetChatBody;
   }

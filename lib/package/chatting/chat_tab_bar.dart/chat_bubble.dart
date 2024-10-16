@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
+import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/imoji/create_imoji.dart';
 
-class ChatBubbl extends StatelessWidget {
+class ChatBubbl extends StatefulWidget {
   final bool isMe;
   final String message;
-  const ChatBubbl({super.key, this.isMe = true, required this.message});
+
+  const ChatBubbl.ChatBubble(
+      {super.key, this.isMe = true, required this.message});
+
+  @override
+  State<ChatBubbl> createState() => _ChatBubblState();
+}
+
+class _ChatBubblState extends State<ChatBubbl> {
+String? showEmoji;
+Emojis emojis= Emojis();
+  bool _isPopupVisible = false;
+
+  void _togglePopup() {
+    setState(() {
+      _isPopupVisible = !_isPopupVisible;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -13,85 +33,170 @@ class ChatBubbl extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: isMe
+          padding: widget.isMe
               ? EdgeInsets.only(right: 10, bottom: 10)
               : EdgeInsets.only(left: 10, bottom: 10),
           child: Column(
             crossAxisAlignment:
-                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                widget.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment:
-                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                mainAxisAlignment: widget.isMe
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.start,
                 children: [
-                  isMe
-                      ? TextButton(
-                          onPressed: () {
-                            return print("three dots is pressed");
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("...",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold)),
-                            ],
+                  widget.isMe
+                      ? Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: PopupMenuButton(
+                            child: Container(
+                            padding: EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Text("...",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold)),
+                               height20,
+                                ],
+                              ),
+                            ),
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(child: Text("Copy")),
+                                PopupMenuItem(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CreateEmojiAndOnTap(
+                                              emoji: emojis.THUMBS_UP,
+                                              onTap: () {
+                                                showEmoji = emojis.THUMBS_UP;
+                                                if (mounted) {
+                                                  setState(() {});
+                                                }
+                                                Navigator.pop(context);
+                                              }),
+                                          CreateEmojiAndOnTap(
+                                              emoji:
+                                                 emojis.RED_HEART,
+                                              onTap: () {
+                                                showEmoji = emojis.RED_HEART;
+                                                if (mounted) {
+                                                  setState(() {});
+                                                }
+                                                Navigator.pop(context);
+                                              }),
+                                          CreateEmojiAndOnTap(
+                                              emoji: emojis.FACE_WITH_TEARS_OF_JOY,
+                                              onTap: () {
+                                                showEmoji =
+                                                    emojis.FACE_WITH_TEARS_OF_JOY;
+                                                if (mounted) {
+                                                  setState(() {});
+                                                }
+                                                Navigator.pop(context);
+                                              }),
+                                          CreateEmojiAndOnTap(
+                                              emoji: emojis.HUSHED_FACE,
+                                              onTap: () {
+                                                showEmoji = emojis.HUSHED_FACE;
+                                                if (mounted) {
+                                                  setState(() {});
+                                                }
+                                                Navigator.pop(context);
+                                              }),
+                                          CreateEmojiAndOnTap(
+                                              emoji: emojis.FOLDED_HANDS,
+                                              onTap: () {
+                                                showEmoji = emojis.FOLDED_HANDS;
+                                                if (mounted) {
+                                                  setState(() {});
+                                                }
+                                                Navigator.pop(context);
+                                              }),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ];
+                            },
                           ),
-                        )
+                      )
                       : Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: Image.asset('assets/images/chatFont.png'),
                         ),
                   Flexible(
                     child: IntrinsicWidth(
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: searchBarBorderColor),
-                          color: const Color.fromARGB(255, 188, 204, 188),
-                          borderRadius: BorderRadius.only(
-                              topLeft: const Radius.circular(10),
-                              topRight: const Radius.circular(10),
-                              bottomLeft: Radius.circular(isMe ? 10 : 0),
-                              bottomRight: Radius.circular(isMe ? 0 : 10)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: isMe
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                  softWrap: true,
-                                  maxLines: 500,
-                                  overflow: TextOverflow.ellipsis,
-                                  message,
-                                  style: TextStyle(color: Colors.black)),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: searchBarBorderColor),
+                              color: const Color.fromARGB(255, 188, 204, 188),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(10),
+                                  topRight: const Radius.circular(10),
+                                  bottomLeft:
+                                      Radius.circular(widget.isMe ? 10 : 0),
+                                  bottomRight:
+                                      Radius.circular(widget.isMe ? 0 : 10)),
                             ),
-                          ],
-                        ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: widget.isMe
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                      softWrap: true,
+                                      maxLines: 500,
+                                      overflow: TextOverflow.ellipsis,
+                                      widget.message,
+                                      style: TextStyle(color: Colors.black)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                //    color: Colors.grey
+                              ),
+                              child: Text(showEmoji ?? ''),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  isMe
+                  widget.isMe
                       ? SizedBox()
                       : TextButton(
                           onPressed: () {
-                            return print("three dots is pressed");
+                        _togglePopup();
+
                           },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("...",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  )),
-                              Text('.')
-                            ],
-                          ),
+                          child: Text("...",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                              )),
                         ),
                 ],
               ),
@@ -106,6 +211,17 @@ class ChatBubbl extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  createNotEmojiAndOnTap(String text, Function() onTap) {
+    return Expanded(
+      child: InkWell(
+          onTap: onTap,
+          child: Text(
+            "  ${text}  ",
+            style: TextStyle(fontSize: 15),
+          )),
     );
   }
 

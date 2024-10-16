@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:pilot_bazar_admin/DAO/send_chat_message.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_bubble.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
+import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
@@ -57,7 +59,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   }
 
   List chatList = [
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello ",
     ),
@@ -68,8 +70,6 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
           duration: const Duration(seconds: 1), curve: Curves.fastOutSlowIn);
     }
   }
-
-
 
   var decodedSendMessageBody;
 
@@ -104,35 +104,59 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       String messageFromTextField) {
     print("Socket message");
 
-    var currentIndex = {
-      "room": {
-        "id": roomId,
-        "name": roomName,
-      },
-      "bracket": "T",
-      "content": messageFromTextField
-    };
+    //{room: {id: 01ja8xxk0vfxjx6p4kqt88fdyq, name: StalwartHawk}, bracket: T, content: vaiy }
+//{contact: {id: 01ja8xxk0vfxjx6p4kqt88fdyq, name: StalwartHawk}, bracket: T, content: vaiy }
 
-    socket.emit('createChat', currentIndex); // Emit the message
-    print(currentIndex);
-    print("Socket message 2");
+    SendMessageDAO sendMessageDAO =
+        SendMessageDAO.fromParam(roomId, roomName, "T", messageFromTextField);
+
+    print("from DAO");
+    print(sendMessageDAO.toObject());
+     socket.emit('createChat', sendMessageDAO.toObject());
   }
 
   @override
   void initState() {
-    // print("room id");
     getChatMethode();
 
     setState(() {});
 
-    socket.on('joined', (data) async => {print(data)});
+    socket.on(
+        'joined',
+        (data) async => {
+              // find out user current screen
+              // if current == chat screen then http(online) do not call.
+              //    if {safin auto} is online or offline status ebong current chat screen er user name
+              //
+
+              // [x] - if current == contact screen http(online) call hobe.
+              // [x] - add button = image(phot and gallery),camera, video, document, audio
+              // [x] - when add any kind of above things then open a bottom sheet to confirm send from user
+
+              // and behind the seen when open bottom sheet then call the http upload api. to store attachment
+              // delete or send
+
+              print(data),
+              if (socket.id == null)
+                {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("You are offline"))),
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SingleVehicleScreen()),
+                      (route) => false)
+                }
+            });
     socket.on('leaved', (data) async => {print(data)});
 
     socket.on('myself', (data) async {
       print(data);
     });
+
     socket.on('isSentChat', (data) async {
-      print(data); // Print the map data for debugging
+      print("is sent chat socket");
+      print(data);
 
       await Future(() {
         if (data != null && data.isNotEmpty) {
@@ -147,6 +171,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
     });
 
     socket.on('reloadChat', (data) async {
+      print("reload chat");
       print(data);
       await Future(() {
         getChats.add(data); // Add the data to getChats
@@ -165,11 +190,10 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
 
   @override
   void dispose() {
-    socket.off('isSentChat');
     myFocusNode.dispose();
 
     sendMessageController.dispose();
-    socket.dispose();
+
     super.dispose();
   }
 
@@ -212,9 +236,11 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                 if (index == getChats.length) {
                   return SizedBox(height: 30);
                 }
-                return ChatBubbl(
+                return ChatBubbl.ChatBubble(
                     message: getChats[index]['chat']['content'],
-                    isMe: getChats[index]['side'] == 'R' ? true : false);
+                    isMe: getChats[index]['side'] == 'R' ? true : false
+                    // isMe: getChats[index]['side'] == 'R' ? true : false
+                    );
                 // Fix: accessing the 'message' property
               },
             ),
@@ -256,8 +282,6 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                     );
                     sendMessageController.clear();
                   }
-
-                  
 
                   scrollDown(); // Ensure scrolling after message sending
                 },

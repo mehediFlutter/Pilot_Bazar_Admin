@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_details.dart';
+import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat_details.dart';
 import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/chat_front_screen_shimmer.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
@@ -65,7 +65,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
   getGroupsPeople() async {
     groupList?.clear();
-    groupList = await socketMethod.getGroup(messengerAPIToken ?? '');
+    groupList = await socketMethod.getGroup(messengerAPIToken ?? '','groups');
     setState(() {});
 
   }

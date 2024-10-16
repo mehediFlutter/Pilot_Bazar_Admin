@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:pilot_bazar_admin/DTO/contact_people.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,52 +14,33 @@ class SocketMethodeProvider extends ChangeNotifier {
   bool themeModeValue = true;
 
   Map<String, dynamic>? decodedBody;
-  List _inboxChatList = [];
   List _groupChatList = [];
-  List get getinboxChatListFromProvider => _inboxChatList;
+  List<ContactPeopleDTO> people = [];
+  List<ContactPeopleDTO> get getinboxChatListFromProvider => people;
   List get getGroupChatListFromProvider => _groupChatList;
 
-   getInbox(String token) async {
-    _inboxChatList.clear();
+  getInbox(String token, xAppContact) async {
+    people.clear();
     Response response =
         await http.get(Uri.parse("$chatBaseUrl-management/contacts"), headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Encoding': 'application/gzip',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $token',
+      'x-app-contact': '$xAppContact'
     });
 
-    decodedBody = jsonDecode(response.body);
+    final jsonData = jsonDecode(response.body);
 
-    for (var person in decodedBody?['people']) {
-      var contact = await {
-        "user": {
-          "id": person["user"]["id"],
-          "name": person["user"]["name"],
-          "online": person["user"]["online"],
-          "image": person["user"]["image"],
-        },
-        "room": {
-          "room_id": person['room']['id'],
-          "room_name": person['room']['name'],
-        },
-        "chat": {
-          "bracket": person['chat']['bracket'],
-          "content": person['chat']['content'],
-        },
-        "time": {
-          "string": person['time']['string'],
-          "elapse": person['time']['elapse'],
-          "format": person['time']['format'],
-        },
-      };
-
-      _inboxChatList.add(contact);
+    for (var each in jsonData) {
+      people.add(ContactPeopleDTO.fromObject(each));
     }
+
+    //  _inboxChatList.add(contact);
 
     notifyListeners();
 
-    return _inboxChatList;
+    return people;
   }
 
   Future<List> getGroup(String token) async {

@@ -133,32 +133,20 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
     callSocketManager();
 
-    // socket.on('joined', (data) => {print(data)});
-    // socket.on('leaved', (data) => {print(data)});
-
-    // socket.on('myself ', (data) async {
-    //   print(data);
-    // });
-
-    // print('Socket connected: ${socket.id}');
-    // socket.on('isSentChat ', (data) {
-    //   print(data);
-    // });
-
-    // socket.on('reloadChat ', (data) {
-    //   print(data);
-    // });
   }
 
   callSocketManager() async {
-    await SocketMethod().authorizeChat();
 
     await SocketMethod().authorizeChat();
-    while (messengerAPIToken == null) {
-      await Future.delayed(Duration(milliseconds: 100));
+  
+
+
+    while (messengerAPIToken == null || socket.id==null) {
+      await Future.delayed(Duration(seconds: 2));
     }
 
     await socketMethod.authorizeChat();
+    await SocketManager();
   }
 
   @override

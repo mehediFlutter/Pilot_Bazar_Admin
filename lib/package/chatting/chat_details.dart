@@ -26,19 +26,19 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
   }
 
   List chatList = [
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
-    ChatBubbl(
+    ChatBubbl.ChatBubble(
       isMe: false,
       message: "Hello again ",
     ),
@@ -141,7 +141,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                   sendMessage();
                   if (sendTextController.text.isNotEmpty) {
                     chatList.add(
-                      ChatBubbl(
+                      ChatBubbl.ChatBubble(
                         isMe: true, // Assuming you're adding your own message
                         message: sendTextController.text,
                       ),
@@ -173,7 +173,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
           onPressed: () {
             if (sendTextController.text.isNotEmpty) {
               chatList.add(
-                ChatBubbl(
+                ChatBubbl.ChatBubble(
                   isMe: true, // Assuming you're adding your own message
                   message: sendTextController.text,
                 ),

@@ -1,4 +1,3 @@
-import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatEventHandler {
@@ -31,11 +30,5 @@ class ChatEventHandler {
       "content": messageFromTextFild
     };
     socket.emit('createChat', currentIndex);
-  //  print(currentIndex);
-
-    // socket.on('isSentChat ', (data) {
-    //   print("Is SentChat $data");
-    // });
-    print("From send message");
   }
 }
