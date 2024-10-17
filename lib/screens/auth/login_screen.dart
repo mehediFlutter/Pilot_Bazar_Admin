@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: jsonEncode(body));
 
     Map decodedBody = jsonDecode(response.body.toString());
-    print("Login Body is : $decodedBody");
+
 
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
@@ -180,8 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             //  style: Theme.of(context).elevatedButtonTheme.style,
                             onPressed: () async {
-                              print("Phone number ${phoneNumberController.text}");
-                              print("Password ${passwordController.text}");
                               if (!formKey.currentState!.validate()) {
                                 return null;
                               }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/DTO/contact_people.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/inbox_chat_details.dart';
@@ -36,7 +37,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   List contacts = [];
   List contactNumber = [];
   Map<String, dynamic>? body;
-  List allPerson = SocketMethod().chatList;
+  List<ContactPeopleDTO>? allPerson;
   bool isSelectForCreateGroup = false;
   bool isSelected = false;
 
@@ -67,7 +68,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     groupList?.clear();
     groupList = await socketMethod.getGroup('groups');
     setState(() {});
-
   }
 
   List groupUserList = [];
@@ -175,18 +175,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            //  isKeyboardVisible = true
             print("Elevated button is pressed");
-            allPerson.clear();
+            // allPerson?.clear();
             groupUserList.clear();
-            allPerson =
-                await socketMethod.getChatPeople(messengerAPIToken ?? '','people');
+
             setState(() {});
-            print('All person Length ${allPerson.length}');
-            print('All person List ${allPerson}');
+
             final result = await showModalBottomSheet(
-              useSafeArea: true,
               context: context,
+              useSafeArea: true,
               isScrollControlled: true,
               builder: (BuildContext context) {
                 return Padding(
@@ -204,11 +201,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Widget _buildBottomSheet(BuildContext context) {
-    List peopleList = Provider.of<SocketMethodeProvider>(context)
+    allPerson = Provider.of<SocketMethodeProvider>(context, listen: false)
         .getinboxChatListFromProvider;
-
-//    Provider.of<SocketMethodeProvider>(context)
-    //  .getGroup(messengerAPIToken ?? '');
     return DraggableScrollableSheet(
       expand: false,
       builder: (context, scrollController) {
@@ -234,21 +228,25 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             ListView.separated(
                               primary: false,
                               shrinkWrap: true,
-                              itemCount: peopleList.length,
+                              itemCount: allPerson?.length ?? 0,
                               itemBuilder: (context, index) {
                                 return Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                       color: groupUserList.contains(
-                                              peopleList[index]['user']['id'])
+                                              allPerson?[index].user?.id ??
+                                                  '123')
                                           ? Colors.green
                                           : Colors.grey,
                                       borderRadius: BorderRadius.circular(10)),
                                   child: ListTile(
                                     contentPadding: EdgeInsets.zero,
                                     onTap: () {
-                                      String personId = peopleList[index]
-                                          ['user']['id']; // Get the person ID
+                                      print(
+                                          allPerson?[index].user?.id ?? '123');
+                                      String personId =
+                                          allPerson?[index].user?.id ??
+                                              '123'; // Get the person ID
 
                                       if (groupUserList.contains(personId)) {
                                         groupUserList.remove(personId);
@@ -266,8 +264,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         width: 40,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle),
-                                        child: Image.network(peopleList[index]
-                                            ['user']['image'])),
+                                        child: Image.network(
+                                            allPerson?[index].user?.image ??
+                                                '')),
                                     title: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -275,8 +274,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         Row(
                                           children: [
                                             Text(
-                                              peopleList[index]['user']
-                                                      ['name'] ??
+                                              allPerson?[index].user?.name ??
                                                   'None',
                                               style: small14StyleW500.copyWith(
                                                   height: 0),
@@ -303,6 +301,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 Map body = {
+                  "group": true,
                   "title": groupNameController.text,
                   "users": groupUserList
                 };

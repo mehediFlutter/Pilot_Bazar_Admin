@@ -21,7 +21,6 @@ class SocketMethod {
   Future authorizeChat() async {
     prefss = await SharedPreferences.getInstance();
     LoginModel user = await AuthUtility.getUserInfo();
-    print("authUserID ${user.payload?.user?.id}");
 
     final url = '$APP_MESSENGER_URL/authorize';
     final headers = {
@@ -49,7 +48,6 @@ class SocketMethod {
       authorizeChatToken = await decodedBody['token']; // Correct 'tokekn' typo
 
       messengerAPIToken = decodedBody['token'];
-      print(messengerAPIToken);
     } else {
       Response response = await http.post(
         Uri.parse(url),
@@ -92,19 +90,16 @@ class SocketMethod {
       "users": contactNumber, // Use your contact list here
     };
     Response response = await http.post(
-      Uri.parse(
-        '$APP_MESSENGER_URL/contacts',
-      ),
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Accept-Encoding": "application/gzip",
-        "Authorization": 'Bearer $messengerAPIToken'
-      },
-      body: jsonEncode(body)
-    );
-    print(" postPHone number body");
-    print(response.body);
+        Uri.parse(
+          '$APP_MESSENGER_URL/contacts',
+        ),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Accept-Encoding": "application/gzip",
+          "Authorization": 'Bearer $messengerAPIToken'
+        },
+        body: jsonEncode(body));
   }
 
   List getChatPeopleList = [];
@@ -123,8 +118,7 @@ class SocketMethod {
     };
   }
 
-  getChatPeople(String token, xAppContact) async {
-    print("get chat people methode");
+  getChatPeople(String xAppContact) async {
     getChatPeopleList.clear();
     Response response =
         await http.get(Uri.parse("$APP_MESSENGER_URL/contacts"), headers: {
@@ -135,35 +129,36 @@ class SocketMethod {
       'x-app-contact': xAppContact
     });
 
-    decodedBody = jsonDecode(response.body);
-    print("people decoded body");
-    print(decodedBody);
+    final decodedBody = jsonDecode(response.body);
+    print('Get Chat people List ${decodedBody}');
 
-   if (decodedBody != null) { for (var person in decodedBody!.values) {
-      var contact = await {
-        "user": {
-          "id": person["user"]["id"],
-          "name": person["user"]["name"],
-          "online": person["user"]["online"],
-          "image": person["user"]["image"],
-        },
-        "room": {
-          "room_id": person['room']['id'],
-          "room_name": person['room']['name'],
-        },
-        "chat": {
-          "bracket": person['chat']['bracket'],
-          "content": person['chat']['content'],
-        },
-        "time": {
-          "string": person['time']['string'],
-          "elapse": person['time']['elapse'],
-          "format": person['time']['format'],
-        },
-      };
+    if (decodedBody != null) {
+      for (var person in decodedBody) {
+        var contact = await {
+          "user": {
+            "id": person["user"]["id"],
+            "name": person["user"]["name"],
+            "online": person["user"]["online"],
+            "image": person["user"]["image"],
+          },
+          "room": {
+            "room_id": person['room']['id'],
+            "room_name": person['room']['name'],
+          },
+          "chat": {
+            "bracket": person['chat']['bracket'],
+            "content": person['chat']['content'],
+          },
+          "time": {
+            "string": person['time']['string'],
+            "elapse": person['time']['elapse'],
+            "format": person['time']['format'],
+          },
+        };
 
-      getChatPeopleList.add(contact);
-    }}
+        getChatPeopleList.add(contact);
+      }
+    }
 
     return getChatPeopleList;
   }
@@ -179,14 +174,16 @@ class SocketMethod {
     Response response = await http
         .get(Uri.parse("$chatBaseUrl-management/contacts"), headers: headers);
 
-    decodeGroupChatdBody = jsonDecode(response.body);
+    final decodeGroupChatdBody = jsonDecode(response.body);
 
-    for (var groups in decodeGroupChatdBody?['groups']) {
+    for (var groups in decodeGroupChatdBody) {
       var group = await {
         "id": groups["id"],
         "image": groups['image'],
 
-        "room": {"id": groups["room"]['id'], "name": groups["room"]['name']},
+        "room": {
+          "id":groups['room']['id'], "name": groups["room"]['name']},
+          
 
         "chat": {
           "bracket": groups['chat']['bracket'],
@@ -197,7 +194,6 @@ class SocketMethod {
           "elapse": groups['time']['elapse'],
           "format": groups['time']['format'],
         },
-        // "user": groups['user'],
       };
       getGroupChatList.add(group);
     }
@@ -206,7 +202,6 @@ class SocketMethod {
   }
 
   getOnlineChatPeople(String token, xAppContact) async {
-    print("get online people methode");
     onlinePeopleList.clear();
     Map<String, String> headers = {
       'Accept': 'application/json',
@@ -236,7 +231,7 @@ class SocketMethod {
     };
     Response response = await http.post(
         Uri.parse(
-            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts/group"),
+            "https://messenger.pilotbazar.xyz/api/v1/vendor-management/contacts"),
         headers: headers,
         body: jsonEncode(body));
 
@@ -281,10 +276,7 @@ class SocketMethod {
         });
 
     final decodedGetChatBody = jsonDecode(response.body);
-    print(decodedGetChatBody);
 
-    print(
-        "Decoded Message body length: ${decodedGetChatBody} : Body is: $decodedGetChatBody");
     // for (var messge in decodedGetChatBody['chat']) {
     //   print(messge);
     // }
