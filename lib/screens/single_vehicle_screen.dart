@@ -564,74 +564,74 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     }
   }
 
-  static List showImageList = [];
+  static List<XFile> showImageList = [];
   late String ImageLink;
   late List ImageLinkList = [];
 
   bool shareAllImagesInProgress = false;
 
-  Future<void> sendAllImages(int id) async {
+  Future<void> sendAllImages(String id) async {
     shareAllImagesInProgress = true;
     prefss = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {});
     }
 
-    Response? response1;
     try {
-      if (prefss.getString('token') == null) {
-        response1 = await get(
-          Uri.parse("${baseUrl}api/clients/vehicles/products/$id/detail"),
-        );
-      } else {
-        response1 = await get(
-            Uri.parse("${baseUrl}api/merchants/vehicles/products/$id/detail"),
-            headers: {
-              'Accept': 'application/vnd.api+json',
-              'Content-Type': 'application/vnd.api+json',
-              'Authorization': 'Bearer ${prefss.getString('token')}'
-            });
+      // Fetch vehicle details
+      Response? response1 = await get(
+        Uri.parse("$APP_APISERVER_URL/api/v1/vendor-management/vehicles/$id"),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'application/gzip',
+          'Authorization': 'Bearer ${prefss.getString('token')}',
+        },
+      );
+
+      final decodedResponse1 = jsonDecode(response1.body);
+      final gallery = decodedResponse1['gallery'] as List<dynamic>? ?? [];
+
+      if (gallery.isEmpty) {
+        shareAllImagesInProgress = false;
+        return; // No images to share, exit early
       }
-      final Map<String, dynamic> decodedResponse1 = jsonDecode(response1!.body);
 
-      for (int b = 0; b < decodedResponse1['payload']['gallery'].length; b++) {
-        ImageLink = decodedResponse1['payload']["gallery"][b]?['name'] ?? '';
-        ImageLinkList.add(ImageLink);
-      }
+      // Download images concurrently
+      List<Future<XFile>> downloadFutures = gallery.map((imageUrl) async {
+        final uri = Uri.parse(imageUrl);
+        final response = await http.get(uri);
+        final imageBytes = response.bodyBytes;
 
-      // for (int y = 0; y < ImageLinkList.length; y++) {
-      //   final uri =
-      //       Uri.parse("${baseUrl}storage/galleries/${ImageLinkList[y]}");
-      //   final response = await http.get(uri);
-      //   final imageBytes = response.bodyBytes;
+        final tempDirectory = await getTemporaryDirectory();
+        final tempFile =
+            await File('${tempDirectory.path}/${gallery.indexOf(imageUrl)}.jpg')
+                .writeAsBytes(imageBytes);
 
-      //   final tempDirectory = await getTemporaryDirectory();
-      //   final tempFile = await File('${tempDirectory.path}/sharedImage$y.jpg')
-      //       .writeAsBytes(imageBytes);
+        return XFile(tempFile.path);
+      }).toList();
 
-      //   final image = XFile(tempFile.path);
-      //   showImageList.add(image);
-      // }
+      // Await all downloads
+      showImageList = await Future.wait(downloadFutures);
 
-
-    
-  List showImageList = await VehicleDetailDTO().toGallery();
+      // Share images if available
       if (showImageList.isNotEmpty) {
-        await Share.shareXFiles(
-          showImageList.map((image) => image as XFile).toList(),
-        );
+        await Share.shareXFiles(showImageList);
 
-        // Clear lists and reset state
+        // Clear temporary data
         unicTitle.clear();
         details.clear();
-        ImageLinkList.clear();
-        showImageList.clear();
         shareAllImagesInProgress = false;
+
         if (mounted) {
           setState(() {});
         }
-      } else {}
-    } catch (error) {}
+      }
+    } catch (error) {
+      // Handle or log error
+      print('Error occurred while sharing images: $error');
+      shareAllImagesInProgress = false;
+    }
   }
 
   Future<void> shareDetailsWithOneImage(
@@ -1276,14 +1276,10 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                 children: [
                   Builder(builder: (context) {
                     return CustomerProfileBar(
-                      profileImagePath:
-                          // userInfoFromPrefs
-                          //         ?.payload?.merchant?.merchantInfo?.image?.name ??
-                          '',
+                      profileImagePath: '',
                       message_icon_path:
                           'assets/icons/message_notification.png',
                       chatTap: () async {
-                        setState(() {});
                         print(socket.id);
                         socket.id != null
                             ? Navigator.push(
@@ -1390,8 +1386,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                 borderRadius: BorderRadius.circular(10),
                 // child: Image.network(vehicleCollection?[x].image??'https://placehold.co/600x400?font=Roboto&text=no+image+found'),
                 child: CachedNetworkImage(
-                  imageUrl:
-                     vehicleCollection?[x].image??'' ,
+                  imageUrl: vehicleCollection?[x].image ?? '',
                   placeholder: (context, url) =>
                       const CircularProgressIndicator(), // Placeholder widget while loading
                   errorWidget: (context, url, error) => Image.network(
@@ -1572,9 +1567,9 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                       context, "All Images (শুধু ছবি)"),
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    print(products[x + j].id);
+                                    print(vehicleCollection?[x].id ?? '');
                                     await sendAllImages(
-                                      products[x + j].id,
+                                      vehicleCollection?[x].id ?? '',
                                     );
                                   },
                                 ),

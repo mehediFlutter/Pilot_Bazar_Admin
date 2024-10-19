@@ -28,6 +28,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
 
   SharedPreferences? preference;
   bool isFeatureDetails = false;
+  bool isFeatureInProgress = false;
   List vehicleFeature = [];
   List? vehicleSpecialFeature = [];
 
@@ -36,7 +37,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
   String? vehicleCode;
 
   Future specialFeatures() async {
-    print("Special Feature method");
+    isFeatureInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
     preference = await SharedPreferences.getInstance();
 
     Response response = await get(
@@ -50,22 +55,16 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       },
     );
 
-    print("Feature status code : ${response.statusCode}");
-    
-
     final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-       VehicleDetailDTO dto = await VehicleDetailDTO.fromObject(decodedResponse);
-      print("Feature DTO Json");
-       print(dto.toJson());
-       print("DTO to details");
-       print(dto.toDetails());
-      //   print(dto.feature?[0].title??'None');
-      //   print(dto.special?[0].title??'None');
-      //  print(dto.gallery?[0].title??'None');
-      //  print(dto.gallery?[0].share??'None');
-      
-
-  
+    VehicleDetailDTO dto = await VehicleDetailDTO.fromObject(decodedResponse);
+    print("Feature DTO Json");
+    print(dto.toJson());
+    print("DTO to details");
+    print(dto.toDetails());
+    //   print(dto.feature?[0].title??'None');
+    //   print(dto.special?[0].title??'None');
+    //  print(dto.gallery?[0].title??'None');
+    //  print(dto.gallery?[0].share??'None');
 
     vehicleName = decodedResponse['title'];
     vehiclePrice = decodedResponse['price'];
@@ -88,8 +87,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       setState(() {});
     }
 
-    setState(() {});
     //  List<dynamic> vehicleFeatures = decodedResponse['feature'];
+     isFeatureInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
 
     print("Feature title and value:  ${vehicleFeature}");
   }
@@ -189,7 +191,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 Center(
                   child: Text(
-                    vehicleName.toString(),
+                  isFeatureInProgress? '' : vehicleName??'',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),

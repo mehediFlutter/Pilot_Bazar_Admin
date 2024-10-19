@@ -216,20 +216,13 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-              message_icon_path: '$iconsPath/message_notification.png',
-              drawer_icon_path: '$iconsPath/beside_message.png',
+         
+             drawer_icon_path: 'assets/icons/beside_message.png',
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.image,
               merchantName: widget.name,
               companyName: '',
-              onTapFunction: () {},
-              chatTap: () {
-                // print("notificaiton tap");
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => ChattingDetailsScreen()));
-              },
+             
             ),
           ),
           height10,
