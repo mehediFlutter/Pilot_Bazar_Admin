@@ -5,6 +5,7 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/text_filds/text_filds_for_password.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController demoController = TextEditingController();
   late bool passwordVisible;
   late SharedPreferences prefss;
-  String? token;
+
   String? authUserID;
   var merchantId;
   var merchantName;
@@ -55,11 +56,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     prefss = await SharedPreferences.getInstance();
     Map<String, dynamic> body = {
-      "phone": phoneNumberController.text,
+      "mobile": phoneNumberController.text,
       "password": passwordController.text, //01407054411
     };
     Response response = await post(
-        Uri.parse('${APP_APISERVER_URL}/api/merchant/auth/login'),
+        Uri.parse('${APP_APISERVER_URL}/api/v1/vendor-management/login'),
         headers: globalHeader,
         body: jsonEncode(body));
 
@@ -68,13 +69,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
+      
 
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
-      token = model.toJson()['payload']['token'];
-      authUserID = model.toJson()['payload']['user']['id'];
-      await prefss.setString('token', token ?? '');
+     String token = await model.toJson()['token'];
+      loginToken = await model.toJson()['token'];
+      authUserID = model.toJson()['id'];
+      await prefss.setString('token', token ?? loginToken??model.toJson()['token']);
       await prefss.setString('authUserID', authUserID ?? '');
       loginInProgress = false;
       if (mounted) {
@@ -233,7 +236,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 Map<String, String> globalHeader = {
   'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
+  'Accept-Encoding':'application/gzip'
 };
 
 Map<String, String> uploadHeader = {

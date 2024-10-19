@@ -7,11 +7,14 @@ import 'package:http/http.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:pilot_bazar_admin/DTO/get_all_vehicle_dao.dart';
+import 'package:pilot_bazar_admin/DTO/vehicle_detail_dto.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_Tab_bar.dart';
 import 'package:pilot_bazar_admin/package/customer_care_service/customer_profuile_bar.dart';
 import 'package:pilot_bazar_admin/package/drawer/drawer.dart';
+import 'package:pilot_bazar_admin/provider/socket_methode_provider.dart';
 import 'package:pilot_bazar_admin/screens/advance_edit_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
@@ -28,8 +31,10 @@ import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
 import 'package:pilot_bazar_admin/widget/snack_bar.dart';
 import 'package:pilot_bazar_admin/widget/unic_title_and_details_function_class.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 // https://websocket.pilotbazar.xyz/
 
@@ -78,16 +83,16 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   LoginModel? userInfoFromPrefs;
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
-    print("user name is  : ${userInfoFromPrefs?.payload?.user?.name}");
+    print("user name is  : ${userInfoFromPrefs?.name}");
   }
 
-  void _listenToScroolMoments() {
-    if (scrollController.offset == scrollController.position.maxScrollExtent) {
-      page++;
-      setState(() {});
-      getNewProduct(page);
-    }
-  }
+  // void _listenToScroolMoments() {
+  //   if (scrollController.offset == scrollController.position.maxScrollExtent) {
+  //     page++;
+  //     setState(() {});
+  //     getNewProduct(page);
+  //   }
+  // }
 
   bool hasTypedText = false;
   late var socket = SocketManager().socket;
@@ -104,6 +109,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   //  print(token);
   //   print(socketMethod.authorizeChatToken);
   // }
+  List<GetAllVehicleDTO>? vehicleCollection;
+  getVehicleCollection() async {
+    final provider =
+        await Provider.of<SocketMethodProvider>(context, listen: false);
+    provider.getVehicleCollectionMethod();
+  }
 
   initState() {
     isRefresh = false;
@@ -113,8 +124,8 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     printUserInfo();
     _checkConnectivity();
     // initializePreffsBool();
-    getProduct(page);
-    scrollController.addListener(_listenToScroolMoments);
+
+    // scrollController.addListener(_listenToScroolMoments);
 
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
@@ -125,7 +136,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         i = 0;
         searchProducts.clear();
         products.clear();
-        getProduct(page); // Call getProduct only when cleared after typing
+
         hasTypedText = false; // Reset the flag
         setState(() {});
       }
@@ -133,6 +144,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     //  pirntSocketChatToken();
 
     callSocketManager();
+    getVehicleCollection();
   }
 
   callSocketManager() async {
@@ -421,110 +433,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
   String? jsonString;
   bool? isRefresh = false;
   @override
-  Future getProduct(int page) async {
-    prefss = await SharedPreferences.getInstance();
-    products.clear();
-    _getProductinProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    Response? response;
-
-    response = await get(
-      Uri.parse("${baseUrl}api/merchants/vehicles/products?page=$page"),
-      headers: {
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-        'Authorization':
-            'Bearer ${userInfoFromPrefs?.payload?.token}', //prefss.getString('token')
-      },
-    );
-
-    final Map<String, dynamic> decodedResponse1 = jsonDecode(response.body);
-    final Map<String, dynamic> decodedResponse = decodedResponse1['payload'];
-    final getproductsList = decodedResponse['data'];
-    setState(() {});
-
-    for (i; i < getproductsList.length; i++) {
-      newPrice = (getproductsList[i]['fixed_price'] != null &&
-              getproductsList[i]['fixed_price'].toInt() > 0)
-          ? (getproductsList[i]['fixed_price'] +
-              (getproductsList[i]['additional_price'] ?? 0))
-          : int.parse(getproductsList[i]['price'].toString());
-      setState(() {});
-
-      products.add(
-        Product(
-          vehicleName: getproductsList[i]?['translate']?[0]?['title'] ?? 'none',
-          vehicleNameBangla:
-              getproductsList[i]?['translate']?[1]?['title'] ?? 'none',
-          manufacture: getproductsList[i]?['manufacture'] ?? '',
-          slug: getproductsList[i]?['slug'] ?? '',
-          id: getproductsList[i]?['id'],
-          condition: getproductsList[i]?['condition']?['translate']?[0]
-                  ?['title'] ??
-              '',
-          mileage: getproductsList[i]?['mileage']?['translate']?[0]?['title'] ??
-              '--',
-          //price here
-          price: getproductsList[i]?['price'].toString(),
-          purchase_price: getproductsList[i]?['purchase_price'] ?? 0,
-          fixed_price: getproductsList[i]?['fixed_price'].toString() ?? '',
-          //price end
-          imageName: getproductsList[i]?['image']?['name'] ??
-              getproductsList[0]?['image']?['name'],
-          registration: getproductsList[i]?['registration'] ?? 'None',
-          engine: getproductsList[i]?['engines'].toString() ?? 'None',
-          brandName:
-              getproductsList[i]?['brand']?['translate']?[0]?['title'] ?? '',
-          transmission: getproductsList[i]?['transmission']?['translate']?[0]
-                  ?['title'] ??
-              '',
-          fuel: getproductsList[i]?['fuel']?['translate']?[0]?['title'] ?? '',
-          skeleton:
-              getproductsList[i]?['skeleton']?['translate']?[0]?['title'] ?? '',
-          available: getproductsList[i]?['available']?['translate']?[0]
-                  ?['title'] ??
-              '',
-          code: getproductsList[i]?['code'] ?? '',
-          //model: getproductsList,
-          carColor: getproductsList[i]?['color']?['translate']?[0]?['title'] ??
-              'None',
-          edition: getproductsList[i]?['edition']?['translate']?[0]?['title'] ??
-              'None',
-          model:
-              getproductsList[i]?['carmodel']?['translate']?[0]?['title'] ?? '',
-          grade: getproductsList[i]?['grade']?['translate']?[0]?['title'] ??
-              'None',
-          engineNumber: getproductsList[i]?['engine_number'] ?? '--',
-          chassisNumber: getproductsList[i]?['chassis_number'] ?? '--',
-          video: getproductsList[i]?['video'] ?? 'No Video',
-          engine_id: getproductsList[i]?['engine_id'].toString() ?? '12',
-          onlyMileage: getproductsList[i]?['mileages'].toString() ?? '--',
-          engines: getproductsList[i]?['engines'].toString() ?? '-',
-          newPrice: newPrice.toString(),
-          registration_id: getproductsList[i]?['registration_id'] ?? 9,
-          image_id: getproductsList[i]?['image']?['id'].toString(),
-        ),
-      );
-    }
-    jsonString = jsonEncode(products.toString());
-    await prefss.setString('productsListInCatch', jsonString ?? '');
-
-    if (getproductsList == null) {
-      return;
-    }
-    _getProductinProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-
-    if (getproductsList == null) {
-      return;
-    }
-  }
-
   bool _getDataInProgress = false;
   static List unicTitle = [];
   static List details = [];
@@ -691,23 +599,23 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
         ImageLinkList.add(ImageLink);
       }
 
-      for (int c = 0; c < ImageLinkList.length; c++) {}
+      // for (int y = 0; y < ImageLinkList.length; y++) {
+      //   final uri =
+      //       Uri.parse("${baseUrl}storage/galleries/${ImageLinkList[y]}");
+      //   final response = await http.get(uri);
+      //   final imageBytes = response.bodyBytes;
 
-      for (int y = 0; y < ImageLinkList.length; y++) {
-        final uri =
-            Uri.parse("${baseUrl}storage/galleries/${ImageLinkList[y]}");
-        final response = await http.get(uri);
-        final imageBytes = response.bodyBytes;
-        //  print("Body bite");
-        final tempDirectory = await getTemporaryDirectory();
+      //   final tempDirectory = await getTemporaryDirectory();
+      //   final tempFile = await File('${tempDirectory.path}/sharedImage$y.jpg')
+      //       .writeAsBytes(imageBytes);
 
-        final tempFile = await File('${tempDirectory.path}/sharedImage$y.jpg')
-            .writeAsBytes(imageBytes);
+      //   final image = XFile(tempFile.path);
+      //   showImageList.add(image);
+      // }
 
-        final image = XFile(tempFile.path);
-        showImageList.add(image);
-      }
 
+    
+  List showImageList = await VehicleDetailDTO().toGallery();
       if (showImageList.isNotEmpty) {
         await Share.shareXFiles(
           showImageList.map((image) => image as XFile).toList(),
@@ -940,6 +848,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     for (var pair in featureDetailPairs) {
       unicTitle.add(pair.featureTitle);
       details.add(pair.detailTitles.join(', '));
+      // LED,Fog Light, Leather Seat, 5 Seat , Both Front Seat Power, Ponoramic Sun Foof
     }
     shareInProgress = false;
     if (mounted) {
@@ -1166,9 +1075,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     print("I am search Products methodes");
     searchProducts.clear();
     products.clear();
-    if (searchController.text.isEmpty) {
-      getProduct(page);
-    }
+    if (searchController.text.isEmpty) {}
     _searchInProgress = true;
     if (mounted) {
       setState(() {});
@@ -1326,7 +1233,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     }
   }
 
-  final ScrollController scrollController = ScrollController();
+  // final ScrollController scrollController = ScrollController();
 
   bool myBoolValue = true;
   bool fixedPriceChange = false;
@@ -1349,7 +1256,11 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    scrollController.addListener(() {});
+    vehicleCollection = Provider.of<SocketMethodProvider>(context, listen: true)
+        .getVehicleCollection;
+    setState(() {});
+
+    // scrollController.addListener(() {});
 
     Size size = MediaQuery.of(context).size;
 
@@ -1382,13 +1293,10 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                             : showAlertDialogServer(context);
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
-                      merchantName:
-                          userInfoFromPrefs?.payload?.user?.name ?? 'None',
-                      companyName:
-                          userInfoFromPrefs?.payload?.user?.phone ?? "None",
+                      merchantName: userInfoFromPrefs?.name ?? 'None',
+                      companyName: userInfoFromPrefs?.phone ?? "None",
                     );
                   }),
-
                   SearchTextFild(
                     searchController: searchController,
                     onSubmit: (value) async {
@@ -1396,88 +1304,44 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       await search(value);
                     },
                   ),
-
-                  // (getIntPreef >= 1)
-                  //     ? AskingFixedAndStockList(
-                  //         askingPriceFunction: () {
-                  //           print("Asking Price Function is called");
-
-                  //           showAskingPrice = true;
-                  //           setState(() {});
-                  //         },
-                  //         fixedPriceFunction: () {
-                  //           print("Fixed Price Function is called");
-                  //           showAskingPrice = false;
-                  //           setState(() {});
-                  //         },
-                  //         stockListFunction: () {
-                  //           print("StockList Price Function is called");
-                  //         },
-                  //       )
-                  //     : SizedBox(),
                   height20,
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async {
-                        isRefresh = true;
-                        setState(() {});
-                        initState();
-                      },
-                      child: (_getProductinProgress ||
-                              _searchInProgress) //_getProductinProgress || _searchInProgress
-                          ? SingleChildScrollView(
-                              primary: false,
-                              child: Column(
-                                children: [
-                                  ListView.builder(
-                                    // padding: EdgeInsets.only(bottom: 10),
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    itemCount: 5,
-                                    itemBuilder: (context, index) {
-                                      return ShimmarEffectForSingleVehicle(
-                                        isShareOptio: getIntPreef > 0,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            )
-                          : products.length > 1
-                              ? ListView.builder(
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  controller: scrollController,
-                                  itemCount: products.length,
-                                  itemBuilder: (BuildContext context, index) {
-                                    return productList(index + j, size);
-                                  },
-                                )
-                              : Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("No Car Available "),
-                                      isSearchValue
-                                          ? ElevatedButton(
-                                              onPressed: () {
-                                                CustomAlertDialog().showAlertDialog(
-                                                    context,
-                                                    "Add Car Functionality not Available",
-                                                    "OK");
-                                              },
-                                              child: Icon(Icons.add))
-                                          : SizedBox()
-                                    ],
-                                  ),
+                        onRefresh: () async {
+                          isRefresh = true;
+                          setState(() {});
+                          initState();
+                        },
+                        child: vehicleCollection?.length != null
+                            ? ListView.builder(
+                                primary: false,
+                                shrinkWrap: true,
+                                // controller: scrollController,
+                                itemCount: vehicleCollection?.length,
+                                itemBuilder: (BuildContext context, index) {
+                                  print(
+                                      "Vehicle collection length ${vehicleCollection?.length}");
+                                  return productList(index, size);
+                                },
+                              )
+                            : SingleChildScrollView(
+                                primary: false,
+                                child: Column(
+                                  children: [
+                                    ListView.builder(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      itemCount: 5,
+                                      itemBuilder: (context, index) {
+                                        return ShimmarEffectForSingleVehicle(
+                                          isShareOptio: getIntPreef > 0,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
-                    ),
+                              )),
                   ),
-                  Visibility(
-                    visible: _getNewProductinProgress,
-                    child: Align(
-                        alignment: Alignment.bottomCenter, child: loading()),
-                  )
                 ],
               ),
             ),
@@ -1517,46 +1381,24 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => VehicleDetails(
-                      id: products[x].id,
-                      detailsVehicleImageName:
-                          "${baseUrl}storage/vehicles/${products[x].imageName}",
-                      price: (showAskingPrice == false)
-                          ? products[x].fixed_price.toString()
-                          : (getIntPreef > 0
-                              ? products[x].price.toString()
-                              : products[x].newPrice.toString()),
-                      brandName: products[x].brandName,
-                      vehicleName: products[x].vehicleName,
-                      engine: products[x].engine,
-                      detailsCondition: products[x].condition,
-                      detailsMillege: products[x].onlyMileage,
-                      detailsTransmission: products[x].transmission,
-                      detailsFuel: products[x].fuel,
-                      skeleton: products[x].skeleton,
-                      registration: products[x].registration,
-                      detailsVehicleManuConditioin:
-                          products[x].manufacture.toString(),
-                      detailsVehicleManufacture:
-                          products[x].manufacture.toString(),
-                      code: products[x].code,
-                      model: products[x].model,
-                      color: products[x].carColor,
-                      term_and_edition: products[x].edition,
-                      detailsGrade: products[x].grade,
+                      id: vehicleCollection?[x].id ?? 'None',
                     ),
                   ),
                 );
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  "${baseUrl}storage/vehicles/${products[x].imageName}",
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png", // Fallback image URL
-                      fit: BoxFit.cover,
-                    );
-                  },
+                // child: Image.network(vehicleCollection?[x].image??'https://placehold.co/600x400?font=Roboto&text=no+image+found'),
+                child: CachedNetworkImage(
+                  imageUrl:
+                     vehicleCollection?[x].image??'' ,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(), // Placeholder widget while loading
+                  errorWidget: (context, url, error) => Image.network(
+                    "https://placehold.co/600x400?font=Roboto&text=no+image+found",
+                    fit: BoxFit.cover, // Fallback image if not found
+                  ),
+                  fit: BoxFit.cover, // Adjust the image fit as needed
                 ),
               ),
             ),
@@ -1564,7 +1406,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 height5,
-                enterSingleData16(products[x].vehicleName),
+                enterSingleData16(vehicleCollection?[x].title),
                 height5,
                 Row(
                   children: [
@@ -1578,16 +1420,16 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       ),
                     ),
                     width15,
-                    enterSingleData(products[x].registration),
+                    enterSingleData(vehicleCollection?[x].registration),
                     width15,
                     dariContainer,
                     width15,
-                    enterSingleData(products[x].condition),
+                    enterSingleData(vehicleCollection?[x].condition),
                     width15,
                     Image.asset('assets/icons/mileages.png'),
                     width15,
                     enterSingleData(
-                      products[x].onlyMileage.toString(),
+                      vehicleCollection?[x].mileage.toString(),
                     ),
                     Text(
                       " KM",
@@ -1596,12 +1438,12 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                   ],
                 ),
                 height20,
-                enterSingleDataSmall(products[x].available),
+                enterSingleDataSmall(vehicleCollection?[x].available),
 
                 //  height5,
                 Row(
                   children: [
-                    enterSingleDataSmall('Code :${products[x].code}'),
+                    enterSingleDataSmall('Code :${vehicleCollection?[x].code}'),
                     const Spacer(),
                     PopupMenuButton(
                         child: Container(
@@ -1762,7 +1604,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                   ],
                 ),
                 //  height5,
-                enterSingleDataSmall('TK : ${products[x].price}'),
+                enterSingleDataSmall('TK : ${vehicleCollection?[x].price}'),
               ],
             ),
             ((getIntPreef <= 0))

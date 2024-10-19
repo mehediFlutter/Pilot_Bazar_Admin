@@ -4,24 +4,50 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:pilot_bazar_admin/DTO/contact_people.dart';
+import 'package:pilot_bazar_admin/DTO/get_all_vehicle_dao.dart';
 import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SocketMethodeProvider extends ChangeNotifier {
-  late SharedPreferences prefs;
+class SocketMethodProvider extends ChangeNotifier {
+  late SharedPreferences preference;
   int _count = 0;
   int get count => _count;
   bool themeModeValue = true;
 
-  Map<String, dynamic>? decodedBody;
   List _groupChatList = [];
+  List<GetAllVehicleDTO> vehicleCollection = [];
   List<ContactPeopleDTO> people = [];
-  List<ContactPeopleDTO> get getinboxChatListFromProvider => people;
-  List get getGroupChatListFromProvider => _groupChatList;
+
+  List<ContactPeopleDTO> get getInboxChatListFromProvider => people;
+  List<GetAllVehicleDTO> get getVehicleCollection => vehicleCollection;
+
+  getVehicleCollectionMethod() async {
+    preference = await SharedPreferences.getInstance();
+   Response response = await http.get(
+      Uri.parse("$APP_APISERVER_URL/api/v1/vendor-management/vehicles"),
+      headers:  {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'application/gzip',
+        'Authorization': 'Bearer ${preference.getString('token')}'
+      },
+    );
+    print("vehicle collection is : ${response.body.toString()}");
+   
+    final decodedBody = jsonDecode(response.body);
+     print("get vehicle collection ${response.body}");
+    for (var each in decodedBody) {
+      vehicleCollection.add(GetAllVehicleDTO.fromObject(each));
+    }
+    notifyListeners();
+    return vehicleCollection;
+  }
+
+
 
   getInbox(String xAppContact) async {
-    print("get inbox people methode");
+    print("get inbox people method");
     print(" Token: ${messengerAPIToken}, $APP_MESSENGER_URL/contacts");
     people.clear();
     Response response =
@@ -39,8 +65,6 @@ class SocketMethodeProvider extends ChangeNotifier {
     for (var each in jsonData) {
       people.add(ContactPeopleDTO.fromObject(each));
     }
-
-    //  _inboxChatList.add(contact);
 
     notifyListeners();
 
@@ -84,13 +108,13 @@ class SocketMethodeProvider extends ChangeNotifier {
     return _groupChatList;
   }
 
-  SocketMethodeProvider() {
+  SocketMethodProvider() {
     _loadPreferences();
   }
 
   void _loadPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    themeModeValue = prefs.getBool('themeBool') ?? true;
+    preference = await SharedPreferences.getInstance();
+    themeModeValue = preference.getBool('themeBool') ?? true;
     notifyListeners();
   }
 }

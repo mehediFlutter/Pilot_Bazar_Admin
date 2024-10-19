@@ -3,283 +3,104 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:pilot_bazar_admin/DTO/vehicle_detail_dto.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
-import 'package:pilot_bazar_admin/widget/unic_title_and_details_function_class.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:photo_view/photo_view.dart';
 
 class VehicleDetails extends StatefulWidget {
-  final Map? todo;
-  final List? ImageLinkListForVehicleDetails;
-  final int id;
-  final String? code;
-  final String? brandName;
-  final String? detailsVehicleManufacture;
-  final String? detailsVehicleManuConditioin;
-  final String? detailsVehicleImageName;
-  final String? engine;
-  final String? engines;
-  final String? detailsCondition;
-  final String? detailsMillege;
-  final String? detailsTransmission;
-  final String? detailsGrade;
-  final String? model;
-  final String? price;
-  final String? vehicleName;
-  final String? color;
-  final String? term_and_edition;
+  final String id;
 
-  final String? dropdownFontLight;
-  final String? dropdownFontLightAnswer;
-  final String? dropdownSeat;
-  final String? dropdownSeatAnswer;
-  final String? dropdownRoof;
-  final String? dropdownRoofAnswer;
-  final String? dropdownStarOption;
-  final String? dropdownStarOptionAnswer;
-  final String? detailsFuel;
-  final String? detailsRegistration;
-  final String? skeleton;
-  final String? registration;
-
-  const VehicleDetails(
-      {super.key,
-      this.todo,
-      this.ImageLinkListForVehicleDetails,
-      required this.id,
-      this.code,
-      this.brandName,
-      this.detailsVehicleManufacture,
-      this.detailsVehicleManuConditioin,
-      this.detailsVehicleImageName,
-      this.engine,
-      this.engines,
-      this.detailsCondition,
-      this.detailsMillege,
-      this.detailsTransmission,
-      this.detailsFuel,
-      this.detailsRegistration,
-      this.detailsGrade,
-      this.model,
-      this.skeleton,
-      this.registration,
-      this.dropdownFontLight,
-      this.dropdownFontLightAnswer,
-      this.dropdownSeat,
-      this.dropdownSeatAnswer,
-      this.dropdownRoof,
-      this.dropdownRoofAnswer,
-      this.dropdownStarOption,
-      this.dropdownStarOptionAnswer,
-      this.price,
-      this.color,
-      this.term_and_edition,
-      this.vehicleName});
+  const VehicleDetails({
+    super.key,
+    required this.id,
+  });
 
   @override
   State<VehicleDetails> createState() => _VehicleDetailsState();
 }
 
 class _VehicleDetailsState extends State<VehicleDetails> {
-  bool _getDataInProgress = false;
   List unicTitle = [];
   List details = [];
-  //final todo = widget.todo;
-  SharedPreferences? Preffs;
-  bool isDetailsEmpty = false;
 
-  Future getDetails() async {
-    print(widget.id);
-    Preffs = await SharedPreferences.getInstance();
+  SharedPreferences? preference;
+  bool isFeatureDetails = false;
+  List vehicleFeature = [];
+  List? vehicleSpecialFeature = [];
 
-    _getDataInProgress = true;
+  String? vehicleName;
+  String? vehiclePrice;
+  String? vehicleCode;
+
+  Future specialFeatures() async {
+    print("Special Feature method");
+    preference = await SharedPreferences.getInstance();
+
+    Response response = await get(
+      Uri.parse(
+          "$APP_APISERVER_URL/api/v1/vendor-management/vehicles/${widget.id}"),
+      headers: await {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'application/gzip',
+        'Authorization': 'Bearer ${preference?.getString('token')}'
+      },
+    );
+
+    print("Feature status code : ${response.statusCode}");
+    
+
+    final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+       VehicleDetailDTO dto = await VehicleDetailDTO.fromObject(decodedResponse);
+      print("Feature DTO Json");
+       print(dto.toJson());
+       print("DTO to details");
+       print(dto.toDetails());
+      //   print(dto.feature?[0].title??'None');
+      //   print(dto.special?[0].title??'None');
+      //  print(dto.gallery?[0].title??'None');
+      //  print(dto.gallery?[0].share??'None');
+      
+
+  
+
+    vehicleName = decodedResponse['title'];
+    vehiclePrice = decodedResponse['price'];
+    vehicleCode = decodedResponse['code'];
     if (mounted) {
       setState(() {});
     }
 
-    Response? response;
-    if (Preffs?.getString('token') == null) {
-      response = await get(
-        Uri.parse(
-            // https://pilotbazar.com/api/merchants/vehicles/products/features/105
-            "${baseUrl}api/clients/vehicles/products/features/${widget.id}"),
-      );
-    } else {
-      response = await get(
-          Uri.parse(
-              "${baseUrl}api/merchants/vehicles/products/features/${widget.id}"),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
-            'Authorization': 'Bearer ${Preffs!.getString('token')}'
-          });
-    }
-    //${baseUrl}api/vehicle?page=0
-    //https://crud.teamrabbil.com/api/v1/ReadProduct
-    print("Get Details methodes");
-    print(response.statusCode);
-    final Map<String, dynamic> decodedResponse = jsonDecode(response!.body);
-    if (decodedResponse['payload'].length == 0) {
-      isDetailsEmpty = true;
+    vehicleFeature = decodedResponse['feature'];
+
+    if (decodedResponse['special'] != null) {
+      isFeatureDetails = true;
+      vehicleSpecialFeature = decodedResponse['special'];
+      print("Special features are ${vehicleSpecialFeature}");
       setState(() {});
     }
-    List<dynamic> vehicleFeatures = decodedResponse['payload'];
 
-    List<FeatureDetailPair> featureDetailPairs =
-        extractFeatureDetails(vehicleFeatures);
-
-    for (var pair in featureDetailPairs) {
-      unicTitle.add(pair.featureTitle);
-      details.add(pair.detailTitles.join(', '));
-    }
-    _getDataInProgress = false;
-    if (mounted) {
+    if (decodedResponse['gallery'] != null) {
+      ImageLinkList = decodedResponse['gallery'];
       setState(() {});
     }
-    for (int y = 0; y < unicTitle.length; y++) {
-      print(
-        unicTitle[y],
-      );
-      print(
-        details[y],
-      );
-    }
+
+    setState(() {});
+    //  List<dynamic> vehicleFeatures = decodedResponse['feature'];
+
+    print("Feature title and value:  ${vehicleFeature}");
   }
 
   final String fallbackImage =
       "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png";
 
-  Future getImageLink() async {
-    Preffs = await SharedPreferences.getInstance();
-    Response? response;
-    if (Preffs?.getString('token') == null) {
-      response = await get(
-        Uri.parse(
-            '${baseUrl}api/clients/vehicles/products/${widget.id}/detail'),
-      );
-    } else {
-      response = await get(
-          Uri.parse(
-              '${baseUrl}api/merchants/vehicles/products/${widget.id}/detail'),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
-            'Authorization': 'Bearer ${Preffs!.getString('token')}'
-          });
-    }
-    print("This is getImageLink function Status Code");
-    print(response.statusCode);
-    print(response.body);
-
-    final Map<String, dynamic> decodedResponse = jsonDecode(response!.body);
-    List<dynamic> imageGallry = decodedResponse['payload']['gallery'];
-    print("Length");
-    print(imageGallry.length);
-  }
-
-  Future<void> getImages() async {
-    Preffs = await SharedPreferences.getInstance();
-    _getImages = true;
-    if (mounted) {
-      setState(() {});
-    }
-    Response? response1;
-    if (Preffs?.getString('token') == null) {
-      response1 = await get(
-        Uri.parse(
-            "${baseUrl}api/clients/vehicles/products/${widget.id}/detail"),
-      );
-    } else {
-      response1 = await get(
-          Uri.parse(
-              "${baseUrl}api/merchants/vehicles/products/${widget.id}/detail"),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
-            'Authorization': 'Bearer ${Preffs!.getString('token')}'
-          });
-    }
-    print(response1?.statusCode);
-
-    final Map<String, dynamic> decodedResponse1 = jsonDecode(response1!.body);
-    List<dynamic> imageGallary = decodedResponse1['payload']['gallery'];
-
-    imageGallary.forEach((e) {
-      ImageLinkList.add(e['name']);
-      //  ImageLink=e['name'];
-      //ImageLinkList.add(ImageLink);
-    });
-
-    // for (int b = 0; b < decodedResponse1['payload']['gallery'].length; b++) {
-    //   ImageLink = decodedResponse1['payload']["gallery"][b]?['name'] ?? '';
-    //   ImageLinkList.add(ImageLink);
-    // }
-
-    print("From List Image Links are");
-    for (int c = 0; c < ImageLinkList.length; c++) {
-      print(ImageLinkList[c]);
-    }
-    print("List of Images list is ");
-    print(ImageLinkList.length);
-    _getImages = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   static Map? todo;
 
   List<String> lessFeatureTitle = [];
   List<String> lessFeatureDetails = [];
-
-  getFeature() {
-    lessFeatureTitle.clear();
-    lessFeatureDetails.clear();
-    lessFeatureTitle.addAll([
-      'Brand  ',
-      'Model ',
-      'Engine ',
-      'Condition  ',
-      'Mileage ',
-      'Transmission ',
-      'Color ',
-      "Trim & Edition ",
-      'Fuel ',
-      'Skeleton ',
-      'Registration ',
-      'Grade ',
-      'Manufacture'
-    ]);
-
-    lessFeatureDetails.addAll([
-      widget.brandName.toString(),
-      widget.model.toString(),
-      widget.engine.toString(),
-      widget.detailsCondition.toString(),
-      widget.detailsMillege.toString(),
-      // widget.term_and_edition.toString(),
-      widget.detailsTransmission.toString(),
-      widget.color.toString(),
-      widget.term_and_edition.toString(),
-      widget.detailsFuel.toString(),
-      widget.skeleton.toString(),
-      widget.registration.toString(),
-      widget.detailsGrade.toString(),
-      widget.detailsVehicleManufacture.toString(),
-    ]);
-
-    setState(() {});
-    print("length of less Feature Title");
-    print(lessFeatureTitle.length);
-    for (var index in lessFeatureTitle) {
-      print(index);
-    }
-    for (var index in lessFeatureDetails) {
-      print(index);
-    }
-  }
 
   List imageList = [];
   String? ImageLink;
@@ -291,17 +112,14 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     print("hello i am in details page");
     print("ID ${widget.id}");
 
-    getDetails();
-    //  getImageLink();
-    getImages();
+    specialFeatures();
 
-    todo = widget.todo;
     if (todo != null) {
       String name = todo?['vehicleName'] ?? '';
       print("Name is");
       print(name);
     }
-    getFeature();
+
     _pageController = PageController(initialPage: 0);
     startAutoPlay();
     //getImages();
@@ -314,7 +132,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json',
-          'Authorization': 'Bearer ${Preffs!.getString('token')}'
+          'Authorization': 'Bearer ${preference!.getString('token')}'
         });
     print('statuc cdoe');
     print(response.statusCode);
@@ -371,7 +189,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 Center(
                   child: Text(
-                    widget.vehicleName.toString(),
+                    vehicleName.toString(),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
@@ -408,13 +226,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                         children: [
                                           Expanded(
                                             child: PhotoViewGallery.builder(
-                                              itemCount:
-                                                  ImageLinkList.length ?? 0,
+                                              itemCount: ImageLinkList.length,
                                               builder: (context, index) {
                                                 return PhotoViewGalleryPageOptions
                                                     .customChild(
                                                   child: Image.network(
-                                                    '${baseUrl}storage/galleries/${ImageLinkList[index] ?? '${baseUrl}storage/vehicles/${widget.detailsVehicleImageName.toString()}'}',
+                                                    '${ImageLinkList[index]}',
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (context,
                                                         error, stackTrace) {
@@ -474,7 +291,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                   itemBuilder: (context, index) {
                                     return PhotoView(
                                       imageProvider: NetworkImage(
-                                          '${baseUrl}storage/galleries/${ImageLinkList[index] ?? '${baseUrl}storage/vehicles/${widget.detailsVehicleImageName.toString()}'}'),
+                                          '${ImageLinkList[index]}'),
                                       minScale:
                                           PhotoViewComputedScale.contained *
                                               1.1, // Adjust as needed
@@ -492,47 +309,67 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                               ),
                             ),
                             Positioned(
-                              left: -10,
+                                left: -10,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle, // Circular shape
+                                    color: Colors.grey.withOpacity(
+                                        0.2), // Add background color here
+                                  ),
+                                  padding: EdgeInsets.all(3.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape:
+                                          CircleBorder(), // This makes the button circular
+                                      padding: EdgeInsets.all(
+                                          8), // Adjust padding inside the button
+                                      backgroundColor: Colors
+                                          .transparent, // Button background is transparent
+                                    ),
+                                    onPressed: () {
+                                      if (_currentIndex > 0) {
+                                        _pageController.previousPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      size: 28,
+                                      color: Colors.white, // Icon color
+                                    ),
+                                  ),
+                                )),
+                            Positioned(
+                              // top: 20,
+                              right: -10,
                               child: Container(
-                                padding: EdgeInsets.all(
-                                    8.0), // Adjust the padding as needed
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle, // Circular shape
+                                  color: Colors.grey.withOpacity(
+                                      0.2), // Add background color here
+                                ),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
+                                      shape:
+                                          CircleBorder(), // This makes the button circular
+                                      padding: EdgeInsets.all(8),
                                       backgroundColor: Colors.transparent),
                                   onPressed: () {
-                                    if (_currentIndex > 0) {
-                                      _pageController.previousPage(
+                                    if (_currentIndex <
+                                        ImageLinkList.length - 1) {
+                                      _pageController.nextPage(
                                         duration: Duration(milliseconds: 300),
                                         curve: Curves.easeInOut,
                                       );
                                     }
                                   },
                                   child: Icon(
-                                    Icons.arrow_back,
-                                    size: 60,
+                                    Icons.arrow_forward,
+                                    size: 28,
                                     color: Colors.white,
                                   ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              // top: 20,
-                              right: -10,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent),
-                                onPressed: () {
-                                  if (_currentIndex <
-                                      ImageLinkList.length - 1) {
-                                    _pageController.nextPage(
-                                      duration: Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 60,
                                 ),
                               ),
                             ),
@@ -561,14 +398,14 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            '${baseUrl}storage/galleries/${ImageLinkList[index] ?? '${baseUrl}storage/vehicles/${widget.detailsVehicleImageName.toString()}'}',
+                            '${ImageLinkList[index]}',
                             errorBuilder: (context, error, stackTrace) {
                               return Image.network(
                                 "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png", // Fallback image URL
                                 fit: BoxFit.cover,
                               );
                             },
-                            width: 100,
+                            width: 140,
                             height: 100,
                             fit: BoxFit.cover,
                           ),
@@ -586,7 +423,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 SizedBox(height: 5),
                 Container(
                   width: double.infinity,
-                  height: 120,
+                  height: 90,
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 178, 224, 179),
                       borderRadius: BorderRadius.circular(10)),
@@ -596,8 +433,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                     title: Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: Text(
-                        "BDT ${widget.price ?? ''}",
-                        // "BDT  ${todo?['price']??''} Tk",
+                        "${vehiclePrice}",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.black, fontWeight: FontWeight.w600),
                       ),
@@ -621,7 +457,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                 .titleLarge!
                                 .copyWith(color: Colors.black, fontSize: 15)),
                         Text(
-                            "${widget.code}"
+                            "${vehicleCode}"
                             // todo?['code']??''.toString()
                             ,
                             style: Theme.of(context)
@@ -648,7 +484,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                     child: ListView.separated(
                       primary: false,
                       shrinkWrap: true,
-                      itemCount: lessFeatureTitle.length,
+                      itemCount: vehicleFeature.length,
                       itemBuilder: (context, index) {
                         return
                             //  contentPadding: EdgeInsets.zero,
@@ -659,7 +495,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                 child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 20, bottom: 10),
-                              child: Text(lessFeatureTitle[index],
+                              child: Text(vehicleFeature[index]['title'],
                                   style: small14StyleW500),
                             )),
                             //Text(":",style: TextStyle(color: Colors.white),),
@@ -668,7 +504,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                             ),
 
                             Expanded(
-                                child: Text(lessFeatureDetails[index],
+                                child: Text(vehicleFeature[index]['value'],
                                     style: small14StyleW500)),
                           ],
                         );
@@ -684,9 +520,8 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                       },
                     )),
                 height20,
-                isDetailsEmpty
-                    ? SizedBox()
-                    : Padding(
+                isFeatureDetails
+                    ? Padding(
                         padding: EdgeInsets.only(left: 20, bottom: 10),
                         child: Text(
                           "Special Features",
@@ -699,23 +534,26 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                       const Color.fromARGB(255, 175, 173, 173),
                                   fontSize: 20),
                         ),
-                      ),
-                isDetailsEmpty
-                    ? SizedBox()
-                    : Container(
+                      )
+                    : SizedBox(),
+                isFeatureDetails
+                    ? Container(
                         width: double.infinity,
                         child: ListView.separated(
                           primary: false,
                           shrinkWrap: true,
-                          itemCount: unicTitle.length,
+                          itemCount: vehicleSpecialFeature?.length ?? 0,
                           itemBuilder: (context, index) {
+                            print(
+                                "length of spcecial feature ${vehicleSpecialFeature?.length}");
                             return Row(
                               children: [
                                 Expanded(
                                     child: Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, bottom: 10),
-                                  child: Text(unicTitle[index],
+                                  child: Text(
+                                      vehicleSpecialFeature?[index]['title'],
                                       style: small14StyleW500),
                                 )),
                                 SizedBox(
@@ -725,7 +563,10 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                     child: Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, bottom: 10),
-                                  child: Text(details[index],
+                                  child: Text(
+                                      vehicleSpecialFeature?[index]['value']
+                                              .join(', ') ??
+                                          '',
                                       style: small14StyleW500),
                                 )),
                               ],
@@ -737,7 +578,8 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                               height: 0,
                             );
                           },
-                        )),
+                        ))
+                    : SizedBox(),
               ],
             ),
           ),

@@ -31,7 +31,7 @@ class SocketMethod {
     // S.A.C automobil 01j9f3d86s4wgnnxjja828dez0
     // pilot bazar 01j9f3d858nrejs1zdz0z2kx5h
     Map<String, dynamic> body = {
-      "userid": user.payload?.user?.id,
+      "userid": user.id,
       "issued": "F"
     };
 

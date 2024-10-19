@@ -23,3 +23,12 @@ https://websocket.pilotbazar.xyz/
 
               // and behind the seen when open bottom sheet then call the http upload api. to store attachment
               // delete or send
+
+
+
+[x] - one image, feature , Link
+[x] - one image, price, Link , feature + special feature 
+[x] - price ,link , feature + special feature
+
+[x] - All images
+[x] - feature + special features

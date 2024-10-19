@@ -13,7 +13,7 @@ void main() async {
 MultiProvider(
   providers: [
      ChangeNotifierProvider<ModeProvider>( create: (context) => ModeProvider()),
-        ChangeNotifierProvider<SocketMethodeProvider>( create: (context) => SocketMethodeProvider()),
+        ChangeNotifierProvider<SocketMethodProvider>( create: (context) => SocketMethodProvider()),
    
   ],
   child: PilotBazarAdmin(),

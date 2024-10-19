@@ -43,7 +43,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
-    print("User Name is  ${userInfoFromPrefs?.payload?.user?.name??''}");
+    print("User Name is  ${userInfoFromPrefs?.name??''}");
     setState(() {});
   }
 
@@ -70,7 +70,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
     callOnlinePeople();
 
-    final provider = Provider.of<SocketMethodeProvider>(context, listen: false);
+    final provider = Provider.of<SocketMethodProvider>(context, listen: false);
     provider.getInbox('people');
 
     SocketManager();
@@ -132,9 +132,9 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                 message_icon_path: 'assets/icons/sync.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
                 merchantName:
-                    userInfoFromPrefs?.payload?.user?.name ?? 'None',
+                    userInfoFromPrefs?.name ?? 'None',
                 companyName: userInfoFromPrefs
-                        ?.payload?.user?.phone ??
+                        ?.phone ??
                     "None",
                 onTapFunction: () {},
                 chatTap: () async {

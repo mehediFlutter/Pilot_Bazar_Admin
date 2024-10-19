@@ -201,8 +201,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Widget _buildBottomSheet(BuildContext context) {
-    allPerson = Provider.of<SocketMethodeProvider>(context, listen: false)
-        .getinboxChatListFromProvider;
+    allPerson = Provider.of<SocketMethodProvider>(context, listen: false)
+        .getInboxChatListFromProvider;
     return DraggableScrollableSheet(
       expand: false,
       builder: (context, scrollController) {

@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
     setState(() {});
-    saveToken(userInfo['payload']['token'].toString());
+    saveToken(userInfo['token'].toString());
     AuthToken().getToken();
   }
 

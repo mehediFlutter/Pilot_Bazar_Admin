@@ -37,15 +37,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late bool passwordVisible;
   late bool confirmPasswordVisible;
   bool isRegistrationInProgress = false;
+  late SharedPreferences prefss;
+    String? token;
+  String? authUserID;
 
   Future registration() async {
+    prefss = await SharedPreferences.getInstance();
     isRegistrationInProgress = true;
     if (mounted) {
       setState(() {});
     }
     Map<String, dynamic> body = {
       "name": nameController.text,
-      "phone": phoneNumberController.text,
+      "mobile": phoneNumberController.text,
       // "company_name": companyNameController.text,
 
       "password": passwordController.text,
@@ -53,15 +57,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     };
     if (passwordController.text == confirmPasswordController.text) {
       Response response = await post(
-          Uri.parse('$APP_APISERVER_URL/api/merchant/auth/register'),
+          Uri.parse('$APP_APISERVER_URL/api/v1/vendor-management/register'),
           headers: globalHeader,
           body: jsonEncode(body));
 
-
       Map decodedBody = jsonDecode(response.body.toString());
+      print(response.body);
       if (response.statusCode == 200) {
-        newlyRegistraterdWithLogin();
+        LoginModel model =
+            LoginModel.fromJson(decodedBody.cast<String, dynamic>());
+        await AuthUtility.saveUserInfo(model);
+        token = model.toJson()['token'];
+        authUserID = model.toJson()['id'];
+        await prefss.setString('token', token ?? '');
+        await prefss.setString('authUserID', authUserID ?? '');
+        isRegistrationInProgress = false;
+        if (mounted) {
+          setState(() {});
+        }
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
+            (route) => false);
       } else {
+        isRegistrationInProgress = false;
+        if (mounted) {
+          setState(() {});
+        }
         CustomAlertDialog().showAlertDialog(
           context,
           decodedBody['message'] + ' Please Try Again'.toString(),
@@ -83,8 +105,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  String? token;
-  String? authUserID;
+
 
   newlyRegistraterdWithLogin() async {
     SharedPreferences prefss = await SharedPreferences.getInstance();
@@ -102,7 +123,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       authUserID = model.toJson()['payload']['user']['id'];
       await prefss.setString('token', token ?? '');
       await prefss.setString('authUserID', authUserID ?? '');
-
 
       await AuthToken().saveToken(model.toJson()['payload']['token']);
       Navigator.pushAndRemoveUntil(

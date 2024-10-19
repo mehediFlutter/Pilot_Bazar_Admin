@@ -79,8 +79,8 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    peopleList = Provider.of<SocketMethodeProvider>(context,listen: true)
-        .getinboxChatListFromProvider;
+    peopleList = Provider.of<SocketMethodProvider>(context,listen: true)
+        .getInboxChatListFromProvider;
     setState(() {});
     Size size = MediaQuery.sizeOf(context);
 
