@@ -15,8 +15,8 @@ class ChatBubbl extends StatefulWidget {
 }
 
 class _ChatBubblState extends State<ChatBubbl> {
-String? showEmoji;
-Emojis emojis= Emojis();
+  String? showEmoji;
+  Emojis emojis = Emojis();
   bool _isPopupVisible = false;
 
   void _togglePopup() {
@@ -24,7 +24,6 @@ Emojis emojis= Emojis();
       _isPopupVisible = !_isPopupVisible;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +46,17 @@ Emojis emojis= Emojis();
                 children: [
                   widget.isMe
                       ? Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: PopupMenuButton(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: PopupMenuButton(
                             child: Container(
-                            padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(2),
                               child: Column(
                                 children: [
                                   Text("...",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold)),
-                               height20,
+                                  height20,
                                 ],
                               ),
                             ),
@@ -68,7 +67,8 @@ Emojis emojis= Emojis();
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 0, vertical: 0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
@@ -85,8 +85,7 @@ Emojis emojis= Emojis();
                                                 Navigator.pop(context);
                                               }),
                                           CreateEmojiAndOnTap(
-                                              emoji:
-                                                 emojis.RED_HEART,
+                                              emoji: emojis.RED_HEART,
                                               onTap: () {
                                                 showEmoji = emojis.RED_HEART;
                                                 if (mounted) {
@@ -95,10 +94,11 @@ Emojis emojis= Emojis();
                                                 Navigator.pop(context);
                                               }),
                                           CreateEmojiAndOnTap(
-                                              emoji: emojis.FACE_WITH_TEARS_OF_JOY,
+                                              emoji:
+                                                  emojis.FACE_WITH_TEARS_OF_JOY,
                                               onTap: () {
-                                                showEmoji =
-                                                    emojis.FACE_WITH_TEARS_OF_JOY;
+                                                showEmoji = emojis
+                                                    .FACE_WITH_TEARS_OF_JOY;
                                                 if (mounted) {
                                                   setState(() {});
                                                 }
@@ -130,7 +130,7 @@ Emojis emojis= Emojis();
                               ];
                             },
                           ),
-                      )
+                        )
                       : Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: Image.asset('assets/images/chatFont.png'),
@@ -140,10 +140,12 @@ Emojis emojis= Emojis();
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(15),
+                            padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               border: Border.all(color: searchBarBorderColor),
-                              color: const Color.fromARGB(255, 188, 204, 188),
+                              color: widget.isMe
+                                  ? const Color.fromARGB(255, 114, 200, 114)
+                                  : Colors.grey,
                               borderRadius: BorderRadius.only(
                                   topLeft: const Radius.circular(10),
                                   topRight: const Radius.circular(10),
@@ -189,8 +191,7 @@ Emojis emojis= Emojis();
                       ? SizedBox()
                       : TextButton(
                           onPressed: () {
-                        _togglePopup();
-
+                            _togglePopup();
                           },
                           child: Text("...",
                               textAlign: TextAlign.center,

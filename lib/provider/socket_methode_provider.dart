@@ -33,10 +33,8 @@ class SocketMethodProvider extends ChangeNotifier {
         'Authorization': 'Bearer ${preference.getString('token')}'
       },
     );
-    print("vehicle collection is : ${response.body.toString()}");
    
     final decodedBody = jsonDecode(response.body);
-     print("get vehicle collection ${response.body}");
     for (var each in decodedBody) {
       vehicleCollection.add(GetAllVehicleDTO.fromObject(each));
     }

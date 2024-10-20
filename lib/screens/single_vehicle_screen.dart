@@ -8,7 +8,6 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:pilot_bazar_admin/DTO/get_all_vehicle_dao.dart';
-import 'package:pilot_bazar_admin/DTO/vehicle_detail_dto.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/package/chatting/chat_tab_bar.dart/chat_Tab_bar.dart';
@@ -21,10 +20,10 @@ import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/screens/edit_price.dart';
 import 'package:pilot_bazar_admin/screens/vehicle-details.dart';
+import 'package:pilot_bazar_admin/share_details.dart/share_only_details.dart';
 import 'package:pilot_bazar_admin/shimmer_effect/shimmer_effect.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_method.dart';
-import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/products.dart';
 import 'package:pilot_bazar_admin/widget/search_text_fild.dart';
@@ -143,17 +142,16 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
     });
     //  pirntSocketChatToken();
 
-    callSocketManager();
     getVehicleCollection();
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      print("Hello");
+      if (socket.id == null) {
+        // getMessengeToken();
+      }
+    });
   }
 
-  callSocketManager() async {
-    await SocketMethod().authorizeChat();
-
-    while (messengerAPIToken == null || socket.id == null) {
-      await Future.delayed(Duration(seconds: 2));
-    }
-
+  getMessengeToken() async {
     await socketMethod.authorizeChat();
     await SocketManager();
   }
@@ -1482,7 +1480,6 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                 ),
                                 InkWell(
                                     onTap: () async {
-                                      print("Onli image");
                                       Navigator.pop(context);
 
                                       //    await newGetDetails(products[x + j].id);
@@ -1576,19 +1573,57 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                                 height5,
                                 InkWell(
                                     onTap: () async {
-                                      print("Onli image");
+                                      SharedPreferences? preferences;
+                                      preferences =
+                                          await SharedPreferences.getInstance();
                                       Navigator.pop(context);
 
-                                      await newGetDetails(
-                                          products[x + j].id ?? 12);
-                                      await getLink(products[x + j].id ?? 12);
-                                      await shareOnlyDetailsForMedia(
-                                          products[x + j].id,
-                                          products[x + j].vehicleName,
-                                          products[x + j].manufacture,
-                                          products[x + j].condition,
-                                          products[x + j].registration,
-                                          products[x].onlyMileage);
+                                      final feature = await ShareOnlyDetails()
+                                          .feature(
+                                              vehicleCollection?[x].id ?? '',
+                                              preferences.getString('token'));
+
+                                      List values = feature
+                                          .map(
+                                              (item) => item['value'] as String)
+                                          .toList();
+                                      String featureValues = values.join(', ');
+
+                                      // final spacialFeature =
+                                      //     await ShareOnlyDetails()
+                                      //         .specialFeature(
+                                      //             vehicleCollection?[x].id ??
+                                      //                 '');
+
+                                      // List<String> specialValues = [];
+                                      // for (var item in spacialFeature) {
+                                      //   if (item['value'] is List) {
+                                      //     specialValues.addAll(
+                                      //         (item['value'] as List)
+                                      //             .map((v) => v.toString()));
+                                      //   } else {
+                                      //     specialValues
+                                      //         .add(item['value'].toString());
+                                      //   }
+                                      // }
+
+                                      // // Join the values with a comma
+                                      // String SpecialfeatureValues =
+                                      //     specialValues.join(', ');
+                                      // print(SpecialfeatureValues);
+
+                                      await Share.share(featureValues);
+
+                                      // await newGetDetails(
+                                      //     products[x + j].id ?? 12);
+                                      // await getLink(products[x + j].id ?? 12);
+                                      //   await shareOnlyDetailsForMedia(
+                                      //     products[x + j].id,
+                                      //     products[x + j].vehicleName,
+                                      //     products[x + j].manufacture,
+                                      //     products[x + j].condition,
+                                      //     products[x + j].registration,
+                                      //     products[x].onlyMileage);
                                     },
                                     child: insidePopubButton(
                                         context, "Details (শুধু তথ্য)")),

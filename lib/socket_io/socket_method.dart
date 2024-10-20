@@ -30,16 +30,15 @@ class SocketMethod {
     };
     // S.A.C automobil 01j9f3d86s4wgnnxjja828dez0
     // pilot bazar 01j9f3d858nrejs1zdz0z2kx5h
-    Map<String, dynamic> body = {
-      "userid": user.id,
-      "issued": "F"
-    };
+    print("User id for Authorize ${user.id}");
+    Map<String, dynamic> body = {"userid": user.id, "issued": "F"};
 
     Response response = await http.post(
       Uri.parse(url),
       headers: headers,
       body: jsonEncode(body),
     );
+    print("Response : ${response.body}");
 
     if (response.statusCode == 200) {
       final decodedBody = jsonDecode(response.body);
@@ -180,11 +179,7 @@ class SocketMethod {
       var group = await {
         "id": groups["id"],
         "image": groups['image'],
-
-        "room": {
-          "id":groups['room']['id'], "name": groups["room"]['name']},
-          
-
+        "room": {"id": groups['room']['id'], "name": groups["room"]['name']},
         "chat": {
           "bracket": groups['chat']['bracket'],
           "content": groups['chat']['content'],

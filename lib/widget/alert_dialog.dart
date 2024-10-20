@@ -25,6 +25,7 @@ class CustomAlertDialog {
               child: Center(
                 child: TextButton(
                   onPressed: () {
+                   
                     Navigator.of(context).pop(); // Close the dialog
                   },
                   child: Text(

@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,11 +14,11 @@ class ProductDTO {
 
   factory ProductDTO.fromJson(Map<String, dynamic> data) {
     return ProductDTO(
-      id: data['id'],
-      title: data['title'],
-      code: data['code'],
-      image: data['image'],
-      price: data['price'],
+      id    :     data['id'],
+      title :     data['title'],
+      code  :     data['code'],
+      image :     data['image'],
+      price :     data['price'],
     );
   }
 }
@@ -73,7 +71,7 @@ class GalleryDTO {
 }
 
 class VehicleDetailDTO {
-  ProductDTO? product;
+  ProductDTO?       product;
   List<FeatureDTO>? feature;
   List<SpecialDTO>? special;
   List<GalleryDTO>? gallery;

@@ -194,7 +194,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                                         (activeList?[index].name?.length ?? 0) >
                                             5)
                                     ? '${activeList?[index].name?.substring(0, 5)}...'
-                                    : activeList?[index]?.name ?? '',
+                                    : activeList?[index].name ?? '',
                                 style: TextStyle(fontSize: 12),
                               )
                             ],

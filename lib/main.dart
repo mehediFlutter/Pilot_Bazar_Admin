@@ -6,16 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-      WidgetsFlutterBinding.ensureInitialized(); // Make sure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized(); // Make sure Flutter is initialized
   await SharedPreferences.getInstance(); // Initialize SharedPreferences
-  runApp(
-    
-MultiProvider(
-  providers: [
-     ChangeNotifierProvider<ModeProvider>( create: (context) => ModeProvider()),
-        ChangeNotifierProvider<SocketMethodProvider>( create: (context) => SocketMethodProvider()),
-   
-  ],
-  child: PilotBazarAdmin(),
-));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<ModeProvider>(create: (context) => ModeProvider()),
+      ChangeNotifierProvider<SocketMethodProvider>(
+          create: (context) => SocketMethodProvider()),
+    ],
+    child: PilotBazarAdmin(),
+  ));
 }

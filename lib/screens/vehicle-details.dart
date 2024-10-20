@@ -88,7 +88,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     }
 
     //  List<dynamic> vehicleFeatures = decodedResponse['feature'];
-     isFeatureInProgress = false;
+    isFeatureInProgress = false;
     if (mounted) {
       setState(() {});
     }
@@ -191,7 +191,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 Center(
                   child: Text(
-                  isFeatureInProgress? '' : vehicleName??'',
+                    isFeatureInProgress ? '' : vehicleName ?? '',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
@@ -435,7 +435,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                     title: Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: Text(
-                        "${vehiclePrice}",
+                        isFeatureInProgress ? '' : vehiclePrice ?? '',
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.black, fontWeight: FontWeight.w600),
                       ),

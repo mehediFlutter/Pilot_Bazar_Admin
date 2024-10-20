@@ -17,7 +17,7 @@ class FeatureProvider with ChangeNotifier {
   List<VehicleDetailDTO> get getVehicleFeature     => vehicleFeature;
 
   features(String id) async {
-    print("Special Feature method");
+
     preference = await SharedPreferences.getInstance();
 
     Response response = await get(

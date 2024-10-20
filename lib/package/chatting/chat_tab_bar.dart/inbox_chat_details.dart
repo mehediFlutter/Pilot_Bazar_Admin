@@ -115,15 +115,14 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       String messageFromTextField) {
     print("Socket message");
 
-    //{room: {id: 01ja8xxk0vfxjx6p4kqt88fdyq, name: StalwartHawk}, bracket: T, content: vaiy }
-//{contact: {id: 01ja8xxk0vfxjx6p4kqt88fdyq, name: StalwartHawk}, bracket: T, content: vaiy }
-
     SendMessageDAO sendMessageDAO =
         SendMessageDAO.fromParam(roomId, roomName, "T", messageFromTextField);
 
     print("from DAO");
     print(sendMessageDAO.toObject());
     socket.emit('createChat', sendMessageDAO.toObject());
+    scrollDown();
+    setState(() {});
   }
 
   @override
@@ -167,22 +166,19 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
       sendMessageController.clear(); // Clear the input field
 
       setState(() {}); // Update the UI
+      scrollDown();
     });
 
     socket.on('reloadChat', (data) async {
       var message = data;
       print("reload chat");
-
       message['side'] = 'L';
-      print("From reload chat data");
-      print(data);
-      print("From reload chat message");
-      print(message);
 
       await Future(() {
-        getChats.add(message); // Add the data to getChats
+        getChats.add(message);
       });
       setState(() {});
+      scrollDown();
     });
 
     myFocusNode.addListener(() {
@@ -191,6 +187,14 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).addListener(() {
+        if (!myFocusNode.hasFocus) {
+          myFocusNode.unfocus();
+        }
+      });
+    });
+
     Future.delayed(Duration(milliseconds: 500), () => scrollDown());
   }
 
@@ -205,7 +209,6 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
         // bottomNavigationBar: Row(
@@ -216,13 +219,11 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-         
-             drawer_icon_path: 'assets/icons/beside_message.png',
+              drawer_icon_path: 'assets/icons/beside_message.png',
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.image,
               merchantName: widget.name,
               companyName: '',
-             
             ),
           ),
           height10,
@@ -233,7 +234,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               itemCount: getChats.length + 1,
               itemBuilder: (context, index) {
                 if (index == getChats.length) {
-                  return SizedBox(height: 30);
+                  return SizedBox(height: 0);
                 }
                 return ChatBubbl.ChatBubble(
                     message: getChats[index]['chat']['content'],
@@ -245,18 +246,17 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
           ),
           Column(
             children: [
-             
               Row(
                 children: [
                   DocumentsAddIcon(onImageSelected: handleImageSelected),
                   SendMessageTextFild(
                       sendMessageController: sendMessageController,
                       myFocusNode: myFocusNode),
-                       if (selectedImage != null) ...[
-                const SizedBox(height: 20),
-                Image.file(File(selectedImage!.path),
-                    width: 20, height: 20),
-              ],
+                  if (selectedImage != null) ...[
+                    const SizedBox(height: 20),
+                    Image.file(File(selectedImage!.path),
+                        width: 20, height: 20),
+                  ],
                   IconButton(
                     onPressed: () {
                       if (sendMessageController.text.isNotEmpty) {
@@ -268,7 +268,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
                         );
                         sendMessageController.clear();
                       }
-              
+
                       scrollDown(); // Ensure scrolling after message sending
                     },
                     icon: Image.asset('$iconsPath/semd_message.png'),
