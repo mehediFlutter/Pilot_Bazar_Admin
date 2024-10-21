@@ -13,14 +13,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SocketMethod {
   String? authorizeChatToken;
   Map? syncBodyContactNumbers;
-  late SharedPreferences prefss;
+  late SharedPreferences preference;
   // loadUserInfo() async {
   //   LoginModel user = await AuthUtility.getUserInfo();
   //   userInfo = user.toJson();
   // }
   Future authorizeChat() async {
-    prefss = await SharedPreferences.getInstance();
+    preference = await SharedPreferences.getInstance();
     LoginModel user = await AuthUtility.getUserInfo();
+    print("login token authorizeChat method ${preference.getString('token')}");
 
     final url = '$APP_MESSENGER_URL/authorize';
     final headers = {
@@ -31,7 +32,9 @@ class SocketMethod {
     // S.A.C automobil 01j9f3d86s4wgnnxjja828dez0
     // pilot bazar 01j9f3d858nrejs1zdz0z2kx5h
     print("User id for Authorize ${user.id}");
-    Map<String, dynamic> body = {"userid": user.id, "issued": "F"};
+    Map<String, dynamic> body = {"userid": user.id,
+     "device": "${preference.getString('token')}",
+     "issued": "F"};
 
     Response response = await http.post(
       Uri.parse(url),
@@ -57,7 +60,7 @@ class SocketMethod {
       messengerAPIToken = await decodedBody['token'];
       authorizeChatToken = await decodedBody['token'];
     }
-    await prefss.setString("authorizeChatToken", authorizeChatToken.toString());
+    await preference.setString("authorizeChatToken", authorizeChatToken.toString());
 
     // if (messengerAPIToken != null) {
     //   await SocketManager();

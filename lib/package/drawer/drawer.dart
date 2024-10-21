@@ -359,7 +359,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       });
                       isLogOutBool = !isLogOutBool;
                       setState(() {});
-                    }),
+                    }
+                    ),
 
                 // change theme
 

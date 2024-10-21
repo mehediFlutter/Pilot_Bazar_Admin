@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pilot_bazar_admin/const/path.dart';
-import 'package:pilot_bazar_admin/new_single_screen/new_single_screen_vehicle.dart';
+import 'package:pilot_bazar_admin/screens/new_single_screen/new_single_screen_vehicle.dart';
 import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 
 class BottomNavBaseScreen extends StatefulWidget {

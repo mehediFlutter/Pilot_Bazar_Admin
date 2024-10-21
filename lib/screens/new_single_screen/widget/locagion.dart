@@ -17,7 +17,7 @@ class Location extends StatelessWidget {
         ),
         Text(
           available,
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 12,height: 0),
         ),
       ],
     );

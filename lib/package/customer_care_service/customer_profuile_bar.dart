@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
+import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
+import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
+import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 
 class CustomerProfileBar extends StatefulWidget {
@@ -34,6 +38,14 @@ class CustomerProfileBar extends StatefulWidget {
 
 class _CustomerProfileBarState extends State<CustomerProfileBar> {
   @override
+    var userInfo;
+   loadUserInfo() async {
+    LoginModel user = await AuthUtility.getUserInfo();
+    userInfo = user.toJson();
+    setState(() {});
+    print(userInfo.toString());
+    print(userInfo['name'].toString());
+  }
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
@@ -85,6 +97,26 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                   ],
                 ),
               Spacer(),
+              ElevatedButton(onPressed: (){
+            
+                      CustomAlertDialog().logOutDialog(
+                          context,
+                          "Are you sure want to logOut ? ",
+                          'Yes',
+                          'No', () async {
+                        await AuthUtility.clearUserInfo();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TabBarViewLoginAndRegistration()),
+                            (route) => false);
+                        await loadUserInfo();
+                      });
+                   
+                    
+                    
+              }, child: Text("Logout")),
                 SvgPicture.asset(
                   widget.notification_image_path ?? '',
                 ),
