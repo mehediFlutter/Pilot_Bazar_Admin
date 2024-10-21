@@ -1275,7 +1275,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                   Builder(builder: (context) {
                     return CustomerProfileBar(
                       profileImagePath: '',
-                      message_icon_path:
+                      notification_image_path:
                           'assets/icons/message_notification.png',
                       chatTap: () async {
                         print(socket.id);

@@ -67,7 +67,7 @@ class _CustomerBudgetInfoState extends State<CustomerBudgetInfo> {
     return ReUsableMotherWidget(isSingleChildScrollView: true, children: [
       CustomerProfileBar(
         profileImagePath: 'assets/images/small_profile.png',
-        message_icon_path: 'assets/icons/message_notification.png',
+        notification_image_path: 'assets/icons/message_notification.png',
         drawer_icon_path: 'assets/icons/beside_message.png',
         onTapFunction: () {
           Navigator.push(context,

@@ -129,7 +129,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
                 // userInfoFromPrefs
                 //         ?.payload?.merchant?.merchantInfo?.image?.name ??
                     '',
-                message_icon_path: 'assets/icons/sync.png',
+                notification_image_path: 'assets/icons/sync.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
                 merchantName:
                     userInfoFromPrefs?.name ?? 'None',

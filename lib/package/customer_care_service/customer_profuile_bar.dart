@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 
 class CustomerProfileBar extends StatefulWidget {
   final String profileImagePath;
-  final String? message_icon_path;
+  final String? notification_image_path;
   final String? drawer_icon_path;
   final String? merchantName;
   final String? companyName;
@@ -18,7 +19,7 @@ class CustomerProfileBar extends StatefulWidget {
     required this.profileImagePath,
     this.onTapFunction,
     this.chatTap,
-    this.message_icon_path,
+    this.notification_image_path,
     this.drawer_icon_path,
     this.drawerTap,
     this.merchantName,
@@ -34,79 +35,62 @@ class CustomerProfileBar extends StatefulWidget {
 class _CustomerProfileBarState extends State<CustomerProfileBar> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      onTap: widget.onTapFunction,
-      leading: Container(
-        height: 30,
-        width: 35,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadious10,
-        ),
-        child: Image.network(
-          widget.isChatAvater
-              ? widget.chatAvater ?? ''
-              : (widget.profileImagePath.isNotEmpty)
-                  ? "https://click4details.com/storage/merchants/${widget.profileImagePath}"
-                  : errorPerson,
-          //  height: 80,
-        ),
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.merchantName ?? 'None',
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF444444),
-              height: 0,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+      
+          //  onTap: widget.onTapFunction,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadious10,
+                  ),
+                  child: Image.asset(
+                    widget.isChatAvater
+                        ? widget.chatAvater ?? ''
+                        : (widget.profileImagePath.isNotEmpty)
+                            ? widget.profileImagePath
+                            : errorPerson,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.merchantName ?? 'Kabir Khan',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        height: 0,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.companyName ?? 'kabirkhan@example.com',
+                     style: const TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        height: 0,
+                      ),
+                    ),
+                  ],
+                ),
+              Spacer(),
+                SvgPicture.asset(
+                  widget.notification_image_path ?? '',
+                ),
+              ],
             ),
-          ),
-          Text(
-            widget.companyName ?? 'None',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // here is the message option temporary comment out
-        widget.message_icon_path!=null?  GestureDetector(
-            onTap: widget.chatTap,
-            child: Container(
-              height: 30,
-              width: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadious8,
-                border: Border.all(color: BorderRadious8Color),
-              ),
-              child: Image.asset(
-                widget.message_icon_path ?? '',
-              )
-            ),
-          ):SizedBox(),
-          const SizedBox(width: 10),
-          GestureDetector(
-            onTap: () {
-              Scaffold.of(context).openDrawer();
-            },
-            child: Container(
-              height: 30,
-              width: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadious8,
-                border: Border.all(color: BorderRadious8Color),
-              ),
-              child: Image.asset(
-                widget.drawer_icon_path ?? 'assets/icons/notification.png',
-              ),
-            ),
-          ),
-        ],
-      ),
+          ]),
     );
   }
 }

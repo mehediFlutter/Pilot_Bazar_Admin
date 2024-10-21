@@ -81,7 +81,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
           body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-              message_icon_path: 'assets/icons/message_notification.png',
+              notification_image_path: 'assets/icons/message_notification.png',
               drawer_icon_path: 'assets/icons/beside_message.png',
               onTapFunction: () {},
               chatTap: () {

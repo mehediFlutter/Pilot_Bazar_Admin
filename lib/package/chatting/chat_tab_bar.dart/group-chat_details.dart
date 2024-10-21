@@ -147,7 +147,7 @@ class _GroupChattingDetailsScreenState
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomerProfileBar(
               profileImagePath: 'assets/images/small_profile.png',
-              message_icon_path: 'assets/icons/message_notification.png',
+              notification_image_path: 'assets/icons/message_notification.png',
               drawer_icon_path: 'assets/icons/beside_message.png',
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.avatar,
