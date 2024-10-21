@@ -1,2 +1,2 @@
 const String iconPath = 'assets/icons/';
-const String imagePath = 'assets/images/';
+const String imagePath = 'assets/images';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pilot_bazar_admin/new_single_screen/new_single_screen_vehicle.dart';
 import 'package:pilot_bazar_admin/screens/single_vehicle_screen.dart';
 
 class BottomNavBaseScreen extends StatefulWidget {
@@ -9,8 +10,8 @@ class BottomNavBaseScreen extends StatefulWidget {
 class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
-    const SingleVehicleScreen(),
-    const SingleVehicleScreen()
+    const NewSingleScreenVehicle(),
+    const NewSingleScreenVehicle()
   ];
 
   void _onItemTapped(int index) {
