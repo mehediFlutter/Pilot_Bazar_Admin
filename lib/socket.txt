@@ -32,3 +32,6 @@ https://websocket.pilotbazar.xyz/
 
 [x] - All images
 [x] - feature + special features
+
+
+// heigh level design

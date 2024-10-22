@@ -152,7 +152,7 @@ class _GroupChattingDetailsScreenState
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.avatar,
               merchantName: widget.name,
-              companyName: widget.phoneNumber,
+              phone: widget.phoneNumber,
               onTapFunction: () {},
               chatTap: () {
                 // print("notificaiton tap");
@@ -177,7 +177,8 @@ class _GroupChattingDetailsScreenState
                 if (index == getChats.length) {
                   return SizedBox(height: 30);
                 }
-                return ChatBubbl.ChatBubble(message: getChats[index]['content']);
+                return ChatBubbl.ChatBubble(
+                    message: getChats[index]['content']);
               },
             ),
           ),
@@ -265,7 +266,7 @@ class _GroupChattingDetailsScreenState
 
                     setState(() {});
 
-                  //  _sendMessage();
+                    //  _sendMessage();
 
                     sendMessageController.clear();
                   }

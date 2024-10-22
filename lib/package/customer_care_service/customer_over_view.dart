@@ -85,7 +85,7 @@ class _CustomerOverViewState extends State<CustomerOverView> {
           notification_image_path: 'assets/icons/message_notification.png',
           drawer_icon_path: 'assets/icons/beside_message.png',
           merchantName: userInfo?['payload']?['merchant']?['name'] ?? 'None',
-          companyName: userInfo?['payload']?['merchant']?['merchant_info']
+          phone: userInfo?['payload']?['merchant']?['merchant_info']
                   ['company_name'] ??
               "None",
 

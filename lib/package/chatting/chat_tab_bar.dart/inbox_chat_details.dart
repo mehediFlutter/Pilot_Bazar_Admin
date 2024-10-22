@@ -223,7 +223,7 @@ class _ChattingDetailsScreenState extends State<ChattingDetailsScreen> {
               isChatAvater: widget.isChatScreen,
               chatAvater: widget.image,
               merchantName: widget.name,
-              companyName: '',
+              phone: '',
             ),
           ),
           height10,

@@ -36,25 +36,24 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController demoController = TextEditingController();
   late bool passwordVisible;
-  late SharedPreferences prefss;
+  late SharedPreferences preference;
 
   String? authUserID;
   var merchantId;
   var merchantName;
   var mobileNumber;
   initSharedPref() async {
-    prefss = await SharedPreferences.getInstance();
+    preference = await SharedPreferences.getInstance();
   }
 
   bool loginInProgress = false;
-
 
   Future login() async {
     loginInProgress = true;
     if (mounted) {
       setState(() {});
     }
-    prefss = await SharedPreferences.getInstance();
+    preference = await SharedPreferences.getInstance();
     Map<String, dynamic> body = {
       "mobile": phoneNumberController.text,
       "password": passwordController.text, //01407054411
@@ -66,19 +65,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Map decodedBody = jsonDecode(response.body.toString());
 
-
     if (response.statusCode == 200) {
       Map decodedBody = jsonDecode(response.body.toString());
-      
+      print("Login Decoded Body : ${decodedBody}");
 
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
-     String token = await model.toJson()['token'];
+      
+
+      String token = await model.toJson()['token'];
       loginToken = await model.toJson()['token'];
       authUserID = model.toJson()['id'];
-      await prefss.setString('token', token ?? loginToken??model.toJson()['token']);
-      await prefss.setString('authUserID', authUserID ?? '');
+      await preference.setString(
+          'token', token ?? loginToken ?? model.toJson()['token']);
+      print("Image name: ${decodedBody['image']}");
+      print("ID after image: ${model.toJson()['id']}");
+      await preference.setString('authUserID', authUserID ?? '');
+      //  String profileImage = await model.toJson()['image'];
+         await preference.setString('image', decodedBody['image']);
       loginInProgress = false;
       if (mounted) {
         setState(() {});
@@ -126,7 +131,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 height20,
-              
 
                 MyTextFromFild(
                   myController: phoneNumberController,
@@ -136,14 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.number,
                 ),
                 height10,
-                
+
                 TextFieldForPassword(
                   myController: passwordController,
                   hintText: 'Password',
                   validatorText: 'Enter Password',
-                   prefixIcon: Image.asset('assets/icons/password_icon.png'),
-                   obscureText: !passwordVisible,
-                   icon: IconButton(
+                  prefixIcon: Image.asset('assets/icons/password_icon.png'),
+                  obscureText: !passwordVisible,
+                  icon: IconButton(
                       icon: Icon(
                         passwordVisible
                             ? Icons.visibility
@@ -155,15 +159,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           passwordVisible = !passwordVisible;
                         });
                       }),
-
                 ),
-
-
-               
 
                 height10,
 
-              
                 height30,
                 SizedBox(
                     width: double.infinity,
@@ -237,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
 Map<String, String> globalHeader = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'Accept-Encoding':'application/gzip'
+  'Accept-Encoding': 'application/gzip'
 };
 
 Map<String, String> uploadHeader = {

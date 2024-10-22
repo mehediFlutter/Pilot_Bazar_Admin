@@ -1,68 +1,80 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:pilot_bazar_admin/socket_io/tokens.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ShareOnlyDetails {
-  feature(String id, token) async {
-    print("Token is : ${token}");
-    print(id);
-    String featureAsString;
+  feature(String? id, String? token) async {
     List<String> formattedSpecialFeatures = [];
     List<String> formattedFeatures = [];
 
     Response response = await http.get(
       Uri.parse('${APP_APISERVER_URL}/api/v1/vendor-management/vehicles/$id'),
-      headers: await {
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Accept-Encoding': 'application/gzip',
         'Authorization': 'Bearer $token'
       },
     );
-    final decodedBody = jsonDecode(response.body);
 
-    final decodedBodyFeature = decodedBody['feature'];
+    if (response.statusCode == 200) {
+      final decodedBody = jsonDecode(response.body);
+      final decodedBodyFeature = decodedBody['feature'];
+      final decodedBodySpecialFeature = decodedBody['special'];
 
-    for (var feature in decodedBodyFeature) {
-      String formattedFeature = '${feature['title']}: ${feature['value']}';
-      formattedFeatures.add(formattedFeature);
+      Map<String, String> featuresMap = {};
+      for (var item in decodedBodyFeature) {
+        String title = item['title'];
+        String value = item['value'];
+        featuresMap[title] = value;
+      }
+      String features = featuresMap.entries
+          .map((entry) => '${entry.key} : ${entry.value}')
+          .join(', ');
+
+      // if special feature is available
+
+      for (var item in decodedBodySpecialFeature) {
+        String title = item['title'];
+        List<dynamic> values = item['value']; // Assuming value is a list
+        String formattedValue = values.join(', '); // Join list items
+        formattedSpecialFeatures
+            .add('$title: $formattedValue'); // Format as "title: value"
+      }
+      String specialFeatures = formattedSpecialFeatures.join(', ');
+
+      await Share.share(features + specialFeatures);
+    } else {
+      // Handle the error accordingly
+      print('Error: ${response.statusCode}');
     }
-    String featureValues = formattedFeatures.join(', ');
-    
-
-// store special feature
-    final decodedBodySpecialFeature = decodedBody['special'];
-    for (var i in decodedBodySpecialFeature) {
-      String values = i['value'] is List
-          ? (i['value'] as List).join(', ')
-          : i['value'].toString();
-
-      String formattedSpecialFeature = '${i['title']}: $values';
-      formattedSpecialFeatures.add(formattedSpecialFeature);
-    }
-    String specialFeatureValues = formattedSpecialFeatures.join(', ');
-    print(specialFeatureValues);
-
-    return decodedBodyFeature;
   }
 
-  specialFeature(String id) async {
-    print("special feature method ");
-    Response response = await http.get(
-      Uri.parse('${APP_APISERVER_URL}/api/v1/vendor-management/vehicles/$id'),
-      headers: await {
+  shareDetailsWithOneImage(String? token, imageLink, details) async {
+    print("details ${details}");
+    final uri = Uri.parse(imageLink);
+    final response = await http.get(
+      uri,
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Accept-Encoding': 'application/gzip',
-        'Authorization': 'Bearer ${loginToken}'
+        'Authorization': 'Bearer $token'
       },
     );
-    final decodedBody = jsonDecode(response.body);
+    final imageBytes = response.bodyBytes;
+    final tempDirectory = await getTemporaryDirectory();
+    final tempFile =
+        await File('${tempDirectory.path}/sharedImage.jpg').create();
+    await tempFile.writeAsBytes(imageBytes);
 
-    final decodedBodySpecialFeature = decodedBody['special'];
+    //await getDetails(widget.id);
+    final image = XFile(tempFile.path);
 
-    return decodedBodySpecialFeature;
+    await Share.shareXFiles([image], text: details);
   }
 }

@@ -43,7 +43,7 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
 
   void printUserInfo() async {
     userInfoFromPrefs = await AuthUtility.getUserInfo();
-    print("User Name is  ${userInfoFromPrefs?.name??''}");
+    print("User Name is  ${userInfoFromPrefs?.name ?? ''}");
     setState(() {});
   }
 
@@ -56,7 +56,6 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
         messengerAPIToken ?? '', 'online');
 
     setState(() {});
-
   }
 
   @override
@@ -125,17 +124,14 @@ class _TabChatState extends State<TabChat> with SingleTickerProviderStateMixin {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: CustomerProfileBar(
-                profileImagePath: 
-                // userInfoFromPrefs
-                //         ?.payload?.merchant?.merchantInfo?.image?.name ??
+                profileImagePath:
+                    // userInfoFromPrefs
+                    //         ?.payload?.merchant?.merchantInfo?.image?.name ??
                     '',
                 notification_image_path: 'assets/icons/sync.png',
                 drawer_icon_path: 'assets/icons/beside_message.png',
-                merchantName:
-                    userInfoFromPrefs?.name ?? 'None',
-                companyName: userInfoFromPrefs
-                        ?.phone ??
-                    "None",
+                merchantName: userInfoFromPrefs?.name ?? 'None',
+                phone: userInfoFromPrefs?.phone ?? "None",
                 onTapFunction: () {},
                 chatTap: () async {
                   await socketMethod.fetchContacts();

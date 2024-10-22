@@ -6,6 +6,7 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pilot_bazar_admin/DTO/vehicle_detail_dto.dart';
 import 'package:pilot_bazar_admin/const/color.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
+import 'package:pilot_bazar_admin/package/customer_care_service/vehicle_detaild_bannar.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:photo_view/photo_view.dart';
@@ -57,14 +58,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
 
     final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
     VehicleDetailDTO dto = await VehicleDetailDTO.fromObject(decodedResponse);
-    print("Feature DTO Json");
-    print(dto.toJson());
-    print("DTO to details");
-    print(dto.toDetails());
-    //   print(dto.feature?[0].title??'None');
-    //   print(dto.special?[0].title??'None');
-    //  print(dto.gallery?[0].title??'None');
-    //  print(dto.gallery?[0].share??'None');
 
     vehicleName = decodedResponse['title'];
     vehiclePrice = decodedResponse['price'];
@@ -74,6 +67,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     }
 
     vehicleFeature = decodedResponse['feature'];
+    print("Here is the featurea ${vehicleFeature}");
 
     if (decodedResponse['special'] != null) {
       isFeatureDetails = true;
@@ -124,7 +118,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
 
     _pageController = PageController(initialPage: 0);
     startAutoPlay();
-    //getImages();
   }
 
   getimg() async {
@@ -184,20 +177,16 @@ class _VehicleDetailsState extends State<VehicleDetails> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+            padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Text(
-                    isFeatureInProgress ? '' : vehicleName ?? '',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                VehicleDetailsBanner(
+                  vehicleName: isFeatureInProgress ? '' : vehicleName ?? 'None',
+                  code: vehicleCode ?? "",
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                height8,
                 _getImages
                     ? Center(
                         child: Column(
@@ -224,50 +213,39 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => Scaffold(
-                                      body: Column(
-                                        children: [
-                                          Expanded(
-                                            child: PhotoViewGallery.builder(
-                                              itemCount: ImageLinkList.length,
-                                              builder: (context, index) {
-                                                return PhotoViewGalleryPageOptions
-                                                    .customChild(
-                                                  child: Image.network(
-                                                    '${ImageLinkList[index]}',
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      // On error, show fallback image
-                                                      return Image.network(
-                                                        fallbackImage, // Fallback image URL
-                                                        fit: BoxFit.cover,
-                                                      );
-                                                    },
-                                                  ),
-                                                  minScale:
-                                                      PhotoViewComputedScale
-                                                          .contained,
-                                                  maxScale:
-                                                      PhotoViewComputedScale
-                                                              .covered *
-                                                          2,
+                                      body: PhotoViewGallery.builder(
+                                        itemCount: ImageLinkList.length,
+                                        builder: (context, index) {
+                                          return PhotoViewGalleryPageOptions
+                                              .customChild(
+                                            child: Image.network(
+                                              '${ImageLinkList[index]}',
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                // On error, show fallback image
+                                                return Image.network(
+                                                  fallbackImage, // Fallback image URL
                                                 );
                                               },
-                                              backgroundDecoration:
-                                                  BoxDecoration(
-                                                color: Colors.black,
-                                              ),
-                                              pageController: PageController(
-                                                initialPage: _currentIndex,
-                                              ),
-                                              onPageChanged: (index) {
-                                                setState(() {
-                                                  _currentIndex = index;
-                                                });
-                                              },
                                             ),
-                                          ),
-                                        ],
+                                            minScale: PhotoViewComputedScale
+                                                .contained,
+                                            maxScale:
+                                                PhotoViewComputedScale.covered *
+                                                    2,
+                                          );
+                                        },
+                                        backgroundDecoration: BoxDecoration(
+                                          color: Colors.black,
+                                        ),
+                                        pageController: PageController(
+                                          initialPage: _currentIndex,
+                                        ),
+                                        onPageChanged: (index) {
+                                          setState(() {
+                                            _currentIndex = index;
+                                          });
+                                        },
                                       ),
                                     ),
                                   ),
@@ -296,13 +274,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                                           '${ImageLinkList[index]}'),
                                       minScale:
                                           PhotoViewComputedScale.contained *
-                                              1.1, // Adjust as needed
+                                              1.215, // Adjust as needed
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                         return Image.network(
                                           'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png', // URL of the error image
-                                          fit: BoxFit
-                                              .cover, // Adjust the fit to your liking
+                                          // Adjust the fit to your liking
                                         );
                                       },
                                     );
@@ -378,7 +355,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                           ],
                         ),
                       ),
-                SizedBox(height: 10),
+                height8,
                 Container(
                   height: 100,
                   width: double.infinity,
@@ -416,69 +393,44 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return SizedBox(
-                        width: 10,
+                        width: 8,
                       );
                     },
                   ),
                 ),
-                SizedBox(height: 10),
-                SizedBox(height: 5),
+                height8,
                 Container(
                   width: double.infinity,
-                  height: 90,
+                  height: 80,
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 178, 224, 179),
                       borderRadius: BorderRadius.circular(10)),
                   child: ListTile(
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     title: Padding(
                       padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        isFeatureInProgress ? '' : vehiclePrice ?? '',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.w600),
-                      ),
+                      child: Text(isFeatureInProgress ? '' : vehiclePrice ?? '',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 20)),
                     ),
                     subtitle: Text(
                       "Negotiable | T&C will be applicable",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontSize: 14,
-                          color: Colors.black87,
+                          fontSize: 12,
+                          color: const Color.fromARGB(255, 72, 69, 69),
                           fontWeight: FontWeight.w500),
-                    ),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // SizedBox(
-                        //   height: 5,
-                        // ),
-                        Text("Code",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(color: Colors.black, fontSize: 15)),
-                        Text(
-                            "${vehicleCode}"
-                            // todo?['code']??''.toString()
-                            ,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Colors.black, fontSize: 10)),
-                      ],
                     ),
                   ),
                 ),
                 height20,
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text("Features :",
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.white,
-                            decorationStyle: TextDecorationStyle.solid,
-                          )),
+                Text(
+                  "Features :",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
                 ),
                 height10,
                 Container(
@@ -488,100 +440,85 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                       shrinkWrap: true,
                       itemCount: vehicleFeature.length,
                       itemBuilder: (context, index) {
-                        return
-                            //  contentPadding: EdgeInsets.zero,
-                            Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                                 child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20, bottom: 10),
+                              padding: const EdgeInsets.only(bottom: 4),
                               child: Text(vehicleFeature[index]['title'],
+                                  style: small14StyleW600),
+                            )),
+                            Expanded(
+                                child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 4, bottom: 4),
+                              child: Text(vehicleFeature[index]['value'],
                                   style: small14StyleW500),
                             )),
-                            //Text(":",style: TextStyle(color: Colors.white),),
-                            SizedBox(
-                              width: size.width / 20,
-                            ),
-
-                            Expanded(
-                                child: Text(vehicleFeature[index]['value'],
-                                    style: small14StyleW500)),
                           ],
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Divider(
-                            color: Color(0xFFEEEEEE),
-                            height: 0,
-                          ),
+                        return Divider(
+                          color: Color(0xFFEEEEEE),
+                          height: 0,
                         );
                       },
                     )),
                 height20,
-                isFeatureDetails
-                    ? Padding(
-                        padding: EdgeInsets.only(left: 20, bottom: 10),
-                        child: Text(
-                          "Special Features",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(
-                                  // decoration: TextDecoration.underline,
-                                  decorationColor:
-                                      const Color.fromARGB(255, 175, 173, 173),
-                                  fontSize: 20),
-                        ),
+                vehicleSpecialFeature?.length == 0
+                    ? SizedBox()
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Special Features :",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
+                          height12,
+                          Container(
+                              width: double.infinity,
+                              child: ListView.separated(
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount: vehicleSpecialFeature?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  print(
+                                      "length of spcecial feature ${vehicleSpecialFeature?.length}");
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                              vehicleSpecialFeature?[index]
+                                                  ['title'],
+                                              style: small14StyleW600)),
+                                      Expanded(
+                                          child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 4, bottom: 4),
+                                        child: Text(
+                                            vehicleSpecialFeature?[index]
+                                                        ['value']
+                                                    .join(', ') ??
+                                                '',
+                                            style: small14StyleW500),
+                                      )),
+                                    ],
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return Divider(
+                                    color: Color(0xFFEEEEEE),
+                                    height: 0,
+                                  );
+                                },
+                              )),
+                        ],
                       )
-                    : SizedBox(),
-                isFeatureDetails
-                    ? Container(
-                        width: double.infinity,
-                        child: ListView.separated(
-                          primary: false,
-                          shrinkWrap: true,
-                          itemCount: vehicleSpecialFeature?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            print(
-                                "length of spcecial feature ${vehicleSpecialFeature?.length}");
-                            return Row(
-                              children: [
-                                Expanded(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, bottom: 10),
-                                  child: Text(
-                                      vehicleSpecialFeature?[index]['title'],
-                                      style: small14StyleW500),
-                                )),
-                                SizedBox(
-                                  width: size.width / 20,
-                                ),
-                                Expanded(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, bottom: 10),
-                                  child: Text(
-                                      vehicleSpecialFeature?[index]['value']
-                                              .join(', ') ??
-                                          '',
-                                      style: small14StyleW500),
-                                )),
-                              ],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Divider(
-                              color: Color(0xFFEEEEEE),
-                              height: 0,
-                            );
-                          },
-                        ))
-                    : SizedBox(),
               ],
             ),
           ),

@@ -12,7 +12,7 @@ class CustomerProfileBar extends StatefulWidget {
   final String? notification_image_path;
   final String? drawer_icon_path;
   final String? merchantName;
-  final String? companyName;
+  final String? phone;
   final String? chatAvater;
   final bool isChatAvater;
   final Function()? onTapFunction;
@@ -27,7 +27,7 @@ class CustomerProfileBar extends StatefulWidget {
     this.drawer_icon_path,
     this.drawerTap,
     this.merchantName,
-    this.companyName,
+    this.phone,
     this.chatAvater,
     this.isChatAvater = false,
   });
@@ -38,19 +38,20 @@ class CustomerProfileBar extends StatefulWidget {
 
 class _CustomerProfileBarState extends State<CustomerProfileBar> {
   @override
-    var userInfo;
-   loadUserInfo() async {
+  var userInfo;
+  loadUserInfo() async {
     LoginModel user = await AuthUtility.getUserInfo();
     userInfo = user.toJson();
     setState(() {});
     print(userInfo.toString());
     print(userInfo['name'].toString());
   }
+
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Column(
-      
+
           //  onTap: widget.onTapFunction,
           children: [
             Row(
@@ -61,7 +62,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadious10,
                   ),
-                  child: Image.asset(
+                  child: Image.network(
                     widget.isChatAvater
                         ? widget.chatAvater ?? ''
                         : (widget.profileImagePath.isNotEmpty)
@@ -74,7 +75,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.merchantName ?? 'Kabir Khan',
+                      widget.merchantName ?? 'None',
                       style: const TextStyle(
                         fontSize: 16,
                         fontFamily: 'Inter',
@@ -85,8 +86,8 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      widget.companyName ?? 'kabirkhan@example.com',
-                     style: const TextStyle(
+                      widget.phone ?? 'None',
+                      style: const TextStyle(
                         fontSize: 12,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,
@@ -96,9 +97,9 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                     ),
                   ],
                 ),
-              Spacer(),
-              ElevatedButton(onPressed: (){
-            
+                Spacer(),
+                ElevatedButton(
+                    onPressed: () {
                       CustomAlertDialog().logOutDialog(
                           context,
                           "Are you sure want to logOut ? ",
@@ -113,10 +114,8 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                             (route) => false);
                         await loadUserInfo();
                       });
-                   
-                    
-                    
-              }, child: Text("Logout")),
+                    },
+                    child: Text("Logout")),
                 SvgPicture.asset(
                   widget.notification_image_path ?? '',
                 ),

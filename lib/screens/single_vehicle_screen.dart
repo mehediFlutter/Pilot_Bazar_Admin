@@ -1288,7 +1288,7 @@ class _SingleVehicleScreenState extends State<SingleVehicleScreen> {
                       },
                       drawer_icon_path: 'assets/icons/beside_message.png',
                       merchantName: userInfoFromPrefs?.name ?? 'None',
-                      companyName: userInfoFromPrefs?.phone ?? "None",
+                      phone: userInfoFromPrefs?.phone ?? "None",
                     );
                   }),
                   SearchTextFild(
