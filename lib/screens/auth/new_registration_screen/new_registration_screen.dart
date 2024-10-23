@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
@@ -9,6 +8,7 @@ import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/Login_text_fild_upper_text.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/text_form_field.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_name_text_fild.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_phone_number_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';

@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-
-class NewPasswordTextFormField extends StatelessWidget {
+class NewPhoneNumberTextFormField extends StatelessWidget {
   final TextEditingController textEditingController;
   final String hintText;
-  final Widget icon;
-  final bool obscureText;
-  const NewPasswordTextFormField({
+  final String validatorText;
+
+  const NewPhoneNumberTextFormField({
     super.key,
     required this.textEditingController,
     required this.hintText,
-    required this.icon,
-    required this.obscureText,
+    required this.validatorText,
   });
 
   @override
   Widget build(BuildContext context) {
+    var maskFormatter = new MaskTextInputFormatter(
+        mask: '+88# ####-######',
+        filter: {"#": RegExp(r'[0-9]')},
+        type: MaskAutoCompletionType.lazy);
     return TextFormField(
+      inputFormatters: [maskFormatter],
       controller: textEditingController,
-      obscureText: obscureText,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        suffixIcon: icon,
         hintText: hintText,
         hintStyle: TextStyle(color: Color(0xFF667085)),
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -38,7 +40,13 @@ class NewPasswordTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+      validator: (value) {
+        if (value?.isEmpty ?? true) {
+          return validatorText;
+        }
+
+        return null;
+      },
     );
   }
 }
-
