@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pilot_bazar_admin/const/path.dart';
 import 'package:pilot_bazar_admin/screens/new_single_screen/new_single_screen_vehicle.dart';
+import 'package:pilot_bazar_admin/screens/reels/sample_reels.dart';
 import 'package:pilot_bazar_admin/screens/user/user_screen.dart';
 
 class BottomNavBaseScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
     const NewSingleScreenVehicle(),
-    const NewSingleScreenVehicle(),
+    VideoPlayerScreen(),
     const NewSingleScreenVehicle(),
     const UserScreen(),
   ];

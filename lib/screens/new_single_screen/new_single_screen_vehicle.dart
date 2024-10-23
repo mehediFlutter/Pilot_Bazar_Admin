@@ -42,9 +42,7 @@ class _NewSingleScreenVehicleState extends State<NewSingleScreenVehicle> {
     preferences = await SharedPreferences.getInstance();
     setState(() {});
     userInfoFromPreference = await AuthUtility.getUserInfo();
-
-    print("user name is  : ${userInfoFromPreference?.name}");
-    // print(userInfoFromPreference.)
+    print(preferences?.getString('userInfo'));
   }
 
   // getMessengeToken() async {
@@ -71,7 +69,7 @@ class _NewSingleScreenVehicleState extends State<NewSingleScreenVehicle> {
         child: Column(
           children: [
             CustomerProfileBar(
-              profileImagePath: preferences?.getString('image')??'',
+              profileImagePath: preferences?.getString('image') ?? '',
               merchantName: userInfoFromPreference?.name ?? '',
               phone: userInfoFromPreference?.phone ?? '',
               notification_image_path: '$iconPath/notification_outline.svg',
@@ -201,7 +199,6 @@ class _ABcState extends State<ABc> {
 
                         showModalBottomSheet(
                           useSafeArea: true,
-                     
                           context: context,
                           builder: (context) {
                             isFirstSendItemSelected = false;

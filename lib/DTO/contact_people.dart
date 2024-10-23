@@ -14,7 +14,7 @@ class CPUserDTO {
       image: json['image'],
     );
   }
-  
+
   factory CPUserDTO.fromObject(Map<String, dynamic> data) {
     return CPUserDTO(
       id: data['id'],
@@ -92,8 +92,6 @@ class CPTimeDTO {
   }
 }
 
-
-
 class ContactPeopleDTO {
   String? id;
   String? name;
@@ -115,14 +113,13 @@ class ContactPeopleDTO {
 
   factory ContactPeopleDTO.fromObject(Map<String, dynamic> data) {
     return ContactPeopleDTO(
-      id:   data['room'] != null ? data['room']['id'] : null,
+      id: data['room'] != null ? data['room']['id'] : null,
       name: data['room'] != null ? data['room']['name'] : null,
       user: data['user'] != null ? CPUserDTO.fromObject(data['user']) : null,
       chat: data['chat'] != null ? CPChatDTO.fromObject(data['chat']) : null,
       time: data['time'] != null ? CPTimeDTO.fromObject(data['time']) : null,
     );
   }
-
 
   Map<String, dynamic> toJson() {
     return {

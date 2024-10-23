@@ -60,15 +60,20 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
         headers: globalHeader,
         body: jsonEncode(body));
 
-    Map decodedBody = jsonDecode(response.body.toString());
+    Map decodedBody = jsonDecode(response.body);
+    print("Decoded Body:  ${decodedBody}");
+    print(decodedBody['error']);
+    print("Status Code ${response.statusCode}");
 
-    if (response.statusCode == 200) {
+    if (decodedBody['id'] != null) {
       Map decodedBody = jsonDecode(response.body.toString());
       print("Login Decoded Body : ${decodedBody}");
 
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
+      String jsonString = jsonEncode(decodedBody);
+      await preference.setString('userInfo', jsonString);
 
       String token = decodedBody['token'];
       print("token is from login : ${decodedBody['token']}");
@@ -93,7 +98,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
 
       CustomAlertDialog().showAlertDialog(
         context,
-        decodedBody['message'] + ' Please Try Again'.toString(),
+        decodedBody['error'] + ' Please Try Again'.toString(),
         "OK",
       );
     }
