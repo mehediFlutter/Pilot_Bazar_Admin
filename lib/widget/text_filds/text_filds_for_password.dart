@@ -13,7 +13,9 @@ class TextFieldForPassword extends StatefulWidget {
     required this.validatorText,
     required this.myController,
     this.icon = const SizedBox(),
-    this.prefixIcon = const SizedBox(), required this.obscureText, required this.hintText,
+    this.prefixIcon = const SizedBox(),
+    required this.obscureText,
+    required this.hintText,
   });
 
   @override
@@ -33,7 +35,6 @@ class _TextFieldForPasswordState extends State<TextFieldForPassword> {
       cursorColor: const Color(0xFFA6A6A6),
       cursorWidth: 1,
       decoration: InputDecoration(
-        
         suffixIcon: widget.icon,
         contentPadding: EdgeInsets.only(top: 15),
         hintText: widget.hintText,
