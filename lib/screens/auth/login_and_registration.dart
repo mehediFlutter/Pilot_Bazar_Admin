@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_login_screen/new_login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/registration_screen.dart';
 
 class TabBarViewLoginAndRegistration extends StatefulWidget {
@@ -78,7 +79,7 @@ class _TabBarViewLoginAndRegistrationState
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [LoginScreen(), const RegistrationScreen()],
+              children: [NewLoginScreen(), const RegistrationScreen()],
             ),
           ),
         ],
