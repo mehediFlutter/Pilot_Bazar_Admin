@@ -72,18 +72,17 @@ class _LoginScreenState extends State<LoginScreen> {
       LoginModel model =
           LoginModel.fromJson(decodedBody.cast<String, dynamic>());
       await AuthUtility.saveUserInfo(model);
-      
 
-      String token = await model.toJson()['token'];
-      loginToken = await model.toJson()['token'];
-      authUserID = model.toJson()['id'];
+      String token = decodedBody['token'];
+      print("token is from login : ${decodedBody['token']}");
+      loginToken = decodedBody['token'];
+      authUserID = decodedBody['id'];
       await preference.setString(
-          'token', token ?? loginToken ?? model.toJson()['token']);
+          'token', decodedBody['token'] ??token?? loginToken ??  decodedBody['token']);
       print("Image name: ${decodedBody['image']}");
-      print("ID after image: ${model.toJson()['id']}");
+      print("ID after image: ${decodedBody['id']}");
       await preference.setString('authUserID', authUserID ?? '');
-      //  String profileImage = await model.toJson()['image'];
-         await preference.setString('image', decodedBody['image']);
+      await preference.setString('image', decodedBody['image']);
       loginInProgress = false;
       if (mounted) {
         setState(() {});

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_login_screen/new_login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/token.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/socket_io/socket_manager.dart';
@@ -78,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(
               builder: (context) => (userInfo != null)
                   ? BottomNavBaseScreen()
-                  : TabBarViewLoginAndRegistration()), // ? BottomNavBaseScreen() : TabBarViewLoginAndRegistration()
+                  : NewLoginScreen()), // ? BottomNavBaseScreen() : TabBarViewLoginAndRegistration()
           (route) => false),
     );
   }

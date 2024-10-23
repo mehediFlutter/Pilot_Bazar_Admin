@@ -4,6 +4,7 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_and_registration.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_login_screen/new_login_screen.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 
@@ -109,8 +110,7 @@ class _CustomerProfileBarState extends State<CustomerProfileBar> {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    TabBarViewLoginAndRegistration()),
+                                builder: (context) => NewLoginScreen()),
                             (route) => false);
                         await loadUserInfo();
                       });

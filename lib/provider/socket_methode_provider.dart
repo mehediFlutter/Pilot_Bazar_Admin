@@ -24,25 +24,29 @@ class SocketMethodProvider extends ChangeNotifier {
 
   getVehicleCollectionMethod() async {
     preference = await SharedPreferences.getInstance();
-   Response response = await http.get(
+    print('Login Token from preffss:  ${preference.getString('token')}');
+    Response response = await http.get(
       Uri.parse("$APP_APISERVER_URL/api/v1/vendor-management/vehicles"),
-      headers:  {
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Accept-Encoding': 'application/gzip',
         'Authorization': 'Bearer ${preference.getString('token')}'
       },
     );
-   
+    print('Login Token from preffss:  ${preference.getString('token')}');
+    print("Vehicle Collection Response : ${response.body}");
+    print("Vehicle Collection Response Status Code : ${response.statusCode}");
+
     final decodedBody = jsonDecode(response.body);
+    print(decodedBody);
+
     for (var each in decodedBody) {
       vehicleCollection.add(GetAllVehicleDTO.fromObject(each));
     }
     notifyListeners();
     return vehicleCollection;
   }
-
-
 
   getInbox(String xAppContact) async {
     print("get inbox people method");

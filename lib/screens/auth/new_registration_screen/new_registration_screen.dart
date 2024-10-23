@@ -5,11 +5,13 @@ import 'package:pilot_bazar_admin/const/const_radious.dart';
 import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_login_screen/new_login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/text_fild_upper_text.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_name_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_password_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_phone_number_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:pilot_bazar_admin/socket_io/tokens.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,7 +47,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     Map<String, dynamic> body = {
       "name": namerController.text,
       "mobile": phoneNumberController.text,
-      // "company_name"            : companyNameController.text,
+      "company": companyNameController.text,
       "password": passwordController.text,
       "password_confirmation": confirmPasswordController.text,
     };
@@ -58,19 +60,29 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       Map decodedBody = jsonDecode(response.body.toString());
       print(response.body);
       if (response.statusCode == 200) {
+        Map decodedBody = jsonDecode(response.body.toString());
+        print("Login Decoded Body : ${decodedBody}");
+
         LoginModel model =
             LoginModel.fromJson(decodedBody.cast<String, dynamic>());
         await AuthUtility.saveUserInfo(model);
-        token = model.toJson()['token'];
-        authUserID = model.toJson()['id'];
 
-        await preferences.setString('token', token ?? '');
+        String token = decodedBody['token'];
+        print("token is from login : ${decodedBody['token']}");
+        loginToken = decodedBody['token'];
+        authUserID = decodedBody['id'];
+        await preferences.setString(
+            'token',
+            decodedBody['token'] ??
+                token ??
+                loginToken ??
+                decodedBody['token']);
+        print("Image name:       ${decodedBody['image']}");
+        print("ID after image:  ${decodedBody['id']}");
+
         await preferences.setString('authUserID', authUserID ?? '');
+        await preferences.setString('image', decodedBody['image']);
 
-        isRegistrationInProgress = false;
-        if (mounted) {
-          setState(() {});
-        }
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => BottomNavBaseScreen()),
@@ -108,104 +120,150 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
     return SafeArea(
         child: Scaffold(
       body: Form(
         key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFieldUpperText(
-                text: 'Phone Number',
-              ),
-              NewPhoneNumberTextFormField(
-                textEditingController: phoneNumberController,
-                hintText: 'Enter Your Phone Number',
-                validatorText: 'Enter Phone Number',
-              ),
-              TextFieldUpperText(
-                text: 'Name',
-              ),
-              NewNameTextFormField(
-                textEditingController: namerController,
-                hintText: 'Enter Your Name',
-                validatorText: 'Enter Name',
-              ),
-              TextFieldUpperText(
-                text: 'Company Name',
-              ),
-              NewNameTextFormField(
-                textEditingController: companyNameController,
-                hintText: 'Enter Your Company Name',
-                validatorText: 'Enter Company Name',
-              ),
-              TextFieldUpperText(
-                text: 'Enter Password',
-              ),
-              NewPasswordTextFormField(
-                validatorText: 'Enter Password',
-                textEditingController: passwordController,
-                hintText: 'Enter Password',
-                obscureText: !passwordVisible,
-                icon: IconButton(
-                    icon: Icon(
-                      passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: Colors.grey.shade800,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        passwordVisible = !passwordVisible;
-                      });
-                    }),
-              ),
-              TextFieldUpperText(
-                text: 'Confirm Password',
-              ),
-              NewPasswordTextFormField(
-                validatorText: 'Enter Password',
-                textEditingController: confirmPasswordController,
-                obscureText: !confirmPasswordVisible,
-                hintText: 'Confirm Password',
-                icon: IconButton(
-                    icon: Icon(
-                      confirmPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.grey.shade800,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        confirmPasswordVisible = !confirmPasswordVisible;
-                      });
-                    }),
-              ),
-              height20,
-              Container(
-                height: 44,
-                width: double.infinity,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                      child: Text(
+                    "Registration",
+                    style: TextStyle(fontSize: 36, color: Colors.black),
+                  )),
+                  height20,
+                  TextFieldUpperText(
+                    text: 'Phone Number',
+                  ),
+                  NewPhoneNumberTextFormField(
+                    textEditingController: phoneNumberController,
+                    hintText: 'Enter Your Phone Number',
+                    validatorText: 'Enter Phone Number',
+                  ),
+                  TextFieldUpperText(
+                    text: 'Name',
+                  ),
+                  NewNameTextFormField(
+                    textEditingController: namerController,
+                    hintText: 'Enter Your Name',
+                    validatorText: 'Enter Name',
+                  ),
+                  TextFieldUpperText(
+                    text: 'Company Name',
+                  ),
+                  NewNameTextFormField(
+                    textEditingController: companyNameController,
+                    hintText: 'Enter Your Company Name',
+                    validatorText: 'Enter Company Name',
+                  ),
+                  TextFieldUpperText(
+                    text: 'Enter Password',
+                  ),
+                  NewPasswordTextFormField(
+                    validatorText: 'Enter Password',
+                    textEditingController: passwordController,
+                    hintText: 'Enter Password',
+                    obscureText: !passwordVisible,
+                    icon: IconButton(
+                        icon: Icon(
+                          passwordVisible
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: Colors.grey.shade800,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        }),
+                  ),
+                  TextFieldUpperText(
+                    text: 'Confirm Password',
+                  ),
+                  NewPasswordTextFormField(
+                    validatorText: 'Enter Password',
+                    textEditingController: confirmPasswordController,
+                    obscureText: !confirmPasswordVisible,
+                    hintText: 'Confirm Password',
+                    icon: IconButton(
+                        icon: Icon(
+                          confirmPasswordVisible
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: Colors.grey.shade800,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            confirmPasswordVisible = !confirmPasswordVisible;
+                          });
+                        }),
+                  ),
+                  height20,
+                  isRegistrationInProgress
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        )
+                      : Container(
+                          height: 44,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (!formKey.currentState!.validate()) {
+                                  return null;
+                                }
+                                await registration();
+                              },
+                              child: Text(
+                                "Registration",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              )),
+                        ),
+                  height30,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account?",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w400),
                       ),
-                    ),
-                    onPressed: () async {
-                      if (!formKey.currentState!.validate()) {
-                        return null;
-                      }
-                      await registration();
-                    },
-                    child: Text(
-                      "Registration",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    )),
+                      width5,
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NewLoginScreen()),
+                              (route) => false);
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
