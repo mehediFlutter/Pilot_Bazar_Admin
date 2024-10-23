@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
 
 class NewPasswordTextFormField extends StatelessWidget {
   final TextEditingController textEditingController;
   final String hintText;
+  final String validatorText;
+
   final Widget icon;
   final bool obscureText;
   const NewPasswordTextFormField({
@@ -13,6 +13,7 @@ class NewPasswordTextFormField extends StatelessWidget {
     required this.hintText,
     required this.icon,
     required this.obscureText,
+    required this.validatorText,
   });
 
   @override
@@ -38,7 +39,13 @@ class NewPasswordTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+      validator: (value) {
+        if (value?.isEmpty ?? true) {
+          return validatorText;
+        }
+
+        return null;
+      },
     );
   }
 }
-

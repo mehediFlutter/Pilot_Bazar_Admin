@@ -6,8 +6,8 @@ import 'package:pilot_bazar_admin/screens/auth/auth_utility.dart';
 import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/Login_text_fild_upper_text.dart';
-import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/text_form_field.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_name_text_fild.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_password_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_phone_number_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
@@ -144,6 +144,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                 text: 'Enter Password',
               ),
               NewPasswordTextFormField(
+                validatorText: 'Enter Password',
                 textEditingController: passwordController,
                 hintText: 'Enter Password',
                 obscureText: !passwordVisible,
@@ -162,6 +163,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                 text: 'Confirm Password',
               ),
               NewPasswordTextFormField(
+                validatorText: 'Enter Password',
                 textEditingController: confirmPasswordController,
                 obscureText: !confirmPasswordVisible,
                 hintText: 'Confirm Password',
