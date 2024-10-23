@@ -8,6 +8,7 @@ import 'package:pilot_bazar_admin/screens/auth/loain_model.dart';
 import 'package:pilot_bazar_admin/screens/auth/login_screen.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/Login_text_fild_upper_text.dart';
 import 'package:pilot_bazar_admin/screens/auth/new_registration_screen/text_form_field.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_name_text_fild.dart';
 import 'package:pilot_bazar_admin/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:pilot_bazar_admin/widget/alert_dialog.dart';
 import 'package:pilot_bazar_admin/widget/urls.dart';
@@ -115,7 +116,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LoginTextFieldUpperText(
+              TextFieldUpperText(
                 text: 'Phone Number',
               ),
               NewPhoneNumberTextFormField(
@@ -123,21 +124,23 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                 hintText: 'Enter Your Phone Number',
                 validatorText: 'Enter Phone Number',
               ),
-              LoginTextFieldUpperText(
+              TextFieldUpperText(
                 text: 'Name',
               ),
-              NewLoginTextFormField(
+              NewNameTextFormField(
                 textEditingController: namerController,
                 hintText: 'Enter Your Name',
+                validatorText: 'Enter Name',
               ),
-              LoginTextFieldUpperText(
+              TextFieldUpperText(
                 text: 'Company Name',
               ),
-              NewLoginTextFormField(
+              NewNameTextFormField(
                 textEditingController: companyNameController,
                 hintText: 'Enter Your Company Name',
+                validatorText: 'Enter Company Name',
               ),
-              LoginTextFieldUpperText(
+              TextFieldUpperText(
                 text: 'Enter Password',
               ),
               NewPasswordTextFormField(
@@ -155,7 +158,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       });
                     }),
               ),
-              LoginTextFieldUpperText(
+              TextFieldUpperText(
                 text: 'Confirm Password',
               ),
               NewPasswordTextFormField(

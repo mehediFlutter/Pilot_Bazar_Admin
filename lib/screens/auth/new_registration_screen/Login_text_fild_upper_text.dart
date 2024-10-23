@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class LoginTextFieldUpperText extends StatelessWidget {
+class TextFieldUpperText extends StatelessWidget {
   final String? text;
-  const LoginTextFieldUpperText({
+  const TextFieldUpperText({
     super.key,
     this.text,
   });
