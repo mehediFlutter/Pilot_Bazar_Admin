@@ -71,7 +71,7 @@ class _NewSingleScreenVehicleState extends State<NewSingleScreenVehicle> {
         child: Column(
           children: [
             CustomerProfileBar(
-              profileImagePath: userInfoFromPreference?.image ?? '',
+              profileImagePath: preferences?.getString('image')??'',
               merchantName: userInfoFromPreference?.name ?? '',
               phone: userInfoFromPreference?.phone ?? '',
               notification_image_path: '$iconPath/notification_outline.svg',

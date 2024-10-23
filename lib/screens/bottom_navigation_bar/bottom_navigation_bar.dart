@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pilot_bazar_admin/const/path.dart';
 import 'package:pilot_bazar_admin/screens/new_single_screen/new_single_screen_vehicle.dart';
+import 'package:pilot_bazar_admin/screens/user/user_screen.dart';
 
 class BottomNavBaseScreen extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
     const NewSingleScreenVehicle(),
     const NewSingleScreenVehicle(),
     const NewSingleScreenVehicle(),
-    const NewSingleScreenVehicle(),
+    const UserScreen(),
   ];
   final List<Map<String, String>> navBarItems = [
     {
