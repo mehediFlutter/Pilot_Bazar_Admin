@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pilot_bazar_admin/provider/profile_provider.dart';
+import 'package:pilot_bazar_admin/screens/auth/new_text_fildes/new_name_text_fild.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -10,9 +11,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  Map? userInformation;
   getProfileDetailsMethod() async {
-    final provider =
-        Provider.of<ProfileProvider>(context, listen: false).getProfile();
+    userInformation =
+        await Provider.of<ProfileProvider>(context, listen: false).getProfile();
+    setState(() {});
   }
 
   @override
@@ -22,15 +28,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return SafeArea(
         child: Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Name"),
-          Text("Company Name"),
-          Text("Email "),
-          Text("Phone Number "),
+          NewNameTextFormField(
+            hintText: '',
+            textEditingController: nameController,
+            validatorText: '',
+            keyboardType: TextInputType.text,
+          ),
+          Text(userInformation?['name'] ?? ''),
+          Text(userInformation?['email'] ?? ''),
+          Text(userInformation?['phone'] ?? ''),
         ],
       ),
     ));
